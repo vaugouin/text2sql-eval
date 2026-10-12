@@ -1047,3 +1047,9 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 | 1.2 | 2026-02-20 | Added `CELL(row, col)` and `COUNT(column)` unique-value assertions |
 | 1.1 | 2026-02-10 | Added two-layer entity extraction DSL (`ee_eval_two_layer`) |
 | 1.0 | 2025-02-07 | Initial DataFrame assertion evaluator |
+
+---
+
+**Last Updated:** 2026-10-12
+**Maintainer:** See repository owner
+**Primary entry point:** [text2sql-eval.py](text2sql-eval.py)
