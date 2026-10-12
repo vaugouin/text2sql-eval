@@ -38,14 +38,14 @@ WHAT EACH GROUP PINS
 
 HOW TO RUN
 ----------
-    python eval/test-name-ambiguity.py                 # default: green
-    python eval/test-name-ambiguity.py --color blue    # test the blue stack
-    python eval/test-name-ambiguity.py --base-url http://localhost:8000
-    python eval/test-name-ambiguity.py --verbose       # print the flag payload
+    python test-name-ambiguity.py                 # default: green
+    python test-name-ambiguity.py --color blue    # test the blue stack
+    python test-name-ambiguity.py --base-url http://localhost:8000
+    python test-name-ambiguity.py --verbose       # print the flag payload
 
 Exit code is 0 when every case passes, 1 otherwise -- so it can gate a deploy.
 
-CONFIG (read from eval/.env, same keys as the eval harness)
+CONFIG (read from .env, same keys as the eval harness)
 -----------------------------------------------------------
     TEXT2SQL_API_URL   scheme+host, no port   (e.g. http://www.vaugouin.com)
     API_PORT_GREEN     green port             (e.g. 8187)   <- default

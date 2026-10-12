@@ -26,7 +26,6 @@ After scoring, the evaluator also exports the three evaluation tables (`T_WC_T2S
 11. [Interactive Web UI (PHP)](#11-interactive-web-ui-php)
 12. [Troubleshooting](#12-troubleshooting)
 13. [Version History](#13-version-history)
-14. [ChromaDB Consistency Checks](#14-chromadb-consistency-checks-check-chromadbpy)
 
 ---
 
@@ -421,7 +420,7 @@ Write the query cheap (it runs every preprocess), bounded (`LIMIT 5` to `LIMIT 1
 
 **The alignment rule.** A refresh SQL must mirror the `ORDER BY` **and** the joins of the query it feeds, not merely name a plausible ranking. The evaluated query is capped at `LIMIT 100`: if the two rankings differ, the generated top-8 can sit entirely outside the first hundred rows and the assertion fails against a query that is correct. Same for the filter, "what talk shows are in the database?" is answered by joining `T_WC_T2S_SERIE_GENRE` on `ID_GENRE = 10767` rather than by filtering `SERIE_TYPE`, so its refresh joins the same way.
 
-**There is no single default sort to copy.** The ranking depends on the entity *and* on the question, and the canonical rule is the **Default Sorting** section of [data/text_to_sql.md](../data/text_to_sql.md). Read it there rather than generalising from a sample. Its shape, in brief:
+**There is no single default sort to copy.** The ranking depends on the entity *and* on the question, and the canonical rule is the **Default Sorting** section of [data/text_to_sql.md](https://github.com/vaugouin/fastapi-text2sql/blob/main/data/text_to_sql.md). Read it there rather than generalising from a sample. Its shape, in brief:
 
 | the question is about | the sort |
 |---|---|
@@ -454,7 +453,7 @@ The case that revealed it, on 2026-08-27. `TMDB-MOVIE-PREPROCESS-043` moved
 `T_WC_T2S_MOVIE.ID_CRITERION_SPINE` from the Wikidata V1 tables to V2 statements. V1 stored
 `0` for "this film has no spine number"; V2 stores nothing, so `NULL`. That is a correction,
 `0` never designated a film. But the sort taught by
-[data/text_to_sql.md](../data/text_to_sql.md) was written against the sentinel:
+[data/text_to_sql.md](https://github.com/vaugouin/fastapi-text2sql/blob/main/data/text_to_sql.md) was written against the sentinel:
 
 ```sql
 ORDER BY CASE WHEN ID_CRITERION_SPINE = 0 THEN 1 ELSE 0 END, ID_CRITERION_SPINE ASC
@@ -585,7 +584,7 @@ One row per execution. Key columns:
 **On a request the complex model retried, every timing covers BOTH passes** (FASTAPI-TEXT2SQL-204). The endpoint runs twice and the durations are summed, `TOTAL_PROCESSING_TIME` being the real end-to-end elapsed rather than the sum of the steps. `COMPLEX_QUESTION_PROCESSING_TIME` is the simplification call itself and is non-zero only there, which makes it the cleanest filter for retried rows. The two counts are NOT summed: they describe the resolution that produced the returned result.
 - Resolution signals: `ENTITY_RAW_FALLBACK_COUNT`, `NO_ENTITY_EXTRACTED`
 
-**These columns are a deliberate duplicate.** `JSON_RESULT` already holds the entire API response, so every field is in the database whether or not it has a column, and the Phase 32 export copies that JSON verbatim into `api_output`. A column exists only so a campaign can be sliced in SQL without `JSON_EXTRACT` on every row, which is what the PHP graphs under [lib/](lib/) do. Adding a field to `Text2SQLResponse` therefore reaches the database and the export **on its own**; adding a column is the separate, optional step, and it needs both [../doc/sql/T2S_EVALUATION-tables.sql](../doc/sql/T2S_EVALUATION-tables.sql) and a migration under [../maintenance/](../maintenance/).
+**These columns are a deliberate duplicate.** `JSON_RESULT` already holds the entire API response, so every field is in the database whether or not it has a column, and the Phase 32 export copies that JSON verbatim into `api_output`. A column exists only so a campaign can be sliced in SQL without `JSON_EXTRACT` on every row, which is what the PHP graphs under [lib/](lib/) do. Adding a field to `Text2SQLResponse` therefore reaches the database and the export **on its own**; adding a column is the separate, optional step, and it needs both [../doc/sql/T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) and a migration under [../maintenance/](../maintenance/).
 
 **`ENTITY_RESOLUTION_PLANNING_TIME` is already included in `EMBEDDINGS_PROCESSING_TIME`.** The latter adds the overlapped work back in so it stays comparable with campaigns run before the fork-join (FASTAPI-TEXT2SQL-201). Never sum the two.
 
@@ -595,7 +594,7 @@ Rows written before an indicator existed keep `NULL`, which says "this campaign 
 - Costs (reserved): `ENTITY_EXTRACTION_COST`, `TEXT2SQL_COST`, `TOTAL_COST`
 - Audit: `DELETED`, `DAT_CREAT`, `TIM_UPDATED`, `TIM_EXECUTION`
 
-Schema DDL lives at [T2S_EVALUATION-tables.sql](../doc/sql/T2S_EVALUATION-tables.sql) and [T2S_EVALUATION-tables-with-data.sql](../doc/sql/T2S_EVALUATION-tables-with-data.sql).
+Schema DDL lives at [T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) and [T2S_EVALUATION-tables-with-data.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables-with-data.sql).
 
 ### Common queries
 
@@ -688,22 +687,16 @@ ASSERTIONS_ENTITY_EXTRACTION: PASS
 |---|---|
 | [text2sql-eval.py](text2sql-eval.py) | Main runner — phase dispatch, API calls, DB I/O, scoring loop |
 | [text2sql_eval_functions.py](text2sql_eval_functions.py) | `evaluate_dataframe_assertions()`, `_evaluate_*_assertion()` helpers, `format_detailed_results_for_db()`, `safe_json_loads()`, `format_api_version()` |
-| [test-subset-301.py](test-subset-301.py) | Offline checks of the subset helpers of FASTAPI-TEXT2SQL-301 (`parse_eval_ids`, `ids_in_clause`, `escalated_subset`, `head_to_head`), no database, no API: `uv run --no-project --with pandas eval/test-subset-301.py` |
+| [test-subset-301.py](test-subset-301.py) | Offline checks of the subset helpers of FASTAPI-TEXT2SQL-301 (`parse_eval_ids`, `ids_in_clause`, `escalated_subset`, `head_to_head`), no database, no API: `uv run --no-project --with pandas test-subset-301.py` |
 | [entity_extraction_eval_functions.py](entity_extraction_eval_functions.py) | `ee_eval_two_layer()` + DSL helpers (`_placeholders`, `_entity_keys`, `_eval_layer2`, …) |
 | [citizenphil.py](citizenphil.py) | Shared DB / server-variable / SQL-update helpers (`f_getconnection`, `f_getservervariable`, `f_setservervariable`, `f_sqlupdatearray`, `convert_seconds_to_duration`, `paris_tz`) |
-| [test-name-ambiguity.py](test-name-ambiguity.py) | Standalone non-regression battery for the `name_ambiguity` flag (FASTAPI-TEXT2SQL-157). Integration test: calls the live `/search/text2sql`, no DB. Reads `eval/.env` (`TEXT2SQL_API_URL` + `API_PORT_GREEN`/`BLUE` + `TEXT2SQL_API_KEY`). Run `python eval/test-name-ambiguity.py [--color blue] [--base-url URL] [--verbose]`; exit 0 = all pass. 20 cases: 1-row/list/narrowed → no flag; duplicate movie **and TV-series** titles & homonym persons (incl. high-count clusters) → flag with `count == distinct ID_IMDB`; comma/colon/apostrophe literals; page-1-only guard. Extend via the `CASES` list; the module docstring carries the `GROUP BY … HAVING COUNT(*)>1` queries used to find duplicate candidates per entity |
-| [bench-entity-extraction.py](bench-entity-extraction.py) | Off-production A/B bench for entity extraction. Runs two configurations over the same questions in one process and scores both with `ee_eval_two_layer` against `ASSERTIONS_ENTITY_EXTRACTION`. No API server, no execution row, no cache write. `uv run eval/bench-entity-extraction.py [--model-a M] [--model-b M] [--lang en|fr] [--limit N] [--workers N] [--out FILE] [--verbose]`, or `--questions-file PATH` to run one question per line with no database and no scoring. Two uses: compare two models, or pass the **same** model on both sides to measure the noise floor, i.e. how often the configuration disagrees with itself at temperature 0. That number is what tells a real regression from a coin flip: on 2026-08-23 gpt-4o disagreed with itself on 2 of 326 questions, which is how FASTAPI-TEXT2SQL-200 was settled (its candidate lost 11, so the gap was real). For a prompt change, which has no flag, run it before and after the edit with `--out` and diff the two files; `data/entity_extraction.md` hot-reloads, so no restart is needed |
-| [bench-prompt-cache.py](bench-prompt-cache.py) | Off-production bench of the **provider prompt cache** on the text2sql prefix (PROMPT-CACHING-010). Sends exactly what production sends (same system prompt, `data/text_to_sql.md` with its 25 K-token static prefix, a real anonymized question, temperature 0 for gpt-4o, `reasoning_effort` low for GPT-6) straight to OpenAI, no server, no database, arms **interleaved** so the time of day hits each alike: `uv run --no-project --with openai --with python-dotenv eval/bench-prompt-cache.py --arms gpt-6-sol:nokey,gpt-6-sol:key,gpt-4o:key --n 25 --rpm 10 --out eval/data/bench/pc-YYYYMMDD.json`. Prints per arm the share of calls served from cache, cached tokens, `cache_write_tokens` (billed 1.25x from gpt-5.6 on) and the cost per 1,000 calls. **Read a hit rate with care**: on gpt-5.6+ the implicit cache only reuses an identical full prompt (FASTAPI-TEXT2SQL-304), and this bench re-sends the same questions in the same order, so re-runs hit and fresh runs miss; measure with questions never sent before. The output cap does not change caching (tested 2026-09-29). With the explicit breakpoint the API now sends on gpt-5.6+, gpt-6-sol reads the 25.7 K static prefix on every new question |
-| [bench-result-entity.py](bench-result-entity.py) | Off-production A/B bench for the **answer-entity classifier** (`f_classify_result_entity`), sibling of the row above. Same discipline: two models over the same questions in one process, no API server, no execution row, no cache write. `uv run eval/bench-result-entity.py [--model-a M] [--model-b M] [--lang en|fr] [--limit N] [--workers N] [--run VERSION] [--min-decidable N] [--noise-floor N] [--out FILE]`. **Why it exists rather than a pass-rate comparison:** the classifier is authoritative over the text-to-SQL model's own `result_entity` but only acts on disagreement, so it is inert on most of the bank; an evaluator campaign would spend $86 watching a task do nothing (since FASTAPI-TEXT2SQL-234 such a campaign would at least land in its own folder, but it would still measure a task that does nothing on most questions). **Ground truth is free and needs no database:** an execution that passed its assertions had the right answer type, so its `result_entity` is a label. Run `001.001.018` yields **689 EN** and **643 FR** usable questions after dropping the ones that failed, the ones labelled outside the classifier's 19-word vocabulary (`movie_video`, `movie_serie`, which come from the text-to-SQL model), and duplicates. **Three outcomes, never one accuracy number:** *correct*; *abstained* (`""` or an unknown word, which falls back to the pre-existing behaviour and costs nothing); *confidently wrong* (a different valid label, the only outcome that overrides a query that may have been right). The verdict is built on the confident-error rate alone. **Read the per-class table, not the headline:** `movie`+`person`+`serie` carry 90 % of the labels, so answering "movie" every time already scores ~54 %; the bench prints that majority baseline beside every score, and refuses a percentage for any class under `--min-decidable` (default 30) rather than printing one computed on seven examples. `--limit` samples **round-robin across classes**, rarest first, so a 14-question smoke run touches 14 classes instead of fourteen movies |
-| [bench-entity-resolution.py](bench-entity-resolution.py) | Off-production bench for entity **resolution**, the sibling of the one above: what threshold separates a typo from a stranger. Of the fourteen resolvers in `data/entity_resolution.json` exactly one carries a rejection threshold (`Collection_name`, `min_fuzz_ratio` 72), so the other thirteen accept their nearest embeddings neighbour however far it sits: on 2026-08-24 "Wagonlit collection" resolved to "Life Collection". Calibration needs both classes, and the corpus holds only one: with no threshold everything resolved, so no rejection was ever recorded. The bench therefore **manufactures** its negatives, by cross injection (a value of type A fed to the resolver of type B) and by invented names. Its positives come from two sources only: the resolver's **own table** (`--catalogue-per-type`, the strongest, since such a value must resolve to itself) and pairs arbitrated by the assertions. Unscored log values are gathered as `observed-*` and deliberately kept OUT of the arithmetic, a correction made on 2026-08-24: counting them as positives dragged the recommended cut from 84.9 down to 45.5, because many of those resolutions are themselves the defect being hunted ("Collection Criterion" to "Ex Collection" at 18.2). Their low tail is reported separately, as a detector of false acceptances already in production. Every positive is also mutated on purpose (letters swapped, substituted, dropped), which is exactly what a threshold must never break. Pairs that never scored 1 are exported separately as `suspect`, to be triaged by hand. `uv run eval/bench-entity-resolution.py [--limit-per-type N] [--catalogue-per-type N] [--types T,T] [--build-only] [--no-unscored] [--out FILE]`. `--build-only` needs no database and skips the catalogue draw. The report gives an interval rather than a point, classification only changing at observed values, and stays silent on a field whose positive sample is too thin or biased |
-| [harvest-archived-entities.py](harvest-archived-entities.py) | Harvests extracted entity values from the archived API logs on the VPS share (23530 files across both colours) into `eval/data/archived-entity-values.json`, with an occurrence count per value. Exists because usage is lopsided: 3 `Network_name` values against 363 `Person_name`, and a threshold calibrated on three examples is a superstition with decimals. It fixed the middle of the distribution (Topic_name 48 to 236, Collection_name 36 to 128) and, measurably, not the tail: across the 24040 archived requests `Network_name` shows **seven** distinct values, because nobody asks about a network by name. The scarcity is in the usage, not in the sampling, which is why the bench draws its thin types from the catalogue instead. The share reads at about 13 files per second, so a full pass takes half an hour: run it in the background, once, and re-run only when the archive has grown. Uses a regex rather than `json.load`, since parsing 23530 documents to reach one small dictionary in each is the expensive way, and a truncated file degrades to "no match" instead of raising. `uv run eval/harvest-archived-entities.py [--dirs D,D] [--limit N] [--out FILE]` |
+| [test-name-ambiguity.py](test-name-ambiguity.py) | Standalone non-regression battery for the `name_ambiguity` flag (FASTAPI-TEXT2SQL-157). Integration test: calls the live `/search/text2sql`, no DB. Reads `.env` (`TEXT2SQL_API_URL` + `API_PORT_GREEN`/`BLUE` + `TEXT2SQL_API_KEY`). Run `python test-name-ambiguity.py [--color blue] [--base-url URL] [--verbose]`; exit 0 = all pass. 20 cases: 1-row/list/narrowed → no flag; duplicate movie **and TV-series** titles & homonym persons (incl. high-count clusters) → flag with `count == distinct ID_IMDB`; comma/colon/apostrophe literals; page-1-only guard. Extend via the `CASES` list; the module docstring carries the `GROUP BY … HAVING COUNT(*)>1` queries used to find duplicate candidates per entity |
 | [test-unified-schema-bridge.py](test-unified-schema-bridge.py) | Standalone regression test for the unified-schema column bridge (`ID_CONTENT` + `CONTENT_TYPE` → virtual `ID_MOVIE` / `ID_SERIE` / `ID_PERSON`); see [§4.3 Unified-schema column bridge](#unified-schema-column-bridge) |
-| [check-chromadb.py](check-chromadb.py) | Consistency checks on the ChromaDB store read by entity resolution. A home for such checks, not a one-shot: `--list`, `--check NAME`, `--selftest`. Reads only, needs no OpenAI key. See section 14. |
 | [Dockerfile](Dockerfile) | `python:3.11-slim` base; installs `requirements.txt`; entrypoint `python ./text2sql-eval.py` |
 | [text2sql-eval.sh](text2sql-eval.sh) | Build image + run container (detached, host network). **Asks before spending anything** (2026-09-23): it builds the image, runs a read-only pre-flight inside it and prints the target colour and the version it answers, `bktrees_ready`, the language(s), the model of each of the five tasks, every option, how many calls are left per language after the skip rule, the rows phase 10 will hard-delete, an estimated wall-clock and cost, drift between `~/docker/text2sql-eval` and the git clone, and every scheduled task under `~/docker` that is still armed, read from the `mv` lines of each repository's `off.sh` (tmdb-movie-preprocess, wikipedia-crawler, wikidata-crawler, movieparadise, sqlite, embedding-update and the others; `letsencrypt` is kept on). Stopping a container is not enough, cron relaunches it at its next tick. **One command each way** (2026-09-26): `bash ~/docker/off-all.sh` runs every `off.sh` before the campaign, `bash ~/docker/on-all.sh` every `on.sh` after it; the script says so at startup, recommends them in the pre-flight (falling back to the per-folder loop if either is missing, `OFF_ALL`/`ON_ALL` override the paths), and repeats the `on-all.sh` reminder at launch, since the run is detached and nothing else will remind you when it ends. Order: `off-all.sh` first, then `docker stop` for the containers still running, which `off.sh` does not stop; `on-all.sh` once the last campaign of the session has ended, not between the English and French halves. Only a typed `yes` launches the run; with no terminal attached it aborts unless `EVAL_CONFIRM=yes` is set. **Prompt-cache guard** (2026-09-28, PROMPT-CACHING-010): the evaluator stops the run, exit code 3, as soon as fewer than `CACHE_GUARD_MIN_HIT` (default 0.7) of the last 20 calls of a cacheable task read their prompt from the provider cache, after 3 warm-up calls per task. Rows already stored are kept and the same command resumes. Replayed on the 2026-09-27 gpt-6-sol run, it stops at question 23 instead of paying 869 calls at the cache-write price; `CACHE_GUARD_MIN_HIT=0` disables it. **Exception, the rescore-only run** (2026-09-25): when the pre-flight counts zero API calls left and zero bank rows to translate, no LLM token can be spent, and the script launches without asking. That is the run that follows an assertion correction: phase 10 purges the soft-deleted executions, phase 20 rescores, phases 30-32 re-export. Everything is overridable from the environment: `API_VERSION`, `EVAL_LANGUAGE` (not `LANGUAGE`, which is the gettext locale variable and may hold `en_US:en`), `ENTITY_EXTRACTION_MODEL`, `TEXT2SQL_MODEL`, `COMPLEX_MODEL`, `RESULT_ENTITY_MODEL`, `ANSWER_SINGLE_VALUE_MODEL`, `STORE_TO_CACHE`, `COMPLEX_MODEL_USED`. The last two model variables were added with FASTAPI-TEXT2SQL-232; since FASTAPI-TEXT2SQL-234 each has its own column, and a run that moves either one is announced as landing in its own folder (`_re-<model>`, `_asv-<model>`). **The defaults were the baseline run** (2026-09-14 to 2026-10-03): `API_VERSION=1.1.19` and gpt-4o on all five tasks. Since LLM-TASKS-010, `ENTITY_EXTRACTION_MODEL` and `TEXT2SQL_MODEL` default to `gpt-6-sol` like the API, so a bare run measures production; the baseline is `ENTITY_EXTRACTION_MODEL=gpt-4o TEXT2SQL_MODEL=gpt-4o RESULT_ENTITY_MODEL=gpt-4o ./text2sql-eval.sh` (`RESULT_ENTITY_MODEL` followed the API to `gpt-6-luna` on the same day, LLM-TASKS-003). That run is the prerequisite to any model comparison, because the prompts moved substantially after the `001.001.018` reference and its pass rates no longer describe the code. Example of the comparison that follows it: `TEXT2SQL_MODEL=gpt-5.6-terra API_VERSION=1.1.19 ./text2sql-eval.sh` |
 | [requirements.txt](requirements.txt) | `requests`, `pymysql`, `pandas>=1.5`, `numpy>=1.21`, `pytest>=7`, `pytz`, `python-dotenv>=1`, `openai>=1` |
-| [T2S_EVALUATION-tables.sql](../doc/sql/T2S_EVALUATION-tables.sql) | DDL for the three evaluation tables |
-| [T2S_EVALUATION-tables-with-data.sql](../doc/sql/T2S_EVALUATION-tables-with-data.sql) | DDL + seed question bank |
+| [T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) | DDL for the three evaluation tables |
+| [T2S_EVALUATION-tables-with-data.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables-with-data.sql) | DDL + seed question bank |
 | [how-many-samples-evals-by-category.ipynb](how-many-samples-evals-by-category.ipynb) | Coverage-by-category reporting notebook — reads the Phase 30/31 JSON exports under [data/evaluation_category/](data/evaluation_category/) and [data/evaluation/](data/evaluation/), aggregates `is_sample` / `is_eval` per category, and saves a dated horizontal bar chart `how-many-samples-evals-by-category-<YYYYMMDD>.png`. Figure height auto-scales with the number of categories. |
 | [how-many-samples-evals-by-category.sql](how-many-samples-evals-by-category.sql) | Equivalent direct-DB query (legacy CSV source, kept for reference) |
 | [assertions-year-bounds.sql](archive/assertions-year-bounds.sql) | One-shot batch (FASTAPI-TEXT2SQL-187): SQL-regex assertions on the 18 bank questions that name a year, a decade or an interval, plus two new person-decade evaluations. Written because `ID_MOVIE IN (...)` accepts extra rows and so cannot catch a widened year bound. Run once against the DB, then re-run the evaluator to refresh the JSON exports |
@@ -941,7 +934,7 @@ Use `comment` to capture the *reason* the evaluation was added — misspelling, 
 ```
 
 The `timings` block mirrors the **dedicated columns**, not `JSON_RESULT`, and it is kept by
-hand: a new column appears here only if it is added to the export in `eval/text2sql-eval.py`.
+hand: a new column appears here only if it is added to the export in `text2sql-eval.py`.
 The last two entries are not durations; they sit in this block because it is the structured
 mirror of those columns. `no_entity_extracted` is stored as `1`/`0` and exports as such, the
 real boolean being in `api_output`. And `entity_resolution_planning_time` is already counted
@@ -992,7 +985,7 @@ The graph is the entry point: define one or more layers via the form, click a ba
 
 ### Configuration
 
-The PHP app loads `eval/.env` via `global-light.inc.php` and expects:
+The PHP app loads `.env` via `global-light.inc.php` and expects:
 - `DB_HOST` (with optional `:port` suffix), `DB_NAME`, `DB_USER`, `DB_PASSWORD` — same MariaDB instance as the Python evaluator
 - `$arrallowedmodels` / `$arrallowedcomplexmodels` — defined inside `global-light.inc.php`; populate the layer dropdowns
 
@@ -1041,10 +1034,11 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.9 | 2026-10-12 | **The evaluator is its own repository.** It left `fastapi-text2sql/eval/` for [github.com/vaugouin/text2sql-eval](https://github.com/vaugouin/text2sql-eval), with its git history, since it is an API client like `voice-agent` or `tmdb-front`. The VPS folder `~/docker/text2sql-eval` becomes a git clone instead of a hand copy, and the pre-flight of `text2sql-eval.sh` now checks that clone against `origin/main`. The scripts that import the API's own modules (benches, `verif-*`, `check-*`, `eval-309`, ChromaDB checks, ex-§14) stayed in the API repo, under [`fastapi-text2sql/checks/`](https://github.com/vaugouin/fastapi-text2sql/tree/main/checks). |
 | 2.8 | 2026-09-09 | **The assertion DSL is not SQL, and §4.3 now says so where it will be read.** Two assertions written for FASTAPI-TEXT2SQL-238 used `AWARD_NAME NOT LIKE '%Academy Awards'`. `LIKE` is not in the language: the expression matches neither the `IN` branch nor the comparison pattern, falls through to `_evaluate_comparison_assertion` and returns *Invalid comparison syntax*, so both would have scored 0 with the fixed prompt exactly as with the broken one, in red, indistinguishable from a real failure. Caught before they reached the bank; replaced with the counter-example form `NOT IN ('exact value')` of §4.5 and verified against the evaluator on hand-built DataFrames. §4.3 gains the list of SQL-isms that do not exist (`LIKE`, `BETWEEN`, `IS NULL`, bare `NOT`, `%`) plus `<>`, which is the dangerous one because the comparison pattern reads its `<` and takes `> 'x'` as the expected value, mis-evaluating in silence rather than reporting. A sweep of all 866 result assertions, through the evaluator and by text search, found zero occurrences of any of the six. |
 | 2.7 | 2026-08-27 | **Documented the blind spot of living assertions** (4.6): a refresh SQL must mirror the evaluated query's `ORDER BY`, so a defect in that shared expression is recomputed rather than caught, and the rewritten assertion certifies it in green. Case in point: eval 44 absorbed the `ID_CRITERION_SPINE` sentinel-to-`NULL` change of `TMDB-MOVIE-PREPROCESS-043` hours after it landed. Adds the practical rules, keep a permanent anchor per subject, treat a semantics change as invalidating every refresh SQL on the columns it moves, and the sweep query to find them. |
 | 2.6 | 2026-08-22 | **Exports are now complete by construction.** Phases 30 and 31 `SELECT *` and pass the row through the new `add_extra_columns()` helper: curated fields keep their key and placement, every other column lands at the top level under its lower-cased name, and a column added to the table later needs no code change. `json_default()` gained `bytes` handling, since selecting every column widens the type surface. The trigger: `ASSERTION_REFRESH_SQL` and `ASSERTION_REFRESH_LAST` had been live in `T_WC_T2S_EVALUATION` for weeks, driving the living-assertion refresh in `tmdb-movie-preprocess` process 70, while the hand-listed export never mentioned them, so `data/evaluation/` read as if the feature did not exist. Both columns now have curated keys. Section 4 was renamed **Assertion Types & Authoring** and gained §4.5 (the three assertion levels: floor, anchor, counter-example), §4.6 (living assertions and their guardrails), and §4.7 (authoring checklist: category, bilingual question, rationale, the answerable/discriminating go-no-go, known traps, batch template). Written after campaign 1.1.18, where 21 of 22 new evaluations scored 1.0 on entity extraction while four returned zero rows. |
-| 2.5 | 2026-05-06 | Added the **unified-schema column bridge** to `evaluate_dataframe_assertions()` in [text2sql_eval_functions.py](text2sql_eval_functions.py): when a result DataFrame carries both `ID_CONTENT` and `CONTENT_TYPE` (the unified movie/serie/person shape prescribed in [data/text_to_sql.md](../data/text_to_sql.md)), virtual `ID_MOVIE` / `ID_SERIE` / `ID_PERSON` columns are synthesized so legacy `ID_MOVIE IN (...)` / `ID_SERIE IN (...)` / `ID_PERSON IN (...)` assertions resolve without any question-bank migration. Existing columns are never overwritten; non-matching rows become NaN. Fixed the systemic regression where ~621 evaluation rows scored 0 with `Column 'ID_MOVIE' does not exist in DataFrame`. Added [test-unified-schema-bridge.py](test-unified-schema-bridge.py) (12 cases: movies-only, mixed movies+series, ID_PERSON, mixed-case `Movie`, no-op when column already exists, no-op when `CONTENT_TYPE` is absent, `NOT IN` semantics). Documented the bridge in [§4.3 Unified-schema column bridge](#unified-schema-column-bridge) and the matching troubleshooting entry in §12. |
+| 2.5 | 2026-05-06 | Added the **unified-schema column bridge** to `evaluate_dataframe_assertions()` in [text2sql_eval_functions.py](text2sql_eval_functions.py): when a result DataFrame carries both `ID_CONTENT` and `CONTENT_TYPE` (the unified movie/serie/person shape prescribed in [data/text_to_sql.md](https://github.com/vaugouin/fastapi-text2sql/blob/main/data/text_to_sql.md)), virtual `ID_MOVIE` / `ID_SERIE` / `ID_PERSON` columns are synthesized so legacy `ID_MOVIE IN (...)` / `ID_SERIE IN (...)` / `ID_PERSON IN (...)` assertions resolve without any question-bank migration. Existing columns are never overwritten; non-matching rows become NaN. Fixed the systemic regression where ~621 evaluation rows scored 0 with `Column 'ID_MOVIE' does not exist in DataFrame`. Added [test-unified-schema-bridge.py](test-unified-schema-bridge.py) (12 cases: movies-only, mixed movies+series, ID_PERSON, mixed-case `Movie`, no-op when column already exists, no-op when `CONTENT_TYPE` is absent, `NOT IN` semantics). Documented the bridge in [§4.3 Unified-schema column bridge](#unified-schema-column-bridge) and the matching troubleshooting entry in §12. |
 | 2.4 | 2026-04-27 | Documented the [lib/](lib/) PHP web UI — `global-light.inc.php` (shared bootstrap), `t2sevalexecgraph.inc.php` (multi-layer comparison graph with selectable Y axis and per-layer color), `t2sevalexecdetails.inc.php` (per-`(layer, category)` drill-down with pagination and sort), and `t2sevalexecjson.inc.php` (`JSON_RESULT` viewer with `?format=json` switch). Added [§11 Interactive Web UI (PHP)](#11-interactive-web-ui-php) and a `lib/` row in the source files table; renumbered Troubleshooting (§12) and Version History (§13). Also rewrote [how-many-samples-evals-by-category.ipynb](how-many-samples-evals-by-category.ipynb) to read the Phase 30/31 JSON exports (replacing the legacy CSV source) and updated its source-files entry plus a downstream-consumer note in §10. |
 | 2.3 | 2026-04-25 | Phase 32 now writes execution JSON files into a per-run subfolder `<api_version>_<lang>_<eemodel>_<t2smodel>_<complexmodel>/` under `/shared/evaluation_execution/`, so successive runs across versions, languages, and model triples stay isolated instead of piling up in a single folder. |
 | 2.2 | 2026-04-25 | Added Phases 30/31/32 — JSON exports of `T_WC_T2S_EVALUATION_CATEGORY`, `T_WC_T2S_EVALUATION`, and `T_WC_T2S_EVALUATION_EXECUTION` to `/shared/<subfolder>/` (one file per row, skip-if-exists, ASCII-folded slug filenames, eval ID embedded in execution filenames to avoid same-day collisions). The exports power downstream LLM analysis of the question bank, taxonomy, and execution results without requiring DB access. |
@@ -1053,117 +1047,3 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 | 1.2 | 2026-02-20 | Added `CELL(row, col)` and `COUNT(column)` unique-value assertions |
 | 1.1 | 2026-02-10 | Added two-layer entity extraction DSL (`ee_eval_two_layer`) |
 | 1.0 | 2025-02-07 | Initial DataFrame assertion evaluator |
-
----
-
-## 14. ChromaDB consistency checks (`check-chromadb.py`)
-
-Entity resolution reads documents from ChromaDB, and what those documents contain is decided in
-**another repository**. `embedding-update` writes `name + ": " + description` for several
-entities; `data/entity_resolution.json` decides, per entity, whether to cut at
-`document_name_separator` before scoring lexically. Neither file is wrong alone. Their
-**disagreement** is, and nothing used to detect it.
-
-The cost of that silence, measured 2026-08-29: `flamenco trilogy` scored **20** against a
-threshold of 72 facing the full document, and **80** facing the name alone. The collections had
-been indexed with descriptions for two months, the separator was never declared for them, and
-the only symptom was an empty answer for a row that existed.
-
-### Running it
-
-```bash
-uv run eval/check-chromadb.py                       # every check
-uv run eval/check-chromadb.py --list                # what is available
-uv run eval/check-chromadb.py --check separator-agreement
-uv run eval/check-chromadb.py --selftest            # thresholds only, offline, no ChromaDB
-uv run eval/check-chromadb.py --sample 2000         # bigger sample, slower
-```
-
-On the VPS, in Docker, same shape as section 2:
-
-```bash
-docker run -it --rm --network="host" \
-  --env-file /home/debian/docker/fastapi-text2sql-blue/.env \
-  --name fastapi-text2sql-check \
-  -v /home/debian/docker/fastapi-text2sql-blue:/app \
-  fastapi-text2sql-blue-app \
-  python eval/check-chromadb.py
-```
-
-**The `-v` mount is required, and rebuilding is not an alternative.** Neither image can run
-this script alone: the API image installs `chromadb` but its `Dockerfile` copies only `*.py`
-and `./data/`, so `eval/` never enters it; the evaluator image copies `eval/` but has neither
-`chromadb` nor `data/`. Mounting the checkout over `/app` gives the API image the script and
-a `data/entity_resolution.json` read from disk rather than frozen at build time. Mount the
-colour currently serving, since its configuration is the one in force.
-
-Exit code 1 on any ERROR, so it can gate a deployment. Host and port come from `CHROMADB_HOST`
-and `CHROMADB_PORT`, defaulting to `localhost:8100`, which is what the VPS serves. Note that
-`main.py` defaults the port to 8000 instead; the divergence is deliberate and documented in the
-script rather than left to be discovered.
-
-### The two checks it carries today
-
-| Check | What it asserts |
-|---|---|
-| `separator-agreement` | A collection whose documents carry descriptions must declare `document_name_separator`. Also warns the other way round, a declaration standing while no document contains the separator any more, which is a false landmark for the next reader. |
-| `collection-populated` | Every embeddings strategy points at a collection that exists and holds documents. An absent or empty collection makes its placeholder fail in silence. |
-
-### Why it queries the store instead of reading the source
-
-It would be easier to parse `embedding-update.py` and compare with the JSON. It would also be
-wrong, for a reason that cost two days in the same week: a hand-written PHP unescaper disagreed
-with PHP on the one sequence that mattered and certified a broken page, and a duplicate detector
-written with `fuzz.ratio` found none of the three duplicates because it reproduced the very
-defect it was hunting. **A checker that reimplements what it checks inherits its bugs.** Reading
-the real documents cannot.
-
-### The heuristic, and its honest limit
-
-A name may legitimately contain the separator, `Star Trek: The Next Generation`, which is exactly
-why cutting is opt-in per entity and must never be global. From the store alone, only **tail
-length** separates a subtitle from a description: measured, subtitles run around 19 characters
-while the descriptions appended to `T_WC_T2S_LIST` average 105. Hence
-`DESCRIPTION_MIN_TAIL = 40` and `SUSPECT_SHARE = 0.10`.
-
-**A share alone is not enough, and the first real run proved it.** On 2026-08-29 `lists` held
-23 documents, 2 of them carrying a description, and reported **9%**, one point under the bar.
-The check would have missed the very defect it was written for: on a small collection each
-document weighs 4.3 points and a proportion stops being able to decide. Hence a second, softer
-band, `WARN_MIN_COUNT = 2` with `WARN_MIN_SHARE = 0.02`: a handful of described documents warns
-even when the share is low, while the floor of two keeps it quiet on the large catalogues where
-a long subtitle is a legitimate accident. The same run measured `movies` at 3 long tails out of
-1000, which is 0.3% and stays silent.
-
-That is a heuristic, so the check never hands down a bare verdict: every line prints the numbers
-it measured, and an accusation prints up to three offending documents. A human settles in one
-glance what no threshold can. `--selftest` asserts the discrimination offline on four fixtures,
-each one a shape measured on the real store: a series catalogue whose names are 40% colons and
-must NOT be flagged, a list catalogue full of descriptions that must error, the real 23-document
-`lists` at 9% that must warn, and a 1000-document catalogue with 3 long subtitles that must stay
-silent.
-
-### First run, 2026-08-29
-
-No error. `topics` came back clean, confirming from the store what SQL had said, its `OVERVIEW`
-is empty throughout. `collections`, the entity that started all this, shows 86% long tails with
-a median of 227 characters and its separator properly declared. `lists` still carries its four
-descriptions, so it doubles as a witness that the re-index has not run yet. And no false
-positive on `movies` or `series`, whose colons are subtitles with medians of 17 and 15
-characters.
-
-### Adding a check
-
-Decorate a function with `@check("my-name", "one line summary")`. It receives a `Context` (client,
-resolution config, sample size) and returns a list of `Finding(level, target, message, evidence)`.
-Put the numbers in `evidence`, and keep any threshold as a module constant with the measurement
-that justifies it written next to the value.
-
-For open-ended exploration of the same collections rather than assertions, Philippe uses the
-separate `embedding-query` repository. This file is for the answers that must stay true.
-
----
-
-**Last Updated:** 2026-08-27
-**Maintainer:** See repository owner
-**Primary entry point:** [text2sql-eval.py](text2sql-eval.py)

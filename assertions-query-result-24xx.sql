@@ -45,7 +45,7 @@
 -- one refresh SQL in the neighbourhood is #2471, which this file does not touch.
 --
 -- HOW TO RUN
---   mysql <db> < eval/assertions-query-result-24xx.sql
+--   mysql <db> < assertions-query-result-24xx.sql
 -- then re-run phase 20 only. Scoring is offline against the stored JSON_RESULT, so no API
 -- call and no LLM token is spent re-scoring the existing campaign.
 

@@ -1,6 +1,6 @@
 """FASTAPI-TEXT2SQL-301: offline checks of the subset helpers (no database, no API).
 
-    uv run --no-project --with pandas eval/test-subset-301.py
+    uv run --no-project --with pandas test-subset-301.py
 """
 import os
 import sys

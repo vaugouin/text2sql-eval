@@ -7,7 +7,7 @@ canonical assertion DSL, and reports the recovery baseline.
 This establishes the BASELINE *without* the diagnostic signals (the voice-agent
 runs with complex_question_processing=False, so recovery is the agent's own work).
 
-Dependencies: only `requests` (already in eval/requirements.txt) + what
+Dependencies: only `requests` (already in requirements.txt) + what
 harness_lib needs (pandas, the eval DSL). No `httpx`, on purpose, so this runs
 inside the existing text2sql-eval Docker image with no extra packages.
 

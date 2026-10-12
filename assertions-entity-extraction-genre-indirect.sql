@@ -47,7 +47,7 @@
 -- for syntax and convention only.
 --
 -- HOW TO RUN
---   mysql <db> < eval/assertions-entity-extraction-genre-indirect.sql
+--   mysql <db> < assertions-entity-extraction-genre-indirect.sql
 -- then re-run phase 11 (the API call) and phase 20 for evaluation 2481 only. Layer 1 of the
 -- harness already enforces that the placeholders in `question` match the entity keys, so the
 -- sentence itself is deliberately not pinned (see assertions-entity-extraction-language-neutral.sql).

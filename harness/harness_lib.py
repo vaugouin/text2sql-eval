@@ -4,10 +4,10 @@ This module is deliberately free of HTTP/LLM calls so it can be unit-tested
 offline (see selftest.py). The live driver lives in run_harness.py.
 
 What it does:
-- loads scenarios from the existing question bank (eval/data/evaluation/*.json),
+- loads scenarios from the existing question bank (data/evaluation/*.json),
   reusing the *validated* result-set assertions — we never invent assertions;
 - scores a tool result against an assertion by reusing the canonical DSL
-  (eval/text2sql_eval_functions.py), exactly as the single-turn evaluator does;
+  (text2sql_eval_functions.py), exactly as the single-turn evaluator does;
 - parses the voice-agent `/text-chat` tool_outputs trace and classifies the run
   (did the agent recover when the forced first query_text2sql came back empty?).
 
@@ -26,7 +26,7 @@ from typing import Any, Optional
 
 import pandas as pd
 
-# eval/ is the parent of harness/ — put it on the path so we can reuse the
+# The repository root is the parent of harness/ — put it on the path so we can reuse the
 # canonical assertion DSL instead of copying it (single source of truth).
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -42,7 +42,7 @@ def resolve_evals_dir() -> Path:
     contain them. Resolution order:
       1. $HARNESS_EVALS_DIR (explicit override);
       2. /shared/evaluation  (the eval's export volume, mounted in the container);
-      3. eval/data/evaluation (local dev copy).
+      3. data/evaluation (local dev copy).
     """
     env = os.getenv("HARNESS_EVALS_DIR")
     if env:

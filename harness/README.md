@@ -111,7 +111,7 @@ Quick check of (A) from the VPS host:
 `curl -s -X POST https://YOUR_HOST/voice-agent/text-chat -H 'Content-Type: application/json' -d '{"message":"test","context":[]}'`
 should return JSON (with a `tool_outputs` array).
 
-> Dependency note: the driver uses `requests` (already in `eval/requirements.txt`)
+> Dependency note: the driver uses `requests` (already in `requirements.txt`)
 > — **not** `httpx` — precisely so it runs in the existing eval image with no
 > extra packages.
 
@@ -122,7 +122,7 @@ should return JSON (with a `tool_outputs` array).
 | `harness_lib.py` | Core (no network): scenario loading, scoring (DSL reuse), tool-trace parsing, recovery classification, aggregation. |
 | `run_harness.py` | Live driver against `/text-chat` + CLI + output writing. |
 | `selftest.py` | Offline checks of `harness_lib` on fixtures (real DSL + pandas). |
-| `../harness-eval.sh` | Docker launcher in `eval/` (modeled on `text2sql-eval.sh`): build image + run the harness detached. |
+| `../harness-eval.sh` | Docker launcher at the repository root (modeled on `text2sql-eval.sh`): build image + run the harness detached. |
 
 ## MVP scope & limits
 

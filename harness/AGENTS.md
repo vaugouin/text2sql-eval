@@ -13,7 +13,7 @@ See `README.md` for metrics, how to run, and scope.
 
 - **Reuse, don't copy.** The assertion DSL (`../text2sql_eval_functions.py`) and
   the question bank (`../data/evaluation/*.json`) are the single source of truth.
-  `harness_lib.py` puts `eval/` on `sys.path` and imports the DSL; it never
+  `harness_lib.py` puts the repository root on `sys.path` and imports the DSL; it never
   reimplements scoring.
 - **Validated assertions only.** Scenarios reuse the bank's `query_result`
   assertions. Do not invent assertions without DB verification.
@@ -37,9 +37,9 @@ See `README.md` for metrics, how to run, and scope.
   gitignored (`.gitignore`). Do not commit run outputs.
 - **Runs in the existing eval Docker image.** The eval `Dockerfile` does
   `COPY . /app/`, so `harness/` ships in `text2sql-eval-python-app`. The launcher
-  `../harness-eval.sh` (in `eval/`, modeled on `text2sql-eval.sh`) builds that
+  `../harness-eval.sh` (at the repository root, modeled on `text2sql-eval.sh`) builds that
   image and overrides the entrypoint. Keep the harness dependency-free beyond
-  `eval/requirements.txt` — the driver uses `requests`, **not `httpx`**, on purpose.
+  `requirements.txt` — the driver uses `requests`, **not `httpx`**, on purpose.
   No `--env-file`: the harness carries no secrets (the voice-agent holds them).
 - **Anchoring (verified in code):** the voice-agent uses its own OpenAI tools
   (`query_text2sql` + detail tools), NOT the MCP `sql_search`/`get_*` surface; it

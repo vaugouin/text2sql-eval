@@ -29,7 +29,7 @@
 --
 -- ESCAPING, READ BEFORE EDITING
 -- The column stores HTML-escaped text and the harness unescapes on read
--- (eval/text2sql-eval.py:781). Quotes are &quot; and must stay that way. Plain double quotes
+-- (text2sql-eval.py:781). Quotes are &quot; and must stay that way. Plain double quotes
 -- would still parse in the DSL, which is worse than failing: the row would diverge silently
 -- from every other row in the table.
 --

@@ -18,7 +18,7 @@
 -- TEXT2SQL_MODEL = 'gpt-4o').
 --
 -- The 2026-09-27 executions stay readable in the local exports
--- (eval/data/evaluation_execution/001.001.019_*_gpt-4o_gpt-6-sol_gpt-4o/).
+-- (data/evaluation_execution/001.001.019_*_gpt-4o_gpt-6-sol_gpt-4o/).
 --
 -- Run: ~/docker/tools/runsqlvaugouindb.sh <this file>
 -- ============================================================================

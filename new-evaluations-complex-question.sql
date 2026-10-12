@@ -100,7 +100,7 @@
 --
 -- COMMENT LANCER
 --   Section 0, puis les trois INSERT, puis la section 2 pour verifier la regex.
---   mysql <db> < eval/new-evaluations-complex-question.sql
+--   mysql <db> < new-evaluations-complex-question.sql
 --   Puis la phase 31 pour rafraichir l export JSON, et les phases 11 + 20 pour
 --   jouer et scorer. Rappel : la question 2 doit etre jouee AVANT le deploiement
 --   de -223.

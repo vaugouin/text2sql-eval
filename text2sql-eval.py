@@ -345,7 +345,7 @@ def add_extra_columns(payload, row, curated):
     Why it exists: ASSERTION_REFRESH_SQL and ASSERTION_REFRESH_LAST were live in the table
     and driving the living-assertion refresh in tmdb-movie-preprocess, while the export
     listed its columns one by one and so never mentioned them. Anyone reading
-    `eval/data/evaluation/` to learn the schema concluded the feature did not exist. A column
+    `data/evaluation/` to learn the schema concluded the feature did not exist. A column
     added to the table from now on reaches the JSON without touching this file.
 
     Curated columns keep their chosen key so existing consumers are unaffected; extras follow
@@ -1042,7 +1042,7 @@ try:
                                     print("  relaunching the same command resumes where this run stopped (skip rule).")
                                     print("  A miss on gpt-5.6 and later is a cache WRITE at 1.25x the input price: a run")
                                     print("  in this state measures a cost nobody would pay. Before relaunching, check the")
-                                    print("  cache at the same pace with eval/bench-prompt-cache.py (no output cap).")
+                                    print("  cache at the same pace with fastapi-text2sql/checks/bench-prompt-cache.py (no output cap).")
                                     print("  To run anyway: --cache-guard-min-hit 0 (CACHE_GUARD_MIN_HIT=0 with text2sql-eval.sh).")
                                     print("=" * 78)
                                     cp.f_setservervariable("strtext2sqlevalcurrentprocess", "", "Current process in the Text2SQL evaluation", 0)
@@ -1234,7 +1234,7 @@ try:
                             # Everything the API reports also lives in JSON_RESULT, which is
                             # the whole response body; the six columns below duplicate as many
                             # of those fields so they can be aggregated in SQL without
-                            # JSON_EXTRACT, which is what the PHP graphs under eval/lib/ do.
+                            # JSON_EXTRACT, which is what the PHP graphs under lib/ do.
                             # _safe_float returns None on anything unexpected, so a broken
                             # field name here writes NULL in silence: cross-check a column
                             # against its JSON_RESULT counterpart after a campaign.

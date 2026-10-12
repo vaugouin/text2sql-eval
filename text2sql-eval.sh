@@ -17,7 +17,7 @@
 # that moves only one of them is measured in full and lands in its own folder, suffixed
 # _re-<model> and/or _asv-<model>. Rows written before the columns existed carry NULL and count
 # as the default gpt-4o, so the baseline folders keep their three-model names. The migration
-# eval/migrate-evaluation-execution-late-models.sql must have run before this evaluator.
+# migrate-evaluation-execution-late-models.sql must have run before this evaluator.
 #
 # BLUE OR GREEN IS DECIDED BY THE VERSION
 # An even patch targets BLUE, an odd one GREEN, in main.py for the MCP and in
@@ -55,7 +55,7 @@
 # NOTHING IS LAUNCHED WITHOUT A TYPED "yes"
 # A full two-language run is hours of wall-clock and around $150 on gpt-4o. So the script first
 # builds the image, runs a read-only pre-flight inside it (what is left to run, what the target
-# API answers, whether the eval copy drifted, which scheduled tasks are still armed), prints it all,
+# API answers, whether the eval clone is behind origin, which scheduled tasks are still armed), prints it all,
 # and waits for the word "yes". Anything else aborts. With no terminal attached (cron, nohup)
 # it aborts too, unless EVAL_CONFIRM=yes is set.
 # EXCEPTION, a rescore-only run (Philippe, 2026-09-25): when the pre-flight counts zero API calls
@@ -124,9 +124,9 @@ SUBSET_BASELINE_COMPLEX_MODEL=${SUBSET_BASELINE_COMPLEX_MODEL:-gpt-4o}
 
 EVAL_HOME=${EVAL_HOME:-$HOME/docker/text2sql-eval}
 SHARED_DIR=${SHARED_DIR:-$HOME/docker/shared_data/text2sql-eval}
-# The git clone the eval copy is compared against. ~/docker/text2sql-eval is NOT a checkout
-# and its eval/*.py drift from the repo silently (AGENTS.md, "Clients of this API").
-REPO_EVAL_DIR=${REPO_EVAL_DIR:-$HOME/docker/fastapi-text2sql-blue/eval}
+# EVAL_HOME is a git clone of github.com/vaugouin/text2sql-eval since the evaluator left
+# fastapi-text2sql/eval (2026-10-12). The pre-flight warns when it is behind origin/main or
+# carries local edits; there is no flat copy left to drift.
 # Scheduled workloads to switch OFF for the duration of a run. Stopping a container is not
 # enough: cron relaunches it at its next tick, in the middle of a multi-hour campaign. The house
 # convention is that each repository under ~/docker carries an off.sh that renames the script
@@ -200,8 +200,8 @@ if [ $((PATCH % 2)) -eq 0 ]; then COLOUR=Blue; PARITY=even; else COLOUR=Green; P
 
 # ---------------------------------------------------------------------------------------------
 # Pre-flight, read-only, run inside the image so it sees the same .env, DB and API as the run.
-# The Python is inline on purpose: a separate file would have to be copied into EVAL_HOME, and
-# that copy is exactly what drifts.
+# The Python is inline on purpose: the pre-flight stays readable in one file, next to the run it
+# guards.
 # ---------------------------------------------------------------------------------------------
 read -r -d '' PREFLIGHT_PY <<'PYEOF'
 import os
@@ -400,23 +400,22 @@ if [ "$STORE_TO_CACHE" = "--store-to-cache" ]; then
     echo "  - results will be written to the PRODUCTION cache (T_WC_T2S_CACHE, version $API_VERSION)."
 fi
 
-# Drift between this non-git copy and the git clone.
-if [ -d "$REPO_EVAL_DIR" ]; then
-    DRIFT=""
-    for f in "$REPO_EVAL_DIR"/*.py; do
-        b=$(basename "$f")
-        if [ -f "$EVAL_HOME/$b" ] && ! cmp -s "$f" "$EVAL_HOME/$b"; then
-            DRIFT="$DRIFT $b"
-        fi
-    done
-    if [ -n "$DRIFT" ]; then
-        warn "$EVAL_HOME differs from $REPO_EVAL_DIR on:$DRIFT"
-        more "the run would use the OLD copy: git pull the clone, then copy eval/*.py into $EVAL_HOME."
+# Is the evaluator clone up to date with GitHub?
+if git -C "$EVAL_HOME" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    git -C "$EVAL_HOME" fetch -q origin 2>/dev/null || warn "git fetch failed in $EVAL_HOME, origin not checked."
+    BEHIND=$(git -C "$EVAL_HOME" rev-list --count HEAD..origin/main 2>/dev/null || echo "?")
+    DIRTY=$(git -C "$EVAL_HOME" status --porcelain --untracked-files=no 2>/dev/null)
+    if [ "$BEHIND" != "0" ]; then
+        warn "$EVAL_HOME is $BEHIND commit(s) behind origin/main."
+        more "the run would use the OLD code: git pull --ff-only in $EVAL_HOME first."
+    elif [ -n "$DIRTY" ]; then
+        warn "$EVAL_HOME carries uncommitted edits to tracked files:"
+        more "$(echo "$DIRTY" | tr '\n' ' ')"
     else
-        echo "  - eval/*.py identical to $REPO_EVAL_DIR ($(git -C "$REPO_EVAL_DIR" log -1 --format='%h %cs' 2>/dev/null))."
+        echo "  - evaluator clone up to date ($(git -C "$EVAL_HOME" log -1 --format='%h %cs'))."
     fi
 else
-    warn "no git clone at $REPO_EVAL_DIR to compare the eval copy against (set REPO_EVAL_DIR)."
+    warn "$EVAL_HOME is not a git clone of text2sql-eval (git clone https://github.com/vaugouin/text2sql-eval.git)."
 fi
 
 # Scheduled workloads, see DOCKER_ROOT above. A task is ARMED when a source of an `mv` line of

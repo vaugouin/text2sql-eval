@@ -5,7 +5,7 @@
 -- Written 2026-10-04, for the typographic rescue of the resolver gate (commit 1cf0a46),
 -- deployed in place on Green without a version bump, like -308.
 --
--- Why these four. eval/eval-309.sh, stage `configured` against `none` (2026-10-04, run by
+-- Why these four. fastapi-text2sql/checks/eval-309.sh, stage `configured` against `none` (2026-10-04, run by
 -- Philippe on the VPS), re-resolved live every value a gate refused in the 17 exported runs and
 -- found four whose outcome the rescue changes, all on Movie_title:
 --   475  "Bell' Antonio"                            -> Il bell'Antonio (76157), seen in EN
@@ -14,7 +14,7 @@
 --   1048 "The.Human.Condition.II.Road.to.Eternity"  -> The Human Condition II: Road to Eternity (34528), seen in EN
 -- (477, the duplicate of 475, is soft-deleted from the bank.) Both languages are replayed for
 -- all four: the language where the refusal was seen is the fix, the other one the control. The
--- offline replay of the morning (eval/replay-rescue-309.py) found only 475 because it measured the
+-- offline replay of the morning (fastapi-text2sql/checks/replay-rescue-309.py) found only 475 because it measured the
 -- apostrophes alone on the five candidates the traces print.
 --
 -- The evaluator skips every question that already has a row for the same (API version, five

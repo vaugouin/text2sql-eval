@@ -12,7 +12,7 @@ You must analyze the evaluations executions in the following run of API 1.1.15:
 - eval\data\evaluation_execution\001.001.015_fr_gpt-4o_gpt-4o_gpt-4o
 You may also use (read-only) the source code of the text-to-SQL API (version 1.1.15) which is located at the root of this project 
 You must produce a global analysis of the evaluation executions.
-You will use the eval/README.md file as a documentation of the evaluator located in the eval folder 
+You will use the README.md file as a documentation of the evaluator located in the eval folder 
 For this analysis, you will probably create some python scripts or other files. Keep all artifacts created by the analysis!
 Mostly, this analysis should focus on evaluation executions that failed so you can give clues on enhancements of the fastapi-text2sql API 
 About failure, here are possible locations in the workflow and/or failure categories:  
@@ -47,4 +47,4 @@ Analysis could be in markdown file
 You can also create graphics if you think that could well render information using the PNG output format 
 You can also create SQL files for new content (like new evaluations with INSERT INTO commands) 
 If you are Claude Code, organize these files in the eval/clause sub-folder
-If you are OpenAI Codex, organize these files in the eval/codex sub-folder
+If you are OpenAI Codex, organize these files in the codex sub-folder

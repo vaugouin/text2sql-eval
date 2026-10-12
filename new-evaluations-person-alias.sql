@@ -28,7 +28,7 @@
 --
 -- THE THREE ORDERED QUESTIONS, ASKED BEFORE WRITING THIS FILE
 --   * Does a question in the bank cover the case? No. `grep -ril "morrison\|micklewhite\|
---     swartzeneger" eval/data/evaluation/` returns nothing on the export of 2026-08-26.
+--     swartzeneger" data/evaluation/` returns nothing on the export of 2026-08-26.
 --   * Does it carry an assertion? Moot, there is no question.
 --   * Would an existing assertion have caught THIS defect? Category 30 (persons, person-name
 --     queries) holds name questions, but every one of them spells the name the way the
@@ -77,7 +77,7 @@
 --
 -- HOW TO RUN
 --   Run section 0 first, then the three INSERTs, then section 0 again.
---   mysql <db> < eval/new-evaluations-person-alias.sql
+--   mysql <db> < new-evaluations-person-alias.sql
 --   Then phase 31 to refresh the JSON export, and phases 11 + 20 to run and score them.
 
 

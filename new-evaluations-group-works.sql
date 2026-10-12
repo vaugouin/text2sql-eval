@@ -36,8 +36,8 @@
 --
 -- RUN on the VPS, from the clone of the live colour, once the prompts are deployed AND
 -- process 74 has built the two tables:
---   cd ~/docker/fastapi-text2sql-<colour> && git pull
---   ~/docker/tools/runsqlvaugouindb.sh ~/docker/fastapi-text2sql-<colour>/eval/new-evaluations-group-works.sql
+--   cd ~/docker/text2sql-eval && git pull
+--   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/new-evaluations-group-works.sql
 -- Every INSERT is guarded on the question text: a second run inserts nothing.
 -- ============================================================================
 
