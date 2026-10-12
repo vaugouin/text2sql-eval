@@ -17,7 +17,7 @@
 # that moves only one of them is measured in full and lands in its own folder, suffixed
 # _re-<model> and/or _asv-<model>. Rows written before the columns existed carry NULL and count
 # as the default gpt-4o, so the baseline folders keep their three-model names. The migration
-# migrate-evaluation-execution-late-models.sql must have run before this evaluator.
+# archive/migrate-evaluation-execution-late-models.sql must have run before this evaluator.
 #
 # BLUE OR GREEN IS DECIDED BY THE VERSION
 # An even patch targets BLUE, an odd one GREEN, in main.py for the MCP and in

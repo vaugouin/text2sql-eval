@@ -99,7 +99,7 @@ API version and language.
 
 **All five knobs reach the run signature (FASTAPI-TEXT2SQL-234, 2026-09-25).**
 `T_WC_T2S_EVALUATION_EXECUTION` has `RESULT_ENTITY_MODEL` and `ANSWER_SINGLE_VALUE_MODEL`
-since `migrate-evaluation-execution-late-models.sql`. The skip rule, the scoring (phase 20)
+since `archive/migrate-evaluation-execution-late-models.sql`. The skip rule, the scoring (phase 20)
 and the export (phase 32) are keyed on all five, and a run that moves one of those two lands
 in its own folder, suffixed from the ROW: `<version>_<lang>_<ee>_<t2s>_<complex>_re-<model>`
 and/or `_asv-<model>`. Rows written before the columns existed hold NULL, which is matched as
