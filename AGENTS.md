@@ -8,6 +8,8 @@ This file is for agent-facing operating context only. The evaluator itself (phas
 
 **This repository's role:** Evaluation stage. A client of the `fastapi-text2sql` API, in the same way as `voice-agent` or `tmdb-front`: it sends the questions of the evaluation bank (`T_WC_T2S_EVALUATION`) to `/search/text2sql` over HTTP, stores each answer in `T_WC_T2S_EVALUATION_EXECUTION`, scores it against the assertions and exports the results as JSON. It never imports the API's code.
 
+**The benchmark's name is the Cinéphile Bench** (2026-10-14): the bank run in English and French, measuring the API's cinema and TV knowledge. Its headline figure, the Cinéphile score, pools both languages and is always shown with the EN and FR pass rates; the definition is at the top of @README.md. Use this name in docs, posts and reports, with the accent.
+
 ## History
 
 Until 2026-10-12 this code lived in `fastapi-text2sql/eval/`. It was split out with its git history (`git filter-repo --subdirectory-filter eval`), so `git log` and `git blame` go back to 2026-02-08. Commit messages and closed tickets written before that date say `eval/...`: read them as paths of this repository.
