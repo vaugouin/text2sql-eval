@@ -8,7 +8,7 @@ This file is for agent-facing operating context only. The evaluator itself (phas
 
 **This repository's role:** Evaluation stage. A client of the `fastapi-text2sql` API, in the same way as `voice-agent` or `tmdb-front`: it sends the questions of the evaluation bank (`T_WC_T2S_EVALUATION`) to `/search/text2sql` over HTTP, stores each answer in `T_WC_T2S_EVALUATION_EXECUTION`, scores it against the assertions and exports the results as JSON. It never imports the API's code.
 
-**The benchmark's name is the Cinéphile Bench** (2026-10-14): the bank run in English and French, measuring the API's cinema and TV knowledge. Its headline figure, the Cinéphile score, pools both languages and is always shown with the EN and FR pass rates; the definition is at the top of @README.md. Use this name in docs, posts and reports, with the accent.
+**The benchmark's name is the Cinéphile Bench** (2026-10-14): the bank run in English and French, measuring the API's cinema and TV knowledge. Its headline figure, the Cinéphile score, pools both languages and is always shown with the EN and FR pass rates; the definition is at the top of @README.md. Use this name in docs, posts and reports, with the accent. A score always names its version: **v1** is the 902 questions frozen on 2026-10-14, listed with content fingerprints in `cinephile-bench-v1-20261014.txt` (from `cinephile-bench-v1.sql`, which stays at the root as a living reference, not an archive candidate).
 
 ## History
 

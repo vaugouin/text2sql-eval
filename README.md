@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.10
+**Version:** 2.11
 **Last Updated:** 2026-10-14
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -10,6 +10,8 @@ End-to-end evaluation harness for the FastAPI Text2SQL service: calls the runnin
 After scoring, the evaluator also exports the three evaluation tables (`T_WC_T2S_EVALUATION_CATEGORY`, `T_WC_T2S_EVALUATION`, `T_WC_T2S_EVALUATION_EXECUTION`) as one-JSON-per-row files into `/shared/<subfolder>/` so a downstream LLM can analyse the question bank, taxonomy, and execution results without DB access.
 
 **The benchmark is called the Cinéphile Bench** (named 2026-10-14 by Philippe). It is the whole question bank run in both languages, English and French, and it measures the cinema and TV knowledge of the API, the way MMLU or SWE-bench name what they measure. Its headline figure, the **Cinéphile score**, pools every scored execution of a campaign in both languages: passing executions (`ASSERTIONS_TOTAL_SCORE = 1`) divided by scored executions (`ASSERTIONS_TOTAL_SCORE` not `NULL`), English and French together, for one `(api_version, models)` tuple. Always print the two per-language pass rates next to it, because the gap between them is a finding in itself: `Cinéphile Bench, API <version>: <pooled> % (EN <en> % · FR <fr> %)`. The name was chosen because *cinephile* is the same word in English and French; *Cinebench* (Maxon's CPU benchmark) and *FilmBench* (a 2026 video-generation benchmark) were already taken.
+
+**Versions.** The bank keeps growing, so a Cinéphile score names the frozen question set it was computed on. **Cinéphile Bench v1** was frozen on 2026-10-14: the 902 questions phase 11 would run that day (`IS_EVAL = 1`, `DELETED = 0`, at least one assertion), each in English and French, so 1,804 cases. Its manifest is [cinephile-bench-v1-20261014.txt](cinephile-bench-v1-20261014.txt), produced by [cinephile-bench-v1.sql](cinephile-bench-v1.sql): one line per question with its category and a `FINGERPRINT` (MD5 of both question texts, the assertions and the resolution mode; for the 83 living assertions, of the refresh SQL rather than the daily-rewritten result). A v1 score counts only executions of those IDs; rerunning the query and comparing fingerprints shows which v1 questions changed since the freeze. Questions added after 2026-10-14 still run in every campaign, they simply wait for v2.
 
 ---
 
@@ -1038,6 +1040,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.11 | 2026-10-14 | **Cinéphile Bench v1 frozen:** 902 questions × 2 languages, manifest `cinephile-bench-v1-20261014.txt` (IDs, categories, content fingerprints) from `cinephile-bench-v1.sql`. A Cinéphile score now names its version. |
 | 2.10 | 2026-10-14 | **The benchmark gets a name: the Cinéphile Bench.** The bank run in English and French measures the API's cinema and TV knowledge; its headline figure, the Cinéphile score, pools the scored executions of both languages, always shown with the EN and FR pass rates. Definition at the top of this README. |
 | 2.9 | 2026-10-12 | **The evaluator is its own repository.** It left `fastapi-text2sql/eval/` for [github.com/vaugouin/text2sql-eval](https://github.com/vaugouin/text2sql-eval), with its git history, since it is an API client like `voice-agent` or `tmdb-front`. The VPS folder `~/docker/text2sql-eval` becomes a git clone instead of a hand copy, and the pre-flight of `text2sql-eval.sh` now checks that clone against `origin/main`. The scripts that import the API's own modules (benches, `verif-*`, `check-*`, `eval-309`, ChromaDB checks, ex-§14) stayed in the API repo, under [`fastapi-text2sql/checks/`](https://github.com/vaugouin/fastapi-text2sql/tree/main/checks). |
 | 2.8 | 2026-09-09 | **The assertion DSL is not SQL, and §4.3 now says so where it will be read.** Two assertions written for FASTAPI-TEXT2SQL-238 used `AWARD_NAME NOT LIKE '%Academy Awards'`. `LIKE` is not in the language: the expression matches neither the `IN` branch nor the comparison pattern, falls through to `_evaluate_comparison_assertion` and returns *Invalid comparison syntax*, so both would have scored 0 with the fixed prompt exactly as with the broken one, in red, indistinguishable from a real failure. Caught before they reached the bank; replaced with the counter-example form `NOT IN ('exact value')` of §4.5 and verified against the evaluator on hand-built DataFrames. §4.3 gains the list of SQL-isms that do not exist (`LIKE`, `BETWEEN`, `IS NULL`, bare `NOT`, `%`) plus `<>`, which is the dangerous one because the comparison pattern reads its `<` and takes `> 'x'` as the expected value, mis-evaluating in silence rather than reporting. A sweep of all 866 result assertions, through the evaluator and by text search, found zero occurrences of any of the six. |
