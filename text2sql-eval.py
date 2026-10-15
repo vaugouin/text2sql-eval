@@ -424,8 +424,11 @@ _parser.add_argument("--complex-model", default="gpt-4o",
 # DEFAULT_TASK_MODEL stays gpt-4o, it only describes the NULL of the rows written before -234.
 _parser.add_argument("--result-entity-model", default="gpt-6-luna",
                      help="LLM model for the answer-entity classifier (default: gpt-6-luna, the API default)")
+# FASTAPI-TEXT2SQL-331 (2026-10-15): the API no longer has this task. The flag survives as a
+# LABEL of the execution namespace only (ANSWER_SINGLE_VALUE_MODEL, the `_asv-` suffix), so the
+# rows written before stay addressable; it is not sent to the API any more. Leave it at gpt-4o.
 _parser.add_argument("--answer-single-value-model", default="gpt-4o",
-                     help="LLM model for the direct scalar answer (default: gpt-4o)")
+                     help="Namespace label only since FASTAPI-TEXT2SQL-331, not sent to the API (default: gpt-4o)")
 _parser.add_argument("--api-version", default="1.1.14",
                      help="API version to evaluate against (default: 1.1.14)")
 _parser.add_argument("--language", default="*",
@@ -904,7 +907,6 @@ try:
                                     "llm_model_text2sql": strtext2sqlmodeleval,
                                     "llm_model_complex": strcomplexmodeleval,
                                     "llm_model_result_entity": strresultentitymodeleval,
-                                    "llm_model_answer_single_value": stranswersinglevaluemodeleval,
                                     "complex_question_processing": blncomplexquestionprocessing,
                                     "complex_question_already_resolved": False,
                                     "ui_language": strevallang,
@@ -1005,10 +1007,6 @@ try:
                                 response_llm_model_result_entity = response_json.get('llm_model_result_entity')
                                 if response_llm_model_result_entity and response_llm_model_result_entity != strresultentitymodeleval:
                                     print("API llm_model_result_entity mismatch; queried: ", response_llm_model_result_entity, " expected: ", strresultentitymodeleval)
-                                    intconfigerror = True
-                                response_llm_model_answer_single_value = response_json.get('llm_model_answer_single_value')
-                                if response_llm_model_answer_single_value and response_llm_model_answer_single_value != stranswersinglevaluemodeleval:
-                                    print("API llm_model_answer_single_value mismatch; queried: ", response_llm_model_answer_single_value, " expected: ", stranswersinglevaluemodeleval)
                                     intconfigerror = True
                                 if intconfigerror:
                                     # We stop now so we do not consume tokens and money because there is a configuration error
@@ -1132,7 +1130,13 @@ try:
                             # === Entity extraction evaluation (ASSERTIONS_ENTITY_EXTRACTION) ===
                             assertions_entity_extraction_score = None
                             assertions_entity_extraction_details_lines = []
-                            entity_extraction_value = (response_json or {}).get("entity_extraction")
+                            # GPT-6-007 (2026-10-15): on an escalated row `entity_extraction` is the
+                            # extraction of the REWRITTEN question, which the assertion was never
+                            # written against (475 and 477 failed on it with the right answer).
+                            # Score the first pass when it exists, like QUERY_MODE below.
+                            entity_extraction_value = (response_json or {}).get("first_pass_entity_extraction")
+                            if not (isinstance(entity_extraction_value, dict) and len(entity_extraction_value) > 0):
+                                entity_extraction_value = (response_json or {}).get("entity_extraction")
 
                             if strassertions_entity_extraction is not None and str(strassertions_entity_extraction).strip() != "":
                                 strassertions_entity_extraction = html.unescape(str(strassertions_entity_extraction).strip())

@@ -98,6 +98,7 @@ COMPLEX_MODEL=${COMPLEX_MODEL:-gpt-4o}
 # LLM-TASKS-003 (2026-10-03): follows the API default (gpt-6-luna, GPT-6-003). gpt-4o baseline:
 # RESULT_ENTITY_MODEL=gpt-4o.
 RESULT_ENTITY_MODEL=${RESULT_ENTITY_MODEL:-gpt-6-luna}
+# FASTAPI-TEXT2SQL-331 (2026-10-15): the task is gone from the API; this is a namespace label only.
 ANSWER_SINGLE_VALUE_MODEL=${ANSWER_SINGLE_VALUE_MODEL:-gpt-4o}
 STORE_TO_CACHE=${STORE_TO_CACHE:---store-to-cache}
 # FASTAPI-TEXT2SQL-256. True, because that is what the run has always done: the evaluator
@@ -327,7 +328,7 @@ echo "  1 entity_extraction    $ENTITY_EXTRACTION_MODEL"
 echo "  2 text2sql             $TEXT2SQL_MODEL"
 echo "  3 result_entity        $RESULT_ENTITY_MODEL"
 echo "  4 complex_question     $COMPLEX_MODEL"
-echo "  5 answer_single_value  $ANSWER_SINGLE_VALUE_MODEL"
+echo "  5 answer_single_value  removed from the API (FASTAPI-TEXT2SQL-331); label $ANSWER_SINGLE_VALUE_MODEL"
 echo "  + gpt-6-sol, called by the evaluator itself to translate untranslated bank rows (phases 4-6)"
 echo
 echo "Options:"

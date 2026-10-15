@@ -122,7 +122,7 @@ The `/shared` mount is now **read-write**. Phases 30/31/32 write JSON exports th
 | `--text2sql-model` | `gpt-6-sol` (`gpt-4o` until LLM-TASKS-010, 2026-10-03; follows the API default) | LLM model for text-to-SQL generation |
 | `--complex-model` | `gpt-4o` | LLM model for complex-question processing / stronger-model retry |
 | `--result-entity-model` | `gpt-6-luna` (`gpt-4o` until 2026-10-03, LLM-TASKS-003; follows the API default) | LLM model for the answer-entity classifier (matches API `llm_model_result_entity`). Third LLM task of the pipeline, fires on 99.9 % of requests |
-| `--answer-single-value-model` | `gpt-4o` | LLM model for the direct scalar answer when SQL returns a single cell worth 0 (matches API `llm_model_answer_single_value`). Fires on well under 1 % of requests |
+| `--answer-single-value-model` | `gpt-4o` | **Namespace label only since 2026-10-15** (FASTAPI-TEXT2SQL-331 removed the direct scalar answer from the API). Not sent to the API; it still fills `ANSWER_SINGLE_VALUE_MODEL` and the `_asv-` folder suffix so older rows stay addressable. Leave it at `gpt-4o` |
 | `--api-version` | `1.1.14` | API version expected in the response; execution aborts on mismatch |
 | `--language` | `*` | Language filter: `en`, `fr`, or `*` for both |
 | `--store-to-cache` | `true` | Store evaluation API results in the FastAPI cache |
