@@ -23,7 +23,7 @@
 --
 -- THE NEW REFRESH SQL reads the T2S tables the API itself queries, keeps each
 -- sample's sort and LIMIT 8, and names the place by its QID (Q90 Paris, Q1490
--- Tokyo, Q84 London) rather than its label, so that no homonym slips in. The QID
+-- and Q7473516 Tokyo, Q84 London) rather than its label, so that no homonym slips in. The QID
 -- is the business key of T_WC_T2S_LOCATION; ID_LOCATION would work too but is
 -- less readable in a stored query. Section 1 checks the three QIDs against the data.
 --
@@ -41,7 +41,14 @@
 -- 2026-10-12: refresh SQL guarded on still naming T_WC_WIKIDATA_ITEM_PROPERTY, SQL
 -- assertions on being empty. Re-running the file is a no-op.
 --
--- WRITES. Six UPDATE statements on T_WC_T2S_EVALUATION, three rows, nothing else.
+-- WRITES. Seven UPDATE statements on T_WC_T2S_EVALUATION, three rows, nothing else.
+--
+-- APPLIED 2026-10-17 18:14 on vaugouindb, result in
+-- update-evaluations-locations-v1-samples-20261017.txt: the six UPDATE of the first
+-- version applied. Section 1 then showed a second living "Tokyo", Q7473516 (the
+-- special wards, ID_LOCATION 731, 7 filming links) beside Q1490 (ID_LOCATION 202,
+-- 10 filming links). Section 2b, added the same evening, takes both into 2429,
+-- guarded on the Q1490-only value. Re-run the whole file with -f: only 2b applies.
 -- ============================================================================
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -129,6 +136,18 @@ SET ASSERTIONS_SQL_QUERY = '(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]narrativ
 WHERE ID_T2S_EVALUATION = 2435
   AND (ASSERTIONS_SQL_QUERY IS NULL OR ASSERTIONS_SQL_QUERY = '');
 
+-- 2b · 2429, correction of 2026-10-17: Tokyo is cited under two QIDs, the
+--   metropolis Q1490 and the special wards Q7473516, and a film shot in Shinjuku
+--   or Shibuya sits under the second. Guarded on the Q1490-only value written above.
+UPDATE T_WC_T2S_EVALUATION
+SET ASSERTION_REFRESH_SQL = REPLACE(ASSERTION_REFRESH_SQL,
+        'T_WC_T2S_LOCATION.ID_WIKIDATA = &#039;Q1490&#039;',
+        'T_WC_T2S_LOCATION.ID_WIKIDATA IN (&#039;Q1490&#039;, &#039;Q7473516&#039;)'),
+    LONG_DESC = CONCAT(COALESCE(LONG_DESC, ''), ' 2026-10-17, correction: Tokyo is cited under two QIDs, Q1490 (metropolis) and Q7473516 (special wards); the refresh SQL takes both.'),
+    TIM_UPDATED = NOW()
+WHERE ID_T2S_EVALUATION = 2429
+  AND ASSERTION_REFRESH_SQL LIKE '%ID_WIKIDATA = &#039;Q1490&#039;%';
+
 -- ---------------------------------------------------------------------------
 -- 3. AFTER. Every ASSERTION_REFRESH_SQL on T_WC_T2S_*_LOCATION, every
 --    ASSERTIONS_SQL_QUERY on LOCATION_ROLE. If one still names
@@ -160,7 +179,7 @@ SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE, T_WC_T2S_MOVIE.MOVIE_TITLE, T_WC_T2S_MO
 FROM T_WC_T2S_MOVIE
 JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE
 JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION
-WHERE T_WC_T2S_LOCATION.ID_WIKIDATA = 'Q1490' AND T_WC_T2S_LOCATION.DELETED = 0
+WHERE T_WC_T2S_LOCATION.ID_WIKIDATA IN ('Q1490', 'Q7473516') AND T_WC_T2S_LOCATION.DELETED = 0
   AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = 'filming'
 ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8;
 

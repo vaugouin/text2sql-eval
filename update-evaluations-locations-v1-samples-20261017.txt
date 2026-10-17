@@ -1,0 +1,91 @@
+-- update-evaluations-locations-v1-samples.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-17 18:14:58
+--
++-----------+
+| SECTION   |
++-----------+
+| 0. Before |
++-----------+
++-------------------+----------------------------------------+---------+-----------+-----------------------------------------------------------------------+----------------------+------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | QUESTION                               | IS_EVAL | IS_SAMPLE | ASSERTIONS_QUERY_RESULT                                               | ASSERTIONS_SQL_QUERY | ASSERTION_REFRESH_LAST | ASSERTION_REFRESH_SQL                                                                                                                                                                                                                                                                                                                                                                                                                   |
++-------------------+----------------------------------------+---------+-----------+-----------------------------------------------------------------------+----------------------+------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|              2428 | List popular movies happening in Paris |       0 |         1 | ID_MOVIE IN (27205, 350, 603692, 792307, 331482, 77931, 791373, 2062) |                      | 2026-10-17 02:48:32    | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_WIKIDATA_ITEM_PROPERTY ON T_WC_T2S_MOVIE.ID_WIKIDATA = T_WC_WIKIDATA_ITEM_PROPERTY.ID_WIKIDATA JOIN T_WC_T2S_ITEM ON T_WC_WIKIDATA_ITEM_PROPERTY.ID_ITEM = T_WC_T2S_ITEM.ID_WIKIDATA WHERE T_WC_WIKIDATA_ITEM_PROPERTY.ID_PROPERTY = &#039;P840&#039; AND T_WC_T2S_ITEM.ITEM_LABEL = &#039;Paris&#039; ORDER BY T_WC_T2S_MOVIE.POPULARITY DESC LIMIT 8            |
+|              2429 | List movies shot in Tokyo              |       0 |         1 | ID_MOVIE IN (27205, 153, 28422, 14525, 44737, 42041, 1053460, 899139) |                      | 2026-10-17 02:48:33    | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_WIKIDATA_ITEM_PROPERTY ON T_WC_T2S_MOVIE.ID_WIKIDATA = T_WC_WIKIDATA_ITEM_PROPERTY.ID_WIKIDATA JOIN T_WC_T2S_ITEM ON T_WC_WIKIDATA_ITEM_PROPERTY.ID_ITEM = T_WC_T2S_ITEM.ID_WIKIDATA WHERE T_WC_WIKIDATA_ITEM_PROPERTY.ID_PROPERTY = &#039;P915&#039; AND T_WC_T2S_ITEM.ITEM_LABEL = &#039;Tokyo&#039; ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8  |
+|              2435 | List TV series happening in London     |       0 |         1 | ID_SERIE IN (19885, 60574, 97546, 67070, 72, 65494, 4327, 2490)       |                      | 2026-10-17 02:48:34    | SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE JOIN T_WC_WIKIDATA_ITEM_PROPERTY ON T_WC_T2S_SERIE.ID_WIKIDATA = T_WC_WIKIDATA_ITEM_PROPERTY.ID_WIKIDATA JOIN T_WC_T2S_ITEM ON T_WC_WIKIDATA_ITEM_PROPERTY.ID_ITEM = T_WC_T2S_ITEM.ID_WIKIDATA WHERE T_WC_WIKIDATA_ITEM_PROPERTY.ID_PROPERTY = &#039;P840&#039; AND T_WC_T2S_ITEM.ITEM_LABEL = &#039;London&#039; ORDER BY T_WC_T2S_SERIE.IMDB_RATING_WEIGHTED DESC LIMIT 8 |
++-------------------+----------------------------------------+---------+-----------+-----------------------------------------------------------------------+----------------------+------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++--------------------------------------+
+| SECTION                              |
++--------------------------------------+
+| 1. Places named Paris, Tokyo, London |
++--------------------------------------+
++-------------+-------------+---------------+---------------+-----------------+---------------+-----------------+---------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME | LOCATION_TYPE | MOVIE_NARRATIVE | MOVIE_FILMING | SERIE_NARRATIVE | SERIE_FILMING |
++-------------+-------------+---------------+---------------+-----------------+---------------+-----------------+---------------+
+|          21 | Q84         | London        | city          |            2293 |           447 |             382 |            54 |
+|          38 | Q90         | Paris         | city          |            1980 |           723 |              42 |            22 |
+|         202 | Q1490       | Tokyo         | city          |             436 |            10 |              29 |             3 |
+|         731 | Q7473516    | Tokyo         | city          |               4 |             7 |               0 |             0 |
++-------------+-------------+---------------+---------------+-----------------+---------------+-----------------+---------------+
++----------+
+| SECTION  |
++----------+
+| 3. After |
++----------+
++-------------------+------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ASSERTIONS_SQL_QUERY                                             | ASSERTION_REFRESH_SQL                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
++-------------------+------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|              2428 | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION WHERE T_WC_T2S_LOCATION.ID_WIKIDATA = &#039;Q90&#039; AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;narrative&#039; ORDER BY T_WC_T2S_MOVIE.POPULARITY DESC LIMIT 8           |
+|              2429 | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]   | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION WHERE T_WC_T2S_LOCATION.ID_WIKIDATA = &#039;Q1490&#039; AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;filming&#039; ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8 |
+|              2435 | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE JOIN T_WC_T2S_SERIE_LOCATION ON T_WC_T2S_SERIE_LOCATION.ID_SERIE = T_WC_T2S_SERIE.ID_SERIE JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_SERIE_LOCATION.ID_LOCATION WHERE T_WC_T2S_LOCATION.ID_WIKIDATA = &#039;Q84&#039; AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_SERIE_LOCATION.LOCATION_ROLE = &#039;narrative&#039; ORDER BY T_WC_T2S_SERIE.IMDB_RATING_WEIGHTED DESC LIMIT 8 |
++-------------------+------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++-----------------------------------+
+| SECTION                           |
++-----------------------------------+
+| 3a. Preview 2428, Paris narrative |
++-----------------------------------+
++----------+------------------------------+------------+
+| ID_MOVIE | MOVIE_TITLE                  | POPULARITY |
++----------+------------------------------+------------+
+|    27205 | Inception                    |    61.3829 |
+|      350 | The Devil Wears Prada        |    47.0575 |
+|   603692 | John Wick: Chapter 4         |    46.4829 |
+|   792307 | Poor Things                  |    43.9488 |
+|   331482 | Little Women                 |     38.828 |
+|    77931 | The Smurfs 2                 |    37.8568 |
+|   791373 | Zack Snyder's Justice League |     37.271 |
+|     2062 | Ratatouille                  |    35.0009 |
++----------+------------------------------+------------+
++---------------------------------+
+| SECTION                         |
++---------------------------------+
+| 3b. Preview 2429, Tokyo filming |
++---------------------------------+
++----------+-----------------------------+----------------------+
+| ID_MOVIE | MOVIE_TITLE                 | IMDB_RATING_WEIGHTED |
++----------+-----------------------------+----------------------+
+|    27205 | Inception                   |    8.786835273980524 |
+|      153 | Lost in Translation         |    7.672705690039363 |
+|    44737 | Babies                      |    6.980080204014454 |
+|  1053460 | Minori                      |   6.9736872134929495 |
+|   899139 | Salaryman                   |    6.973191528445093 |
+|   595908 | Japan's No. 1 Playboy       |    6.972621253421244 |
+|   975120 | Padre no hay más que uno 3  |    6.866510819451688 |
+|   286875 | Paper Planes                |    6.821598548419588 |
++----------+-----------------------------+----------------------+
++------------------------------------+
+| SECTION                            |
++------------------------------------+
+| 3c. Preview 2435, London narrative |
++------------------------------------+
++----------+----------------+----------------------+
+| ID_SERIE | SERIE_TITLE    | IMDB_RATING_WEIGHTED |
++----------+----------------+----------------------+
+|    19885 | Sherlock       |    8.962303420672937 |
+|    60574 | Peaky Blinders |    8.655829163452431 |
+|    97546 | Ted Lasso      |    8.627114602899374 |
+|    67070 | Fleabag        |    8.569078065779943 |
+|    65494 | The Crown      |    8.489072390603436 |
+|     4327 | Mr. Bean       |    8.406189761268253 |
+|     2490 | The IT Crowd   |    8.339711019169544 |
+|      815 | Peep Show      |    8.323169309515698 |
++----------+----------------+----------------------+
