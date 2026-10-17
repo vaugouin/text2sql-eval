@@ -414,8 +414,8 @@ _parser.add_argument("--entity-extraction-model", default="gpt-6-sol",
                      help="LLM model for entity extraction (default: gpt-6-sol, the API default)")
 _parser.add_argument("--text2sql-model", default="gpt-6-sol",
                      help="LLM model for text-to-SQL (default: gpt-6-sol, the API default)")
-_parser.add_argument("--complex-model", default="gpt-4o",
-                     help="LLM model for complex question processing (default: gpt-4o)")
+_parser.add_argument("--complex-model", default="gpt-6.1-sol",
+                     help="LLM model for complex question processing (default: gpt-6.1-sol, the API default since GPT-6-007)")
 # FASTAPI-TEXT2SQL-232 gave the answer-entity classifier and the single-value answerer their
 # own selectors. They are the third and fifth LLM tasks of the pipeline, and until then the
 # evaluator could not move either one, so a per-task model campaign was not expressible here.

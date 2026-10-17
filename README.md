@@ -120,7 +120,7 @@ The `/shared` mount is now **read-write**. Phases 30/31/32 write JSON exports th
 |---|---|---|
 | `--entity-extraction-model` | `gpt-6-sol` (`gpt-4o` until LLM-TASKS-010, 2026-10-03; follows the API default) | LLM model for entity extraction (matches API `llm_model_entity_extraction`) |
 | `--text2sql-model` | `gpt-6-sol` (`gpt-4o` until LLM-TASKS-010, 2026-10-03; follows the API default) | LLM model for text-to-SQL generation |
-| `--complex-model` | `gpt-4o` | LLM model for complex-question processing / stronger-model retry |
+| `--complex-model` | `gpt-6.1-sol` | LLM model for complex-question processing / stronger-model retry. Follows the API default since GPT-6-007 (2026-10-17); `gpt-4o` before |
 | `--result-entity-model` | `gpt-6-luna` (`gpt-4o` until 2026-10-03, LLM-TASKS-003; follows the API default) | LLM model for the answer-entity classifier (matches API `llm_model_result_entity`). Third LLM task of the pipeline, fires on 99.9 % of requests |
 | `--answer-single-value-model` | `gpt-4o` | **Namespace label only since 2026-10-15** (FASTAPI-TEXT2SQL-331 removed the direct scalar answer from the API). Not sent to the API; it still fills `ANSWER_SINGLE_VALUE_MODEL` and the `_asv-` folder suffix so older rows stay addressable. Leave it at `gpt-4o` |
 | `--api-version` | `1.1.14` | API version expected in the response; execution aborts on mismatch |

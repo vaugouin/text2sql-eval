@@ -22,6 +22,7 @@ The scripts that import the API's own modules (`entity`, `main`, `text2sql`, `ra
 - Its `.env` is not tracked (`.gitignore`) and is the only file there that git does not bring. `.env.example` lists the keys.
 - `text2sql-eval.sh` builds the image `text2sql-eval-python-app`, runs a read-only pre-flight (which also warns when the clone is behind `origin/main` or carries local edits) and waits for a typed `yes` before spending anything. `harness-eval.sh` runs the harness with the same image.
 - Results go to `~/docker/shared_data/text2sql-eval` (mounted as `/shared`).
+- After a campaign, bring them to the PC with `~/Code/voice-agent/doc/logs-download/sync_vps_docker.py` (`cd C:\Users\vaugo\Code\voice-agent\doc\logs-download` then `uv run --no-project --with paramiko python sync_vps_docker.py`, in a Windows terminal from that folder; additive VPS mirror, Philippe 2026-10-17). It asks for the SSH key passphrase: suggest the command to Philippe at the end of every campaign, never launch it from a session.
 - A `.sql` of this repository runs with `~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/<file>.sql`, after a `git pull` in the clone; the result lands next to the `.sql` as `<file>-YYYYMMDD.txt`.
 
 ## Local layout

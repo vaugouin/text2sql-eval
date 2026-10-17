@@ -92,7 +92,9 @@ fi
 # baseline: ENTITY_EXTRACTION_MODEL=gpt-4o TEXT2SQL_MODEL=gpt-4o ./text2sql-eval.sh
 ENTITY_EXTRACTION_MODEL=${ENTITY_EXTRACTION_MODEL:-gpt-6-sol}
 TEXT2SQL_MODEL=${TEXT2SQL_MODEL:-gpt-6-sol}
-COMPLEX_MODEL=${COMPLEX_MODEL:-gpt-4o}
+# GPT-6-007 (2026-10-17): the complex question follows the API default to gpt-6.1-sol. No full
+# run exists yet on that namespace; the escalated subset still reads its baseline from gpt-4o.
+COMPLEX_MODEL=${COMPLEX_MODEL:-gpt-6.1-sol}
 # FASTAPI-TEXT2SQL-232: the answer-entity classifier and the single-value answerer. Read the
 # header before changing either on a version that already carries executions.
 # LLM-TASKS-003 (2026-10-03): follows the API default (gpt-6-luna, GPT-6-003). gpt-4o baseline:
