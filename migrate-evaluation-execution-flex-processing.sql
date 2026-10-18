@@ -2,7 +2,8 @@
 -- T_WC_T2S_EVALUATION_EXECUTION: OpenAI Flex processing per execution (TEXT2SQL-EVAL-002)
 -- ============================================================================
 --
--- NOT YET APPLIED. Written 2026-10-18. Run it BEFORE the first campaign launched with
+-- APPLIED 2026-10-18 (result: migrate-evaluation-execution-flex-processing-20261018.txt,
+-- 14210 rows, all NULL). Written 2026-10-18. Run it BEFORE the first campaign launched with
 -- FLEX_PROCESSING=--flex-processing: such a campaign writes these two columns, and an
 -- evaluator that finds them missing stops on "Unknown column". A standard campaign does
 -- not write them, so it keeps working before this migration.
