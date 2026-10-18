@@ -13,6 +13,29 @@ def format_api_version(version: str) -> str:
     return f"{int(version_parts[0]):03d}.{int(version_parts[1]):03d}.{int(version_parts[2]):03d}"
 
 
+def flex_usage_counts(llm_usage: Any) -> dict:
+    """Sum what OpenAI Flex processing did over one response's `llm_usage` (TEXT2SQL-EVAL-002).
+
+    The API adds `service_tier`, `flex_retries` and `flex_fallbacks` to each task it sent in
+    Flex. Returns `flex_calls` (calls OpenAI served in Flex), `standard_calls` (every other
+    call: fallbacks, and tasks whose model has no Flex tier), `retries` and `fallbacks`.
+    """
+    counts = {"flex_calls": 0, "standard_calls": 0, "retries": 0, "fallbacks": 0}
+    if not isinstance(llm_usage, dict):
+        return counts
+    for entry in llm_usage.values():
+        if not isinstance(entry, dict):
+            continue
+        calls = int(entry.get("calls") or 0)
+        fallbacks = int(entry.get("flex_fallbacks") or 0)
+        counts["retries"] += int(entry.get("flex_retries") or 0)
+        counts["fallbacks"] += fallbacks
+        flex_calls = max(calls - fallbacks, 0) if "flex" in str(entry.get("service_tier") or "").split(",") else 0
+        counts["flex_calls"] += flex_calls
+        counts["standard_calls"] += calls - flex_calls
+    return counts
+
+
 def safe_json_loads(value: Any):
     """Safely parse JSON-like values, including strings with surrounding noise."""
     if value is None:

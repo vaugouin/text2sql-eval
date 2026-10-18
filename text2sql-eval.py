@@ -30,6 +30,12 @@ EVAL_API_CALL_DELAY_SECONDS = float(os.getenv("TEXT2SQL_EVAL_API_CALL_DELAY_SECO
 EVAL_API_429_MAX_RETRIES = int(os.getenv("TEXT2SQL_EVAL_API_429_MAX_RETRIES", "6"))
 EVAL_API_429_FALLBACK_DELAY_SECONDS = float(os.getenv("TEXT2SQL_EVAL_API_429_FALLBACK_DELAY_SECONDS", "30"))
 EVAL_API_429_BUFFER_SECONDS = float(os.getenv("TEXT2SQL_EVAL_API_429_BUFFER_SECONDS", "3"))
+# TEXT2SQL-EVAL-002. One API call can chain four or five LLM calls; in Flex mode each may wait
+# minutes for capacity and is retried inside the API, so the wait is far longer, and a timeout
+# is retried instead of skipping the question.
+EVAL_API_TIMEOUT_SECONDS = float(os.getenv("TEXT2SQL_EVAL_API_TIMEOUT_SECONDS", "120"))
+EVAL_API_FLEX_TIMEOUT_SECONDS = float(os.getenv("TEXT2SQL_EVAL_API_FLEX_TIMEOUT_SECONDS", "3600"))
+EVAL_API_FLEX_TIMEOUT_MAX_RETRIES = int(os.getenv("TEXT2SQL_EVAL_API_FLEX_TIMEOUT_MAX_RETRIES", "3"))
 
 
 def _extract_retry_after_seconds(response=None, response_json=None, error_text: str = ""):
@@ -450,8 +456,16 @@ _parser.add_argument("--complex-question-processing", "--complex-model-used",
 _parser.add_argument("--no-complex-question-processing", "--no-complex-model-used",
                      dest="complex_question_processing", action="store_false",
                      help="Forbid the escalation: the API returns the raw error or empty result")
+# TEXT2SQL-EVAL-002 (2026-10-18). Ask the API for OpenAI Flex processing: half the price of the
+# GPT-6 calls, slower. The API retries a refused Flex call, then sends it once at the standard
+# tier. Not part of the namespace (the model tuple of the skip rule): same models, same answers.
+_parser.add_argument("--flex-processing", dest="flex_processing", action="store_true",
+                     help="Ask the API for OpenAI Flex processing (half price, slower; default: false)")
+_parser.add_argument("--no-flex-processing", dest="flex_processing", action="store_false",
+                     help="Standard OpenAI tier (default)")
 _parser.set_defaults(store_to_cache=True)
 _parser.set_defaults(complex_question_processing=True)
+_parser.set_defaults(flex_processing=False)
 _parser.add_argument("--cache-guard-min-hit", type=float, default=0.7,
                      help="PROMPT-CACHING-010: stop the run when fewer than this share of the last "
                           "--cache-guard-window calls of a cacheable task read their prompt from "
@@ -516,6 +530,13 @@ try:
             strlanguage = _cli_args.language
             blnstoretocache = _cli_args.store_to_cache
             blncomplexquestionprocessing = _cli_args.complex_question_processing
+            # TEXT2SQL-EVAL-002: Flex mode and its counters, summed over the run for the end screen.
+            blnflexprocessing = _cli_args.flex_processing
+            dictflexstats = {"rows": 0, "flex_calls": 0, "standard_calls": 0, "retries": 0,
+                             "fallbacks": 0, "timeout_retries": 0}
+            lngapitimeoutseconds = EVAL_API_FLEX_TIMEOUT_SECONDS if blnflexprocessing else EVAL_API_TIMEOUT_SECONDS
+            print(f"OpenAI Flex processing (TEXT2SQL-EVAL-002): {'ON, half price, slower' if blnflexprocessing else 'off'}"
+                  f"; API call timeout {lngapitimeoutseconds:.0f} s")
             # PROMPT-CACHING-010: one guard for the whole run, all languages together.
             objcacheguard = PromptCacheGuard(
                 min_hit=_cli_args.cache_guard_min_hit,
@@ -910,6 +931,7 @@ try:
                                     "complex_question_processing": blncomplexquestionprocessing,
                                     "complex_question_already_resolved": False,
                                     "ui_language": strevallang,
+                                    "flex_processing": blnflexprocessing,
                                 }
                                 print(url)
                                 print(payload)
@@ -919,13 +941,23 @@ try:
                                     time.sleep(EVAL_API_CALL_DELAY_SECONDS)
 
                                 retry_count = 0
+                                timeout_retry_count = 0
                                 response = None
                                 response_json = None
                                 while True:
                                     try:
-                                        response = requests.post(url, headers=headers, json=payload, timeout=120)
+                                        response = requests.post(url, headers=headers, json=payload, timeout=lngapitimeoutseconds)
                                     except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as e:
                                         print(f"⚠ Request failed for eval id {lngid} [{strevallang}]: {type(e).__name__}: {e}")
+                                        # TEXT2SQL-EVAL-002: in Flex mode a slow call is expected, so it is
+                                        # retried rather than leaving the question without a row.
+                                        if blnflexprocessing and timeout_retry_count < EVAL_API_FLEX_TIMEOUT_MAX_RETRIES:
+                                            timeout_retry_count += 1
+                                            dictflexstats["timeout_retries"] += 1
+                                            response = None
+                                            print(f"⚠ Flex mode: retrying the question (attempt {timeout_retry_count + 1}/{EVAL_API_FLEX_TIMEOUT_MAX_RETRIES + 1}) in {EVAL_API_429_FALLBACK_DELAY_SECONDS:.0f}s")
+                                            time.sleep(EVAL_API_429_FALLBACK_DELAY_SECONDS)
+                                            continue
                                         break
 
                                     response_json = None
@@ -1008,6 +1040,12 @@ try:
                                 if response_llm_model_result_entity and response_llm_model_result_entity != strresultentitymodeleval:
                                     print("API llm_model_result_entity mismatch; queried: ", response_llm_model_result_entity, " expected: ", strresultentitymodeleval)
                                     intconfigerror = True
+                                # TEXT2SQL-EVAL-002. An API without the Flex field ignores the request
+                                # field and would run the whole campaign at full price, unnoticed.
+                                if blnflexprocessing and response_json.get('flex_processing') is not True:
+                                    print("API flex_processing mismatch; queried: ", response_json.get('flex_processing', 'field missing'),
+                                          " expected: True. Deploy TEXT2SQL-EVAL-002 on the API (restart the colour in service).")
+                                    intconfigerror = True
                                 if intconfigerror:
                                     # We stop now so we do not consume tokens and money because there is a configuration error
                                     exit()
@@ -1023,6 +1061,18 @@ try:
                                 arrevalexeccouples["JSON_RESULT"] = response_text
                                 arrevalexeccouples["TIM_EXECUTION"] = strdatnow
                                 arrevalexeccouples["LANG"] = strevallang
+                                # TEXT2SQL-EVAL-002. Written only in Flex mode, so a standard campaign
+                                # keeps working where migrate-evaluation-execution-flex-processing.sql
+                                # has not run yet; NULL reads as the standard tier.
+                                if blnflexprocessing:
+                                    dictflexrow = t2s_eval.flex_usage_counts(response_json.get("llm_usage"))
+                                    arrevalexeccouples["FLEX_PROCESSING"] = 1
+                                    arrevalexeccouples["FLEX_FALLBACK_COUNT"] = dictflexrow["fallbacks"]
+                                    dictflexstats["rows"] += 1
+                                    for strkey in ("flex_calls", "standard_calls", "retries", "fallbacks"):
+                                        dictflexstats[strkey] += dictflexrow[strkey]
+                                    if dictflexrow["fallbacks"]:
+                                        print(f"⚠ Flex: {dictflexrow['fallbacks']} LLM call(s) of eval id {lngid} [{strevallang}] ran at the standard tier after their Flex attempts failed")
                                 strsqltablename = "T_WC_T2S_EVALUATION_EXECUTION"
                                 strsqlupdatecondition = f"ID_T2S_EVALUATION = {lngid} AND API_VERSION = '{strapiversionevalformatted}' AND ENTITY_EXTRACTION_MODEL = '{strentityextractionmodeleval}' AND TEXT2SQL_MODEL = '{strtext2sqlmodeleval}' AND COMPLEX_MODEL = '{strcomplexmodeleval}' AND LANG = '{strevallang}' " + late_models_clause(strresultentitymodeleval, stranswersinglevaluemodeleval)
                                 cp.f_sqlupdatearray(strsqltablename,arrevalexeccouples,strsqlupdatecondition,1)
@@ -1586,6 +1636,11 @@ try:
                                         "result_entity_model": row_result_entity_model,
                                         "answer_single_value_model": row_answer_single_value_model,
                                         "ui_language": row_lang,
+                                        # TEXT2SQL-EVAL-002. From the row too; NULL (column absent
+                                        # or written before Flex existed) means the standard tier.
+                                        # The tier served per task is in api_output.llm_usage.
+                                        "flex_processing": bool(row.get('FLEX_PROCESSING')),
+                                        "flex_fallback_count": row.get('FLEX_FALLBACK_COUNT'),
                                     },
                                     "api_output": api_output,
                                     "scoring": {
@@ -1670,6 +1725,16 @@ try:
             readable_duration = cp.convert_seconds_to_duration(strtotalruntime)
             cp.f_setservervariable("strtext2sqlevaltotalruntime",readable_duration,strtotalruntimedesc,0)
             print(f"Total runtime: {strtotalruntime} seconds ({readable_duration})")
+            # TEXT2SQL-EVAL-002: what Flex did over the rows this run wrote (phase 11).
+            print(f"OpenAI Flex processing: {'ON' if blnflexprocessing else 'off'}")
+            if blnflexprocessing:
+                print(f"  Rows written in Flex   : {dictflexstats['rows']}")
+                print(f"  LLM calls served Flex  : {dictflexstats['flex_calls']} (half price)")
+                print(f"  LLM calls at standard  : {dictflexstats['standard_calls']} "
+                      f"(of which {dictflexstats['fallbacks']} fallbacks after failed Flex attempts, full price)")
+                print(f"  Flex retries in the API: {dictflexstats['retries']}")
+                print(f"  Questions resent after a timeout: {dictflexstats['timeout_retries']}")
+                print("  Latencies of this run do not compare with standard runs; scores and tokens do.")
 
             # FASTAPI-TEXT2SQL-301: head-to-head on the subset, baseline against this run, on the
             # same (id, language) pairs. The global score below covers only the subset, so it
@@ -1737,6 +1802,8 @@ try:
                     print(f"Subset (-301): {strsubsetdesc}. The global score below covers ONLY this subset.")
                 print(f"Store to cache: {blnstoretocache}")
                 print(f"Complex question processing (escalation allowed): {blncomplexquestionprocessing}")
+                print(f"OpenAI Flex processing (TEXT2SQL-EVAL-002): {blnflexprocessing}"
+                      + (" (timings below are Flex timings)" if blnflexprocessing else ""))
                 if arrresolutionmodestats:
                     print("Escalation by declared resolution mode (FASTAPI-TEXT2SQL-257):")
                     for _mode in sorted(arrresolutionmodestats, key=lambda m: -arrresolutionmodestats[m]["lignes"]):

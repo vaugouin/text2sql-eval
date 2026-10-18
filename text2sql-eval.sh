@@ -46,6 +46,7 @@
 #   EVAL_LANGUAGE=fr ./text2sql-eval.sh
 #   API_VERSION=1.1.19 EVAL_LANGUAGE='*' ./text2sql-eval.sh
 #   TEXT2SQL_MODEL=gpt-5.6-terra API_VERSION=1.1.19 ./text2sql-eval.sh   # AFTER the baseline
+#   FLEX_PROCESSING=--flex-processing ./text2sql-eval.sh                 # OpenAI Flex, half price
 #
 # THE LANGUAGE VARIABLE IS EVAL_LANGUAGE, NOT LANGUAGE
 # LANGUAGE is the gettext locale list ("en_US:en") on any machine whose locale sets it, and
@@ -108,6 +109,13 @@ STORE_TO_CACHE=${STORE_TO_CACHE:---store-to-cache}
 # not declare, so the default said "no" and the run said "yes". The flag now drives the real
 # switch. The former variable name still works if it is set.
 COMPLEX_QUESTION_PROCESSING=${COMPLEX_QUESTION_PROCESSING:-${COMPLEX_MODEL_USED:---complex-question-processing}}
+# TEXT2SQL-EVAL-002 (2026-10-18). --flex-processing asks the API for OpenAI Flex processing on
+# its GPT-5.x and GPT-6 calls: billed at Batch API rates, half the standard price, but slower.
+# The API retries a Flex call refused for lack of capacity (429), then sends it once at the
+# standard tier, so the run always reaches its end. Not part of the namespace: a Flex run skips
+# the questions already run at the standard tier with the same models, and vice versa.
+# Needs migrate-evaluation-execution-flex-processing.sql applied, and the API at TEXT2SQL-EVAL-002.
+FLEX_PROCESSING=${FLEX_PROCESSING:---no-flex-processing}
 # PROMPT-CACHING-010. The evaluator stops the run when fewer than this share of the last 20 calls
 # of a cacheable task read their prompt from the provider cache: the 2026-09-27 gpt-6-sol run
 # missed on 57 % of its text2sql calls and went to the end, measuring a price nobody would pay.
@@ -181,6 +189,10 @@ case "$COMPLEX_QUESTION_PROCESSING" in
     --complex-question-processing|--no-complex-question-processing|--complex-model-used|--no-complex-model-used) ;;
     *) echo "ERROR: COMPLEX_QUESTION_PROCESSING must be --complex-question-processing or --no-complex-question-processing."; exit 1 ;;
 esac
+case "$FLEX_PROCESSING" in
+    --flex-processing|--no-flex-processing) ;;
+    *) echo "ERROR: FLEX_PROCESSING must be --flex-processing or --no-flex-processing."; exit 1 ;;
+esac
 
 if [ "$(docker ps -q -f name=text2sql-eval)" ]; then
     echo "text2sql-eval Docker container is already running."
@@ -227,6 +239,12 @@ try:
     print(f"PF_API_STATUS={r.status_code}")
     print(f"PF_API_VERSION_SEEN={j.get('api_version', 'absent')}")
     print(f"PF_BKTREES={j.get('bktrees_ready', 'absent')}")
+    # TEXT2SQL-EVAL-002: does the API declare the flex_processing request field? Read-only.
+    try:
+        o = requests.get(base + "/openapi.json", timeout=15)
+        print(f"PF_API_FLEX={'yes' if o.ok and 'flex_processing' in o.text else ('no' if o.ok else 'unknown')}")
+    except Exception:
+        print("PF_API_FLEX=unknown")
 except Exception as e:
     print(f"PF_API_STATUS=unreachable ({type(e).__name__}: {e})")
 
@@ -294,6 +312,11 @@ try:
                 "((QUESTION <> '' AND (QUESTION_FR IS NULL OR QUESTION_FR = '')) OR "
                 "(QUESTION_FR <> '' AND (QUESTION IS NULL OR QUESTION = '')))")
     print(f"PF_TRANSLATE={cur.fetchone()['n']}")
+    # TEXT2SQL-EVAL-002: a Flex run writes FLEX_PROCESSING; without the column it stops on the
+    # first row, after paying for that call.
+    cur.execute("SELECT COUNT(*) AS n FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() "
+                "AND TABLE_NAME = 'T_WC_T2S_EVALUATION_EXECUTION' AND COLUMN_NAME = 'FLEX_FALLBACK_COUNT'")
+    print(f"PF_FLEX_COLUMNS={cur.fetchone()['n']}")
 except Exception as e:
     print(f"PF_DB=unreachable ({type(e).__name__}: {e})")
 PYEOF
@@ -336,6 +359,12 @@ echo
 echo "Options:"
 echo "  Escalation  : $COMPLEX_QUESTION_PROCESSING (stronger-model retry, fired on 2.6 % of 001.001.018)"
 echo "  Cache write : $STORE_TO_CACHE (reads are always off: retrieve_from_cache=false)"
+if [ "$FLEX_PROCESSING" = "--flex-processing" ]; then
+    echo "  OpenAI Flex : ON ($FLEX_PROCESSING), half price on GPT-5.x/GPT-6 calls, slower; after the API's"
+    echo "                Flex retries a call runs once at the standard tier (TEXT2SQL-EVAL-002)"
+else
+    echo "  OpenAI Flex : off ($FLEX_PROCESSING), standard tier"
+fi
 echo "  Cache guard : stops the run under $CACHE_GUARD_MIN_HIT of provider-cache hits over the last 20 calls of a task (0 = off)"
 echo "  Pacing      : TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS and 429 retries, from $EVAL_HOME/.env"
 echo "  Resume from : ID_T2S_EVALUATION >= $(pf PF_RESUME) (server variable strtext2sqlevalrunevalid)"
@@ -357,6 +386,7 @@ fi
 if [ -n "$PF_REMAINING" ]; then
     HOURS=$(awk -v n="$PF_REMAINING" -v s="$SECONDS_PER_CALL" 'BEGIN{printf "%.1f", n*s/3600}')
     echo "  Estimated wall-clock: ~${HOURS} h for $PF_REMAINING API calls"
+    [ "$FLEX_PROCESSING" = "--flex-processing" ] && echo "                        (standard-tier figure: Flex calls are slower, expect longer)"
     ALL_GPT4O=1
     for m in "$ENTITY_EXTRACTION_MODEL" "$TEXT2SQL_MODEL" "$COMPLEX_MODEL" "$RESULT_ENTITY_MODEL" "$ANSWER_SINGLE_VALUE_MODEL"; do
         [ "$m" = "gpt-4o" ] || ALL_GPT4O=0
@@ -367,6 +397,7 @@ if [ -n "$PF_REMAINING" ]; then
     else
         echo "  Estimated LLM cost  : UNKNOWN, a non-gpt-4o model is selected and no measured figure exists"
     fi
+    [ "$FLEX_PROCESSING" = "--flex-processing" ] && echo "                        Flex: about half the OpenAI token cost, minus fallbacks at the standard tier"
 fi
 
 # --- Checks ----------------------------------------------------------------------------------
@@ -378,6 +409,18 @@ echo "Checks:"
 
 if [ -n "$PF_API_VERSION_SEEN" ] && [ "$PF_API_VERSION_SEEN" != "$API_VERSION" ]; then
     warn "the $COLOUR API answers $PF_API_VERSION_SEEN, not $API_VERSION: the evaluator aborts on the first call."
+fi
+if [ "$FLEX_PROCESSING" = "--flex-processing" ]; then
+    if [ "$(pf PF_API_FLEX)" = "no" ]; then
+        warn "FLEX_PROCESSING is on but the $COLOUR API does not declare flex_processing: deploy TEXT2SQL-EVAL-002"
+        more "(restart the $COLOUR API). The evaluator would abort on the first call."
+    fi
+    if [ "$(pf PF_FLEX_COLUMNS)" = "0" ]; then
+        warn "FLEX_PROCESSING is on but T_WC_T2S_EVALUATION_EXECUTION has no Flex columns: run"
+        more "~/docker/tools/runsqlvaugouindb.sh $EVAL_HOME/migrate-evaluation-execution-flex-processing.sql first,"
+        more "or the run stops on the first row it writes."
+    fi
+    echo "  - Flex timings do not compare with standard runs; scores and token counts do."
 fi
 if [ "$PF_BKTREES" = "False" ]; then
     warn "bktrees_ready is false: the API is still warming up and early latencies will be inflated. Wait."
@@ -528,6 +571,7 @@ docker run -d --rm --network="host" \
     --language "$EVAL_LANGUAGE" \
     "$STORE_TO_CACHE" \
     "$COMPLEX_QUESTION_PROCESSING" \
+    "$FLEX_PROCESSING" \
     --cache-guard-min-hit "$CACHE_GUARD_MIN_HIT" \
     ${SUBSET_ARGS[@]+"${SUBSET_ARGS[@]}"}
 
