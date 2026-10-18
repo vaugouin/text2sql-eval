@@ -10,7 +10,7 @@
     "query_result": "ID_MOVIE IN (27205, 153, 28422, 14525, 44737, 42041, 1053460, 899139)"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION WHERE T_WC_T2S_LOCATION.ID_WIKIDATA IN (&#039;Q1490&#039;, &#039;Q7473516&#039;) AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;filming&#039; ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-17T02:48:33",
+  "assertion_refresh_last": "2026-10-18T03:02:44",
   "comment": "2026-10-17: refresh SQL moved from the Wikidata V1 tables (T_WC_WIKIDATA_ITEM_PROPERTY P915, T_WC_T2S_ITEM label) to the locations read-model, Tokyo named by its QID Q1490, role filming. 2026-10-17, correction: Tokyo is cited under two QIDs, Q1490 (metropolis) and Q7473516 (special wards); the refresh SQL takes both.",
   "keywords": null,
   "keywords_auto": null,

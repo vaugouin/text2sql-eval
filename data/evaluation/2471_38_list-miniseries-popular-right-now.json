@@ -7,10 +7,10 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Serie_type1&quot;])",
     "sql_query": null,
-    "query_result": "ID_SERIE IN (288673, 275102, 95897, 258165, 316898, 285322, 16997, 256440)"
+    "query_result": "ID_SERIE IN (213375, 288673, 275102, 285322, 289423, 316898, 16997, 25406)"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE WHERE T_WC_T2S_SERIE.SERIE_TYPE = &#039;Miniseries&#039; ORDER BY T_WC_T2S_SERIE.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-10T02:37:39",
+  "assertion_refresh_last": "2026-10-18T03:02:44",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

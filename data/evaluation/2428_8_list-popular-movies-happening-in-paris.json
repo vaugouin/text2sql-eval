@@ -7,10 +7,10 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Location_name1&quot;]) AND matches($.Location_name1, /^Paris$/i)",
     "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]narrative[&#039;&quot;]",
-    "query_result": "ID_MOVIE IN (27205, 350, 603692, 792307, 331482, 77931, 791373, 2062)"
+    "query_result": "ID_MOVIE IN (27205, 350, 792307, 603692, 331482, 49013, 77931, 791373)"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION WHERE T_WC_T2S_LOCATION.ID_WIKIDATA = &#039;Q90&#039; AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;narrative&#039; ORDER BY T_WC_T2S_MOVIE.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-17T02:48:32",
+  "assertion_refresh_last": "2026-10-18T03:02:44",
   "comment": "2026-10-17: refresh SQL moved from the Wikidata V1 tables (T_WC_WIKIDATA_ITEM_PROPERTY P840, T_WC_T2S_ITEM label) to the locations read-model, Paris named by its QID Q90, role narrative.",
   "keywords": null,
   "keywords_auto": null,

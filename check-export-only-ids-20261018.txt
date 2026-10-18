@@ -1,0 +1,12 @@
+-- check-export-only-ids.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-18 09:21:53
+--
++-------------------+-------+---+
+| ID_T2S_EVALUATION | LANGS | N |
++-------------------+-------+---+
+|                59 | en,fr | 2 |
+|                62 | en,fr | 2 |
+|                72 | en,fr | 2 |
+|               202 | en,fr | 2 |
+|               292 | en,fr | 2 |
++-------------------+-------+---+
