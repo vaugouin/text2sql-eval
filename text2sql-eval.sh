@@ -114,7 +114,7 @@ COMPLEX_QUESTION_PROCESSING=${COMPLEX_QUESTION_PROCESSING:-${COMPLEX_MODEL_USED:
 # The API retries a Flex call refused for lack of capacity (429), then sends it once at the
 # standard tier, so the run always reaches its end. Not part of the namespace: a Flex run skips
 # the questions already run at the standard tier with the same models, and vice versa.
-# Needs migrate-evaluation-execution-flex-processing.sql applied, and the API at TEXT2SQL-EVAL-002.
+# Needs archive/migrate-evaluation-execution-flex-processing.sql applied, and the API at TEXT2SQL-EVAL-002.
 FLEX_PROCESSING=${FLEX_PROCESSING:---no-flex-processing}
 # PROMPT-CACHING-010. The evaluator stops the run when fewer than this share of the last 20 calls
 # of a cacheable task read their prompt from the provider cache: the 2026-09-27 gpt-6-sol run
@@ -417,7 +417,7 @@ if [ "$FLEX_PROCESSING" = "--flex-processing" ]; then
     fi
     if [ "$(pf PF_FLEX_COLUMNS)" = "0" ]; then
         warn "FLEX_PROCESSING is on but T_WC_T2S_EVALUATION_EXECUTION has no Flex columns: run"
-        more "~/docker/tools/runsqlvaugouindb.sh $EVAL_HOME/migrate-evaluation-execution-flex-processing.sql first,"
+        more "~/docker/tools/runsqlvaugouindb.sh $EVAL_HOME/archive/migrate-evaluation-execution-flex-processing.sql first,"
         more "or the run stops on the first row it writes."
     fi
     echo "  - Flex timings do not compare with standard runs; scores and token counts do."

@@ -1062,7 +1062,7 @@ try:
                                 arrevalexeccouples["TIM_EXECUTION"] = strdatnow
                                 arrevalexeccouples["LANG"] = strevallang
                                 # TEXT2SQL-EVAL-002. Written only in Flex mode, so a standard campaign
-                                # keeps working where migrate-evaluation-execution-flex-processing.sql
+                                # keeps working where archive/migrate-evaluation-execution-flex-processing.sql
                                 # has not run yet; NULL reads as the standard tier.
                                 if blnflexprocessing:
                                     dictflexrow = t2s_eval.flex_usage_counts(response_json.get("llm_usage"))
