@@ -1,0 +1,229 @@
+-- Harvest for EVALUATIONS-024: location coverage of the bank.
+--
+-- Read-only (SELECT only), voie 1. Written 2026-10-19, after TMDB-MOVIE-PREPROCESS-048 put
+-- the place hierarchy (T_WC_T2S_LOCATION_ANCESTOR) in production and FASTAPI-TEXT2SQL-332
+-- taught it to the API.
+--
+--   1. The SERIE.DELETED hypothesis behind 2504 and 2527 (typed refresh SQL, no series).
+--   2. Game of Thrones locations (2229, 2230) and the identity of 2156's fourth place.
+--   3. Countries through the hierarchy: movies shot in France not linked to France itself.
+--   4. Homonyms: every living Cambridge.
+--   5. A French place name that differs from the English one: Venice / Venise.
+--   6. A LOCATION_TYPE other than city: fictional places.
+--   7. Containment does not go upward: movies shot in France with no filming place in Paris.
+--   8. Iceland (2517): movies filmed in Iceland whose narrative places are all outside it.
+
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- ---------------------------------------------------------------------------
+-- 1. DELETED on series and junctions: NULL or 0?
+-- ---------------------------------------------------------------------------
+SELECT '1a. DELETED values on T_WC_T2S_SERIE and T_WC_T2S_SERIE_LOCATION' AS SECTION;
+
+SELECT 'SERIE' AS T, COALESCE(CAST(DELETED AS CHAR), 'NULL') AS DELETED, COUNT(*) AS N FROM T_WC_T2S_SERIE GROUP BY DELETED
+UNION ALL
+SELECT 'SERIE_LOCATION', COALESCE(CAST(DELETED AS CHAR), 'NULL'), COUNT(*) FROM T_WC_T2S_SERIE_LOCATION GROUP BY DELETED
+UNION ALL
+SELECT 'MOVIE_LOCATION', COALESCE(CAST(DELETED AS CHAR), 'NULL'), COUNT(*) FROM T_WC_T2S_MOVIE_LOCATION GROUP BY DELETED;
+
+SELECT '1b. Series set in Naples, with and without the DELETED = 0 filters' AS SECTION;
+
+SELECT s.ID_SERIE, s.SERIE_TITLE, s.DELETED AS S_DELETED, sl.DELETED AS SL_DELETED, a.DEPTH, l.LOCATION_NAME,
+       s.IMDB_RATING_WEIGHTED, s.POPULARITY
+FROM T_WC_T2S_SERIE s
+JOIN T_WC_T2S_SERIE_LOCATION sl ON sl.ID_SERIE = s.ID_SERIE AND sl.LOCATION_ROLE = 'narrative'
+JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = sl.ID_LOCATION
+JOIN T_WC_T2S_LOCATION n ON n.ID_LOCATION = a.ID_ANCESTOR AND n.LOCATION_NAME = 'Naples' AND n.DELETED = 0
+JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = sl.ID_LOCATION
+ORDER BY s.IMDB_RATING_WEIGHTED DESC
+LIMIT 12;
+
+SELECT '1c. Naples homonyms' AS SECTION;
+
+SELECT ID_LOCATION, ID_WIKIDATA, LOCATION_NAME, LOCATION_NAME_FR, LOCATION_TYPE, MOVIE_COUNT, SERIE_COUNT
+FROM T_WC_T2S_LOCATION WHERE DELETED = 0 AND LOCATION_NAME IN ('Naples', 'Vancouver', 'Iceland', 'Venice', 'San Francisco', 'Namibia');
+
+SELECT '1d. Vancouver (Q24639), filming, movies and series through the hierarchy, by POPULARITY' AS SECTION;
+
+SELECT t.ID_CONTENT, t.CONTENT_TYPE, t.TITLE, t.POPULARITY, t.IMDB_RATING_WEIGHTED, t.IMDB_VOTES FROM (
+  SELECT m.ID_MOVIE AS ID_CONTENT, 'movie' AS CONTENT_TYPE, m.MOVIE_TITLE AS TITLE, m.POPULARITY, m.IMDB_RATING_WEIGHTED, m.IMDB_VOTES
+  FROM T_WC_T2S_MOVIE m
+  JOIN T_WC_T2S_MOVIE_LOCATION ml ON ml.ID_MOVIE = m.ID_MOVIE AND ml.LOCATION_ROLE = 'filming' AND COALESCE(ml.DELETED, 0) = 0
+  JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = ml.ID_LOCATION
+  JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = a.ID_ANCESTOR AND l.LOCATION_NAME = 'Vancouver' AND l.DELETED = 0
+  WHERE COALESCE(m.DELETED, 0) = 0
+  UNION
+  SELECT s.ID_SERIE, 'serie', s.SERIE_TITLE, s.POPULARITY, s.IMDB_RATING_WEIGHTED, s.IMDB_VOTES
+  FROM T_WC_T2S_SERIE s
+  JOIN T_WC_T2S_SERIE_LOCATION sl ON sl.ID_SERIE = s.ID_SERIE AND sl.LOCATION_ROLE = 'filming' AND COALESCE(sl.DELETED, 0) = 0
+  JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = sl.ID_LOCATION
+  JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = a.ID_ANCESTOR AND l.LOCATION_NAME = 'Vancouver' AND l.DELETED = 0
+  WHERE COALESCE(s.DELETED, 0) = 0
+) t ORDER BY t.POPULARITY DESC LIMIT 20;
+
+-- ---------------------------------------------------------------------------
+-- 2. Game of Thrones and 2001.
+-- ---------------------------------------------------------------------------
+SELECT '2a. Game of Thrones locations' AS SECTION;
+
+SELECT s.ID_SERIE, s.SERIE_TITLE, sl.LOCATION_ROLE, l.ID_LOCATION, l.LOCATION_NAME, l.LOCATION_TYPE, COALESCE(sl.DELETED, 0) AS SL_DELETED
+FROM T_WC_T2S_SERIE s
+JOIN T_WC_T2S_SERIE_LOCATION sl ON sl.ID_SERIE = s.ID_SERIE
+JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = sl.ID_LOCATION AND l.DELETED = 0
+WHERE s.SERIE_TITLE = 'Game of Thrones'
+ORDER BY s.ID_SERIE, sl.LOCATION_ROLE, l.LOCATION_NAME;
+
+SELECT '2b. 2001: A Space Odyssey (62) locations' AS SECTION;
+
+SELECT ml.LOCATION_ROLE, l.ID_LOCATION, l.ID_WIKIDATA, l.LOCATION_NAME, l.LOCATION_TYPE
+FROM T_WC_T2S_MOVIE_LOCATION ml
+JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = ml.ID_LOCATION AND l.DELETED = 0
+WHERE ml.ID_MOVIE = 62 AND COALESCE(ml.DELETED, 0) = 0
+ORDER BY ml.LOCATION_ROLE, l.LOCATION_NAME;
+
+SELECT '2c. The French title of 2001' AS SECTION;
+
+SELECT ID_MOVIE, MOVIE_TITLE, MOVIE_TITLE_FR, ORIGINAL_TITLE FROM T_WC_T2S_MOVIE WHERE ID_MOVIE = 62;
+
+SELECT '2d. Series set in Paris (Q90) through the hierarchy, by IMDB_RATING_WEIGHTED' AS SECTION;
+
+SELECT DISTINCT s.ID_SERIE, s.SERIE_TITLE, s.IMDB_RATING_WEIGHTED
+FROM T_WC_T2S_SERIE s
+JOIN T_WC_T2S_SERIE_LOCATION sl ON sl.ID_SERIE = s.ID_SERIE AND sl.LOCATION_ROLE = 'narrative' AND COALESCE(sl.DELETED, 0) = 0
+JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = sl.ID_LOCATION
+JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = a.ID_ANCESTOR AND l.ID_WIKIDATA = 'Q90' AND l.DELETED = 0
+WHERE COALESCE(s.DELETED, 0) = 0
+ORDER BY s.IMDB_RATING_WEIGHTED DESC
+LIMIT 10;
+
+-- ---------------------------------------------------------------------------
+-- 3. Movies shot in France (Q142) only through a contained place.
+-- ---------------------------------------------------------------------------
+SELECT '3. Movies shot in France through the hierarchy, not linked to France itself' AS SECTION;
+
+SELECT m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED,
+       SUBSTRING(GROUP_CONCAT(DISTINCT p.LOCATION_NAME SEPARATOR ' | '), 1, 120) AS VIA
+FROM T_WC_T2S_MOVIE m
+JOIN T_WC_T2S_MOVIE_LOCATION ml ON ml.ID_MOVIE = m.ID_MOVIE AND ml.LOCATION_ROLE = 'filming' AND COALESCE(ml.DELETED, 0) = 0
+JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = ml.ID_LOCATION
+JOIN T_WC_T2S_LOCATION f ON f.ID_LOCATION = a.ID_ANCESTOR AND f.ID_WIKIDATA = 'Q142' AND f.DELETED = 0
+JOIN T_WC_T2S_LOCATION p ON p.ID_LOCATION = ml.ID_LOCATION
+WHERE COALESCE(m.DELETED, 0) = 0
+  AND NOT EXISTS (SELECT 1 FROM T_WC_T2S_MOVIE_LOCATION d WHERE d.ID_MOVIE = m.ID_MOVIE AND d.ID_LOCATION = f.ID_LOCATION
+                   AND d.LOCATION_ROLE = 'filming' AND COALESCE(d.DELETED, 0) = 0)
+GROUP BY m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED
+ORDER BY m.IMDB_RATING_WEIGHTED DESC
+LIMIT 12;
+
+-- ---------------------------------------------------------------------------
+-- 4. Cambridge homonyms.
+-- ---------------------------------------------------------------------------
+SELECT '4. Every living Cambridge' AS SECTION;
+
+SELECT l.ID_LOCATION, l.ID_WIKIDATA, l.LOCATION_NAME, l.LOCATION_NAME_FR, l.LOCATION_TYPE, l.OVERVIEW,
+       l.MOVIE_COUNT, l.SERIE_COUNT,
+       (SELECT GROUP_CONCAT(DISTINCT p.LOCATION_NAME) FROM T_WC_T2S_LOCATION_ANCESTOR a
+          JOIN T_WC_T2S_LOCATION p ON p.ID_LOCATION = a.ID_ANCESTOR
+         WHERE a.ID_LOCATION = l.ID_LOCATION AND a.DEPTH > 0) AS ANCESTORS
+FROM T_WC_T2S_LOCATION l
+WHERE l.DELETED = 0 AND l.LOCATION_NAME LIKE 'Cambridge%';
+
+SELECT '4b. Movies per Cambridge, filming then narrative, best first' AS SECTION;
+
+SELECT l.ID_WIKIDATA, ml.LOCATION_ROLE, m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED
+FROM T_WC_T2S_LOCATION l
+JOIN T_WC_T2S_MOVIE_LOCATION ml ON ml.ID_LOCATION = l.ID_LOCATION AND COALESCE(ml.DELETED, 0) = 0
+JOIN T_WC_T2S_MOVIE m ON m.ID_MOVIE = ml.ID_MOVIE AND COALESCE(m.DELETED, 0) = 0
+WHERE l.DELETED = 0 AND l.LOCATION_NAME = 'Cambridge'
+ORDER BY l.ID_WIKIDATA, ml.LOCATION_ROLE, m.IMDB_RATING_WEIGHTED DESC;
+
+-- ---------------------------------------------------------------------------
+-- 5. Venice / Venise.
+-- ---------------------------------------------------------------------------
+SELECT '5a. Places named Venice or Venise' AS SECTION;
+
+SELECT ID_LOCATION, ID_WIKIDATA, LOCATION_NAME, LOCATION_NAME_FR, LOCATION_TYPE, MOVIE_COUNT, SERIE_COUNT
+FROM T_WC_T2S_LOCATION WHERE DELETED = 0 AND (LOCATION_NAME LIKE 'Venice%' OR LOCATION_NAME_FR LIKE 'Venise%');
+
+SELECT '5b. Movies set in Venice (Q641) through the hierarchy, by IMDB_RATING_WEIGHTED' AS SECTION;
+
+SELECT DISTINCT m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED
+FROM T_WC_T2S_MOVIE m
+JOIN T_WC_T2S_MOVIE_LOCATION ml ON ml.ID_MOVIE = m.ID_MOVIE AND ml.LOCATION_ROLE = 'narrative' AND COALESCE(ml.DELETED, 0) = 0
+JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = ml.ID_LOCATION
+JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = a.ID_ANCESTOR AND l.ID_WIKIDATA = 'Q641' AND l.DELETED = 0
+WHERE COALESCE(m.DELETED, 0) = 0
+ORDER BY m.IMDB_RATING_WEIGHTED DESC
+LIMIT 10;
+
+-- ---------------------------------------------------------------------------
+-- 6. Fictional places.
+-- ---------------------------------------------------------------------------
+SELECT '6a. LOCATION_TYPE distribution' AS SECTION;
+
+SELECT COALESCE(LOCATION_TYPE, 'NULL') AS LOCATION_TYPE, COUNT(*) AS N FROM T_WC_T2S_LOCATION WHERE DELETED = 0 GROUP BY LOCATION_TYPE;
+
+SELECT '6b. Movies set in a fictional place, by IMDB_RATING_WEIGHTED' AS SECTION;
+
+SELECT m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED,
+       SUBSTRING(GROUP_CONCAT(DISTINCT l.LOCATION_NAME SEPARATOR ' | '), 1, 100) AS PLACES
+FROM T_WC_T2S_MOVIE m
+JOIN T_WC_T2S_MOVIE_LOCATION ml ON ml.ID_MOVIE = m.ID_MOVIE AND ml.LOCATION_ROLE = 'narrative' AND COALESCE(ml.DELETED, 0) = 0
+JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = ml.ID_LOCATION AND l.LOCATION_TYPE = 'fiction' AND l.DELETED = 0
+WHERE COALESCE(m.DELETED, 0) = 0
+GROUP BY m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED
+ORDER BY m.IMDB_RATING_WEIGHTED DESC
+LIMIT 12;
+
+SELECT '6c. Islands most used as filming locations' AS SECTION;
+
+SELECT ID_LOCATION, ID_WIKIDATA, LOCATION_NAME, LOCATION_NAME_FR, MOVIE_COUNT, SERIE_COUNT
+FROM T_WC_T2S_LOCATION WHERE DELETED = 0 AND LOCATION_TYPE = 'island'
+ORDER BY MOVIE_COUNT DESC LIMIT 10;
+
+-- ---------------------------------------------------------------------------
+-- 7. Shot in France, never in Paris: counter-examples for "movies shot in Paris".
+-- ---------------------------------------------------------------------------
+SELECT '7. Best movies shot in France with no filming place in Paris' AS SECTION;
+
+SELECT m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED,
+       SUBSTRING(GROUP_CONCAT(DISTINCT p.LOCATION_NAME SEPARATOR ' | '), 1, 120) AS FILMED_AT
+FROM T_WC_T2S_MOVIE m
+JOIN T_WC_T2S_MOVIE_LOCATION ml ON ml.ID_MOVIE = m.ID_MOVIE AND ml.LOCATION_ROLE = 'filming' AND COALESCE(ml.DELETED, 0) = 0
+JOIN T_WC_T2S_LOCATION_ANCESTOR a ON a.ID_LOCATION = ml.ID_LOCATION
+JOIN T_WC_T2S_LOCATION f ON f.ID_LOCATION = a.ID_ANCESTOR AND f.ID_WIKIDATA = 'Q142'
+JOIN T_WC_T2S_LOCATION p ON p.ID_LOCATION = ml.ID_LOCATION
+WHERE COALESCE(m.DELETED, 0) = 0
+  AND NOT EXISTS (SELECT 1 FROM T_WC_T2S_MOVIE_LOCATION x
+                    JOIN T_WC_T2S_LOCATION_ANCESTOR xa ON xa.ID_LOCATION = x.ID_LOCATION
+                    JOIN T_WC_T2S_LOCATION xp ON xp.ID_LOCATION = xa.ID_ANCESTOR AND xp.ID_WIKIDATA = 'Q90'
+                   WHERE x.ID_MOVIE = m.ID_MOVIE AND x.LOCATION_ROLE = 'filming' AND COALESCE(x.DELETED, 0) = 0)
+GROUP BY m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED
+ORDER BY m.IMDB_RATING_WEIGHTED DESC
+LIMIT 12;
+
+-- ---------------------------------------------------------------------------
+-- 8. Iceland (2517): filmed there, every narrative place outside Iceland.
+-- ---------------------------------------------------------------------------
+SELECT '8. Filmed in Iceland, set only outside Iceland (hierarchy on both sides)' AS SECTION;
+
+SELECT DISTINCT m.ID_MOVIE, m.MOVIE_TITLE, m.IMDB_RATING_WEIGHTED
+FROM T_WC_T2S_MOVIE m
+JOIN T_WC_T2S_MOVIE_LOCATION f ON f.ID_MOVIE = m.ID_MOVIE AND f.LOCATION_ROLE = 'filming' AND COALESCE(f.DELETED, 0) = 0
+JOIN T_WC_T2S_LOCATION_ANCESTOR fa ON fa.ID_LOCATION = f.ID_LOCATION
+JOIN T_WC_T2S_LOCATION i ON i.ID_LOCATION = fa.ID_ANCESTOR AND i.ID_WIKIDATA = 'Q189' AND i.DELETED = 0
+WHERE COALESCE(m.DELETED, 0) = 0
+  AND EXISTS (SELECT 1 FROM T_WC_T2S_MOVIE_LOCATION n WHERE n.ID_MOVIE = m.ID_MOVIE AND n.LOCATION_ROLE = 'narrative' AND COALESCE(n.DELETED, 0) = 0)
+  AND NOT EXISTS (SELECT 1 FROM T_WC_T2S_MOVIE_LOCATION n
+                    JOIN T_WC_T2S_LOCATION_ANCESTOR na ON na.ID_LOCATION = n.ID_LOCATION
+                   WHERE n.ID_MOVIE = m.ID_MOVIE AND n.LOCATION_ROLE = 'narrative' AND COALESCE(n.DELETED, 0) = 0
+                     AND na.ID_ANCESTOR = i.ID_LOCATION)
+ORDER BY m.IMDB_RATING_WEIGHTED DESC
+LIMIT 15;
+
+SELECT '8b. 791373' AS SECTION;
+
+SELECT ml.LOCATION_ROLE, l.LOCATION_NAME, m.MOVIE_TITLE
+FROM T_WC_T2S_MOVIE_LOCATION ml JOIN T_WC_T2S_LOCATION l ON l.ID_LOCATION = ml.ID_LOCATION
+JOIN T_WC_T2S_MOVIE m ON m.ID_MOVIE = ml.ID_MOVIE
+WHERE ml.ID_MOVIE = 791373;
