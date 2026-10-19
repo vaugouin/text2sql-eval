@@ -1,0 +1,106 @@
+-- update-evaluations-location-coverage.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-19 21:32:43 +0200
+--
++-----------+
+| SECTION   |
++-----------+
+| 0. Before |
++-----------+
++-------------------+---------+------------------------------------------+-----------------------------------------------+----------------------------------------------------+----------------------------------------------------+--------------------------------------------------------------+
+| ID_T2S_EVALUATION | IS_EVAL | QUESTION                                 | QUESTION_FR                                   | SQL_A                                              | RES_A                                              | REFRESH                                                      |
++-------------------+---------+------------------------------------------+-----------------------------------------------+----------------------------------------------------+----------------------------------------------------+--------------------------------------------------------------+
+|              2147 |       1 | List movies happening in San Francisco   | Répertoriez les films se déroulant à San      |                                                    | ID_MOVIE IN (13, 299534, 426, 150540, 37247, 57407 | NULL                                                         |
+|              2149 |       1 | List movies happening on the Moon        | Liste des films se déroulant sur la Lune      | NULL                                               | ID_MOVIE IN (62, 775, 149871, 83790, 17431, 83564, | NULL                                                         |
+|              2150 |       1 | List movies shot in Namibia              | Listez les films tournés en Namibie.          | NULL                                               | ID_MOVIE IN (62, 76341, 520446, 44737, 12663, 6186 | NULL                                                         |
+|              2156 |       1 | Where was shot the movie 2001 A Space Od | Où a été tourné le film 2001, l&#039;Ody      | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[& |  ID_LOCATION IN (697, 2474, 4957, 5012)            |                                                              |
+|              2229 |       1 | What are the narrative locations of tv s | Quels sont les lieux narratifs de la sér      |                                                    | COUNT(*) &gt; 0                                    | NULL                                                         |
+|              2230 |       1 | What are the filming locations of tv ser | Quels sont les lieux de tournage de la s      |                                                    | COUNT(*) &gt; 0                                    | NULL                                                         |
+|              2231 |       1 | List tv series happening in Paris        | Liste des séries télévisées se déroulant      |                                                    | COUNT(*) &gt; 0                                    | NULL                                                         |
+|              2428 |       0 | List popular movies happening in Paris   | Répertorier les films populaires se déro      | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative | ID_MOVIE IN (27205, 350, 16869, 792307, 603692, 33 | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE  |
+|              2429 |       0 | List movies shot in Tokyo                | Liste des films tournés à Tokyo               | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[& | ID_MOVIE IN (27205, 153, 28422, 14525, 44737, 4204 | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE  |
+|              2434 |       0 | What are the narrative locations of the  | Quels sont les lieux narratifs du film 2      |                                                    | ID_LOCATION IN (19, 341, 410, 1407, 2401, 4074)    | SELECT DISTINCT T_WC_T2S_LOCATION.ID_LOCATION, T_WC_T2S_LOCA |
+|              2435 |       0 | List TV series happening in London       | Liste des séries télévisées se déroulant      | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative | ID_SERIE IN (19885, 60574, 97546, 67070, 65494, 43 | SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE  |
+|              2504 |       1 | Movies and TV series set in Naples       | Films et séries télévisées se déroulant       |                                                    | ID_MOVIE IN (2502, 722778, 37550, 49687, 58383, 27 | SELECT U.ID_CONTENT, U.CONTENT_TYPE
+  FROM (
+        (SELE |
+|              2517 |       1 | Movies filmed in Iceland but set somewhe | Des films tournés W Islandii mais dont l      |                                                    | ID_MOVIE IN (157336, 935, 272, 791373, 271110, 125 | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE  |
+|              2527 |       1 | list the most famous movies and TV serie | liste les films et séries télévisées The      |                                                    | ID_MOVIE IN (597, 293660, 49521, 383498, 2048, 366 | SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE AS ID_CONTENT, &#039 |
++-------------------+---------+------------------------------------------+-----------------------------------------------+----------------------------------------------------+----------------------------------------------------+--------------------------------------------------------------+
++-------------------------+
+| SECTION                 |
++-------------------------+
+| 3. After, repaired rows |
++-------------------------+
++-------------------+---------+----------------------------------------------------------+------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+
+| ID_T2S_EVALUATION | IS_EVAL | QUESTION_FR                                              | ASSERTIONS_SQL_QUERY                                             | ASSERTIONS_QUERY_RESULT                                                                                                                                                                                                                                                                                                                                      | REFRESH   |
++-------------------+---------+----------------------------------------------------------+------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+
+|              2147 |       1 | Répertoriez les films se déroulant à San Francisco       |                                                                  | ID_MOVIE IN (13, 299534, 426, 150540, 37247, 574074, 1402, 1405, 963, 678, 26022, 13475, 898, 43442, 343, 32488, 1879, 154, 19931, 2649, 1949, 984, 100343, 592, 54138, 86737, 14588, 571, 101504, 61791, 119450, 11610, 6949, 19171, 43522, 3766, 10139, 33931, 65215, 11093, 628, 16227, 10734, 20025, 11850, 9802, 549484)                                | none      |
+|              2149 |       1 | Liste des films se déroulant sur la Lune                 | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_MOVIE IN (62, 775, 149871, 83790, 17431, 83564, 41213, 530, 337437, 3007, 14506, 11627, 41154, 72809, 25530, 817, 34276, 82649, 3107, 25392, 49876, 2665, 5709, 222817, 261593, 27441, 10679, 339447, 62472, 64870, 34765, 50357, 47933, 44969, 2154, 14916, 26121, 43120, 86817, 43341, 11692, 72091, 50977, 62347, 196830, 264079, 61702, 26270, 31396) | none      |
+|              2150 |       1 | Listez les films tournés en Namibie.                     | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]   | ID_MOVIE IN (62, 76341, 520446, 44737, 12663, 61868)                                                                                                                                                                                                                                                                                                         | none      |
+|              2156 |       1 | Où a été tourné le film 2001, l&#039;Odyssée de l&       | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]   |  ID_LOCATION IN (697, 2474, 4957, 5012)                                                                                                                                                                                                                                                                                                                      | other     |
+|              2229 |       1 | Quels sont les lieux narratifs de la série télévis       | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_LOCATION IN (2669, 4392, 332) AND ID_LOCATION NOT IN (445, 611, 609)                                                                                                                                                                                                                                                                                      | none      |
+|              2230 |       1 | Quels sont les lieux de tournage de la série télév       | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]   | ID_LOCATION IN (445, 611, 609, 56, 688) AND ID_LOCATION NOT IN (2669, 4392)                                                                                                                                                                                                                                                                                  | none      |
+|              2231 |       1 | Liste des séries télévisées se déroulant à Paris         | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_SERIE IN (87739, 57736, 103913, 93816, 64249, 225383, 24710, 128061)                                                                                                                                                                                                                                                                                      | hierarchy |
+|              2428 |       0 | Répertorier les films populaires se déroulant à Pa       | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_MOVIE IN (27205, 350, 16869, 792307, 603692, 331482, 77931, 49013)                                                                                                                                                                                                                                                                                        | hierarchy |
+|              2429 |       0 | Liste des films tournés à Tokyo                          | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]   | ID_MOVIE IN (27205, 153, 28422, 14525, 44737, 42041, 1053460, 899139)                                                                                                                                                                                                                                                                                        | hierarchy |
+|              2434 |       1 | Quels sont les lieux narratifs du film 2001, l&#03       | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_LOCATION IN (19, 341, 410, 1407, 2401, 4074)                                                                                                                                                                                                                                                                                                              | none      |
+|              2435 |       0 | Liste des séries télévisées se déroulant à Londres       | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_SERIE IN (19885, 60574, 97546, 67070, 65494, 4327, 2490, 815)                                                                                                                                                                                                                                                                                             | hierarchy |
+|              2504 |       1 | Films et séries télévisées se déroulant à Naples         |                                                                  | ID_MOVIE IN (2502, 722778, 37550, 49687, 58383, 2748, 42801, 24553, 58007, 41834)                                                                                                                                                                                                                                                                            | hierarchy |
+|              2517 |       1 | Films tournés en Islande mais dont l'intrigue se d       |                                                                  | ID_MOVIE IN (157336, 935, 272, 271110, 330459, 1251, 140607, 54138, 18, 2270, 116745, 1563, 493529, 62204, 3683)                                                                                                                                                                                                                                             | hierarchy |
+|              2527 |       1 | Liste les films et séries télévisées les plus célè       |                                                                  | ID_MOVIE IN (597) AND ID_SERIE IN (4087, 1412, 63174, 1705)                                                                                                                                                                                                                                                                                                  | hierarchy |
++-------------------+---------+----------------------------------------------------------+------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------+
++---------------------+
+| SECTION             |
++---------------------+
+| 3b. After, new rows |
++---------------------+
++-------------------+----------------------------+---------+-------------------------------------+----------------------------------------------------+------------------------------------------------------------------------------------------+---------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_EVAL | QUESTION                            | QUESTION_FR                                        | ASSERTIONS_SQL_QUERY                                                                     | ASSERTIONS_QUERY_RESULT                                             |
++-------------------+----------------------------+---------+-------------------------------------+----------------------------------------------------+------------------------------------------------------------------------------------------+---------------------------------------------------------------------+
+|              2546 |                          8 |       1 | Movies filmed in Cambridge, England | Films tournés à Cambridge, en Angleterre           | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]                           | ID_MOVIE IN (266856) AND ID_MOVIE NOT IN (1167351)                  |
+|              2548 |                          8 |       1 | Movies set in fictional places      | Films qui se déroulent dans des lieux imaginaires  | (?is)\bLOCATION_TYPE\s*=\s*[&#039;&quot;]fiction[&#039;&quot;]                           | ID_MOVIE IN (155, 1891, 105)                                        |
+|              2547 |                          8 |       1 | Movies set in Venice                | Films qui se passent à Venise                      | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;]                         | ID_MOVIE IN (36557, 1213, 6619)                                     |
+|              2544 |                          8 |       1 | Movies shot in France               | Films tournés en France                            | (?is)T_WC_T2S_LOCATION_ANCESTOR.*LOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;] | ID_MOVIE IN (27205, 857, 77338)                                     |
+|              2545 |                          8 |       1 | Movies shot in Paris                | Films tournés à Paris                              | (?is)\bLOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]                           | ID_MOVIE IN (27205, 101) AND ID_MOVIE NOT IN (857, 85, 387, 374720) |
++-------------------+----------------------------+---------+-------------------------------------+----------------------------------------------------+------------------------------------------------------------------------------------------+---------------------------------------------------------------------+
++-------------------------------------------------------------------------------------------+
+| SECTION                                                                                   |
++-------------------------------------------------------------------------------------------+
+| 3c. The refresh SQL as stored, run here unescaped: 2231, 2504, 2517, 2527 must return ids |
++-------------------------------------------------------------------------------------------+
++----------+
+| ID_SERIE |
++----------+
+|    87739 |
+|    57736 |
+|   103913 |
+|    93816 |
+|    64249 |
+|   225383 |
+|    24710 |
+|   128061 |
++----------+
++------------+--------------+
+| ID_CONTENT | CONTENT_TYPE |
++------------+--------------+
+|       4087 | serie        |
+|       1412 | serie        |
+|      63174 | serie        |
+|       1705 | serie        |
+|      39272 | serie        |
+|    1083381 | movie        |
+|        597 | movie        |
+|    1124620 | movie        |
+|      12153 | movie        |
+|     216015 | movie        |
++------------+--------------+
++--------+
+| N_2504 |
++--------+
+|     10 |
++--------+
++--------+
+| N_2517 |
++--------+
+|     15 |
++--------+

@@ -76,6 +76,11 @@
 -- rest of the columns; process 70 and the evaluator unescape first. Backslashes
 -- doubled for MariaDB.
 --
+-- APPLIED 2026-10-19 on vaugouindb (voie 1). First pass: everything but 2147, whose empty
+-- ASSERTIONS_SQL_QUERY is '' rather than NULL (the export shows both as null); the guards
+-- now read COALESCE(..., '') = '' and the file was re-run with -f, only 2147 applying.
+-- New rows: 2544 France, 2545 Paris, 2546 Cambridge, 2547 Venice, 2548 fictional places.
+--
 -- GUARDS. Every UPDATE withdraws itself if the value changed since the export
 -- or the harvest; every INSERT is guarded by NOT EXISTS on the English
 -- question. Re-running the file is a no-op.
@@ -103,13 +108,13 @@ UPDATE T_WC_T2S_EVALUATION
    SET ASSERTIONS_SQL_QUERY = '(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]narrative[&#039;&quot;]',
        LONG_DESC = CONCAT(COALESCE(LONG_DESC, ''), ' 2026-10-19 (EVALUATIONS-024): role regex added, a story set in the place is a narrative location.'),
        TIM_UPDATED = NOW()
- WHERE ID_T2S_EVALUATION IN (2147, 2149) AND ASSERTIONS_SQL_QUERY IS NULL;
+ WHERE ID_T2S_EVALUATION IN (2147, 2149) AND COALESCE(ASSERTIONS_SQL_QUERY, '') = '';
 
 UPDATE T_WC_T2S_EVALUATION
    SET ASSERTIONS_SQL_QUERY = '(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]',
        LONG_DESC = CONCAT(COALESCE(LONG_DESC, ''), ' 2026-10-19 (EVALUATIONS-024): role regex added, shot in the place is a filming location.'),
        TIM_UPDATED = NOW()
- WHERE ID_T2S_EVALUATION = 2150 AND ASSERTIONS_SQL_QUERY IS NULL;
+ WHERE ID_T2S_EVALUATION = 2150 AND COALESCE(ASSERTIONS_SQL_QUERY, '') = '';
 
 -- 2156: the description.
 UPDATE T_WC_T2S_EVALUATION
