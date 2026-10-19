@@ -58,6 +58,12 @@
 -- table (MySQL error 1093). Re-running the file is a no-op.
 --
 -- AFTER: phase 31 to refresh the JSON export, then phases 11 + 20 to run and score them.
+--
+-- APPLIED 2026-10-19 20:42 on vaugouindb (voie 1), result in
+-- new-evaluations-episode-locations-20261019.txt: ids 2540 (Arlington), 2541 (Air Force One),
+-- 2542 (Lian Yu), 2543 (London); regexes stored with single backslashes. The eight forms were
+-- then scored against Green 1.1.19 with this repository's own assertion functions
+-- (re.search on the unescaped regex, evaluate_dataframe_assertions): 8 of 8 pass.
 
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;

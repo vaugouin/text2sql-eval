@@ -1,0 +1,42 @@
+-- new-evaluations-episode-locations.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-19 20:42:49 +0200
+--
++--------------------+
+| SECTION            |
++--------------------+
+| 0. Asserted series |
++--------------------+
++----------+----------------------+---------+
+| ID_SERIE | SERIE_TITLE          | DELETED |
++----------+----------------------+---------+
+|      456 | The Simpsons         |       0 |
+|      688 | The West Wing        |       0 |
+|     1412 | Arrow                |       0 |
+|     4087 | The X-Files          |       0 |
+|     8592 | Parks and Recreation |       0 |
+|    19885 | Sherlock             |       0 |
+|    42009 | Black Mirror         |       0 |
+|    60574 | Peaky Blinders       |       0 |
+|    60735 | The Flash            |       0 |
+|    67070 | Fleabag              |       0 |
+|    72750 | Killing Eve          |       0 |
+|    87917 | For All Mankind      |       0 |
++----------+----------------------+---------+
++------------+
+| SECTION    |
++------------+
+| 0b. Before |
++------------+
++----------+
+| SECTION  |
++----------+
+| 2. After |
++----------+
++-------------------+----------------------------+---------+-----------+--------------------------------------------------------------+------------------------------------------------------------------+-------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_EVAL | IS_SAMPLE | QUESTION                                                     | QUESTION_FR                                                      | ASSERTIONS_SQL_QUERY                                                                      | ASSERTIONS_QUERY_RESULT                                                         |
++-------------------+----------------------------+---------+-----------+--------------------------------------------------------------+------------------------------------------------------------------+-------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
+|              2543 |                         36 |       1 |         0 | TV shows set in London                                       | Séries qui se passent à Londres                                  | (?is)^(?!.*T_WC_T2S_EPISODE_LOCATION).*T_WC_T2S_SERIE_LOCATION                            | ID_SERIE IN (19885, 60574, 67070) AND ID_SERIE NOT IN (42009, 456, 8592, 72750) |
+|              2540 |                         36 |       1 |         0 | Which TV series have an episode filmed at Arlington National | Quelles séries ont un épisode tourné au cimetière national d     | (?is)T_WC_T2S_EPISODE_LOCATION.*LOCATION_ROLE\s*=\s*[&#039;&quot;]filming[&#039;&quot;]   | ID_SERIE IN (688) AND ID_SERIE NOT IN (4087, 87917)                             |
+|              2541 |                         36 |       1 |         0 | Which TV series have an episode set aboard Air Force One?    | Quelles séries ont un épisode qui se déroule à bord d'Air Fo     | (?is)T_WC_T2S_EPISODE_LOCATION.*LOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_SERIE IN (688)                                                               |
+|              2542 |                         36 |       1 |         0 | Which TV series have episodes set on Lian Yu?                | Quelles séries ont des épisodes qui se passent sur Lian Yu ?     | (?is)T_WC_T2S_EPISODE_LOCATION.*LOCATION_ROLE\s*=\s*[&#039;&quot;]narrative[&#039;&quot;] | ID_SERIE IN (1412, 60735)                                                       |
++-------------------+----------------------------+---------+-----------+--------------------------------------------------------------+------------------------------------------------------------------+-------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------+
