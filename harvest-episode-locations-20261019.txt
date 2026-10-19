@@ -1,0 +1,118 @@
+-- harvest-episode-locations.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-19 20:39:08 +0200
+--
++----------------------------------+
+| SECTION                          |
++----------------------------------+
+| 1-2. Arlington and Air Force One |
++----------------------------------+
++-------------+-------------+-----------------------------+---------------------------------+---------------+-------------+-------------+---------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME               | LOCATION_NAME_FR                | LOCATION_TYPE | MOVIE_COUNT | SERIE_COUNT | EPISODE_COUNT |
++-------------+-------------+-----------------------------+---------------------------------+---------------+-------------+-------------+---------------+
+|       12647 | Q179969     | Air Force One               | Air Force One                   | NULL          |           0 |           0 |            11 |
+|       12674 | Q216344     | Arlington National Cemetery | cimetière national d'Arlington  | structure     |           0 |           0 |             4 |
++-------------+-------------+-----------------------------+---------------------------------+---------------+-------------+-------------+---------------+
++-----------------------------------------------+
+| SECTION                                       |
++-----------------------------------------------+
+| 1-2b. Series reaching them through an episode |
++-----------------------------------------------+
++-----------------------------+---------------+----------+-----------------+----------------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------+
+| LOCATION_NAME               | LOCATION_ROLE | ID_SERIE | SERIE_TITLE     | IMDB_RATING_WEIGHTED | EPISODES | WHICH                                                                                                                                                                                                                                                                       | SERIE_LEVEL_ROLES |
++-----------------------------+---------------+----------+-----------------+----------------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------+
+| Air Force One               | narrative     |      688 | The West Wing   |    8.571217568966254 |       11 | S1E16 20 Hours in L. A. | S2E7 The Portland Trip | S3E1 Manchester (1) | S3E12 The Two Bartlets | S4E1 20 Hours in America (1) | S4E3 College Kids | S4E16 The California 47th | S4E19 Angel Maintenance | S5E10 The Stormy Present | S6E8 In the Room | S6E9 Impact Winter | NULL              |
+| Arlington National Cemetery | filming       |      688 | The West Wing   |    8.571217568966254 |        2 | S1E10 In Excelsis Deo | S3E20 We Killed Yamamoto                                                                                                                                                                                                                            | NULL              |
+| Arlington National Cemetery | narrative     |      688 | The West Wing   |    8.571217568966254 |        1 | S3E20 We Killed Yamamoto                                                                                                                                                                                                                                                    | NULL              |
+| Arlington National Cemetery | narrative     |     4087 | The X-Files     |    8.486232534996896 |        1 | S11E2 This                                                                                                                                                                                                                                                                  | NULL              |
+| Arlington National Cemetery | narrative     |    87917 | For All Mankind |    7.895384522934897 |        1 | S2E10 The Grey                                                                                                                                                                                                                                                              | NULL              |
++-----------------------------+---------------+----------+-----------------+----------------------+----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------------+
++------------------------+
+| SECTION                |
++------------------------+
+| 3. Episode-only places |
++------------------------+
++-------------+-------------+-----------------------------------------------------------+---------------------------------+---------------+---------------+--------+-------------------+--------------------------------------------------------------------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME                                             | LOCATION_NAME_FR                | LOCATION_TYPE | EPISODE_COUNT | SERIES | ROLES             | TOP_SERIES                                                               |
++-------------+-------------+-----------------------------------------------------------+---------------------------------+---------------+---------------+--------+-------------------+--------------------------------------------------------------------------+
+|       12574 | Q112316546  | Quark's Bar, Grill, Gaming House and Holosuite Arcade     | Chez Quark                      | NULL          |            17 |      3 | narrative         | Star Trek: Deep Space Nine | Star Trek: Voyager | Star Trek: Lower Decks |
+|       12674 | Q216344     | Arlington National Cemetery                               | cimetière national d'Arlington  | structure     |             4 |      3 | filming,narrative | The West Wing | The X-Files | For All Mankind                            |
+|       12688 | Q25395444   | Lian Yu                                                   | Lian Yu                         | fiction       |            66 |      2 | narrative         | Arrow | The Flash                                                        |
+|       12841 | Q60685961   | Pinewood Toronto Stage 4                                  | NULL                            | NULL          |            18 |      2 | filming           | Star Trek: Short Treks | Star Trek: Discovery                            |
+|       12873 | Q674612     | Mirror Universe                                           | univers-miroir                  | NULL          |             7 |      2 | narrative         | Star Trek | Star Trek: Discovery                                         |
+|       12922 | Q83848355   | Château Picard                                            | Château Picard                  | NULL          |             7 |      2 | narrative         | Star Trek: The Next Generation | Star Trek: Picard                       |
+|       12619 | Q1400558    | The Huntington Library, Art Museum, and Botanical Gardens | bibliothèque Huntington         | structure     |             5 |      2 | filming           | Star Trek: The Next Generation | Star Trek: Deep Space Nine              |
+|       12731 | Q3748903    | Speed Force                                               | NULL                            | NULL          |             3 |      2 | narrative         | Arrow | The Flash                                                        |
+|       12921 | Q83795557   | Daystrom Institute                                        | NULL                            | NULL          |             3 |      2 | narrative         | Star Trek: Lower Decks | Star Trek: Picard                               |
+|       12545 | Q10380769   | Earth-X                                                   | NULL                            | fiction       |             2 |      2 | narrative         | Arrow | The Flash                                                        |
+|       12687 | Q24892491   | Galactic barrier                                          | NULL                            | NULL          |             2 |      2 | narrative         | Star Trek | Star Trek: Discovery                                         |
+|       12735 | Q3804953    | Ivy Town                                                  | Ivy Town                        | fiction       |             2 |      2 | narrative         | Arrow | The Flash                                                        |
+|       12780 | Q5263676    | Descanso Gardens                                          | NULL                            | structure     |             2 |      2 | filming           | Star Trek: The Next Generation | Star Trek: Deep Space Nine              |
+|       12799 | Q566        | purgatory                                                 | purgatoire                      | NULL          |             2 |      2 | narrative         | Arrow | The Flash                                                        |
+|       12831 | Q58283936   | Deep Space Station K-7                                    | NULL                            | fiction       |             2 |      2 | narrative         | Star Trek | Star Trek: Deep Space Nine                                   |
+|       12839 | Q60314300   | Beta Ⅲ                                                    | NULL                            | fiction       |             2 |      2 | narrative         | Star Trek | Star Trek: Lower Decks                                       |
+|       12854 | Q65552653   | Huntington Botanical Gardens                              | NULL                            | structure     |             2 |      2 | filming           | Star Trek: The Next Generation | Star Trek: Deep Space Nine              |
+|       12916 | Q83180532   | European Town                                             | NULL                            | NULL          |             2 |      2 | filming           | Star Trek                                                                |
+|       12919 | Q83550007   | Callaway Vineyard & Winery                                | NULL                            | NULL          |             2 |      2 | filming           | Star Trek: The Next Generation | Star Trek: Picard                       |
+|       12955 | Q92294430   | Vanishing Point                                           | NULL                            | NULL          |             2 |      2 | narrative         | Arrow | The Flash                                                        |
++-------------+-------------+-----------------------------------------------------------+---------------------------------+---------------+---------------+--------+-------------------+--------------------------------------------------------------------------+
++---------------------+
+| SECTION             |
++---------------------+
+| 4a. London homonyms |
++---------------------+
++-------------+-------------+---------------+---------------+-------------+-------------+---------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME | LOCATION_TYPE | MOVIE_COUNT | SERIE_COUNT | EPISODE_COUNT |
++-------------+-------------+---------------+---------------+-------------+-------------+---------------+
+|          21 | Q84         | London        | city          |        2517 |         411 |            20 |
++-------------+-------------+---------------+---------------+-------------+-------------+---------------+
++----------------------------------------------------------------------------+
+| SECTION                                                                    |
++----------------------------------------------------------------------------+
+| 4b. Series set in London (Q84) at series level, place and contained places |
++----------------------------------------------------------------------------+
++----------+------------------+----------------------+-------+
+| ID_SERIE | SERIE_TITLE      | IMDB_RATING_WEIGHTED | DEPTH |
++----------+------------------+----------------------+-------+
+|    19885 | Sherlock         |    8.962300938064486 |     0 |
+|    60574 | Peaky Blinders   |    8.655827653364994 |     0 |
+|    97546 | Ted Lasso        |    8.627176542100125 |     0 |
+|    67070 | Fleabag          |    8.569090596914393 |     0 |
+|    65494 | The Crown        |    8.489057049050235 |     0 |
+|     4327 | Mr. Bean         |    8.406176788112134 |     0 |
+|     2490 | The IT Crowd     |    8.339677556680442 |     0 |
+|      815 | Peep Show        |    8.323127552390208 |     0 |
+|     1426 | Luther           |    8.239966660892867 |     0 |
+|    95480 | Slow Horses      |    8.238704562356697 |     0 |
+|     7317 | The Inbetweeners |    8.157724202371732 |     0 |
+|    65708 | Taboo            |    8.151136438119424 |     0 |
+|      745 | Spaced           |    8.111064547605839 |     0 |
+|    61664 | Sense8           |    8.067794375205347 |     0 |
+|   116174 | It's a Sin       |    8.054542222116176 |     0 |
++----------+------------------+----------------------+-------+
++----------------------------------------------------------------------------------+
+| SECTION                                                                          |
++----------------------------------------------------------------------------------+
+| 4c. Series reaching London (or a place in it) only through an episode, narrative |
++----------------------------------------------------------------------------------+
++----------+--------------------------+----------------------+----------+---------------------------------------------------------------------------------------------------------------------------------+
+| ID_SERIE | SERIE_TITLE              | IMDB_RATING_WEIGHTED | EPISODES | WHICH                                                                                                                           |
++----------+--------------------------+----------------------+----------+---------------------------------------------------------------------------------------------------------------------------------+
+|    42009 | Black Mirror             |    8.653281627303588 |        1 | S5E2 Smithereens                                                                                                                |
+|      456 | The Simpsons             |    8.531286742203264 |        4 | S15E4 The Regina Monologues | S16E1 Treehouse of Horror XV | S23E9 Holidays of Future Passed | S32E5 The 7 Beer Itch            |
+|     8592 | Parks and Recreation     |    8.500325349112764 |        1 | S6E1 London                                                                                                                     |
+|    57243 | Doctor Who               |    8.388134896307864 |        1 | S0E2 The Christmas Invasion                                                                                                     |
+|    72750 | Killing Eve              |    7.878881399126155 |        5 | S1E1 Nice Face | S1E2 I'll Deal With Him Later | S1E3 Don't I Know You? | S1E4 Sorry Baby | S1E5 I Have a Thing About Bathrooms |
+|    90802 | The Sandman              |   7.5438671223104015 |        1 | S1E6 The Sound of Her Wings                                                                                                     |
+|    62643 | DC's Legends of Tomorrow |   6.7416761992113425 |        1 | S5E8 Romeo v Juliet: Dawn of Justness                                                                                           |
+|   239770 | Doctor Who               |   6.4823718788158065 |        3 | S1E2 The Devil's Chord | S1E4 73 Yards | S2E4 Lucky Day                                                                         |
++----------+--------------------------+----------------------+----------+---------------------------------------------------------------------------------------------------------------------------------+
++-----------------------+
+| SECTION               |
++-----------------------+
+| 5. Existing questions |
++-----------------------+
++-------------------+----------------------------+---------+-----------+------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_EVAL | IS_SAMPLE | QUESTION                           |
++-------------------+----------------------------+---------+-----------+------------------------------------+
+|              2435 |                         36 |       0 |         1 | List TV series happening in London |
++-------------------+----------------------------+---------+-----------+------------------------------------+
