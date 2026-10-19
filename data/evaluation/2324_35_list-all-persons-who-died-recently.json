@@ -10,7 +10,7 @@
     "query_result": "ID_PERSON IN (3654846, 141075, 109189, 1561759, 1007561, 36546, 88552, 209674, 1077561, 41161, 1105211, 1546648, 227838, 61399, 84956)"
   },
   "assertion_refresh_sql": "SELECT DISTINCT p.ID_PERSON FROM T_WC_T2S_PERSON p WHERE p.DEATH_YEAR IS NOT NULL ORDER BY p.DEATH_YEAR DESC, p.DEATH_MONTH DESC, p.DEATH_DAY DESC LIMIT 15",
-  "assertion_refresh_last": "2026-10-18T03:02:27",
+  "assertion_refresh_last": "2026-10-19T02:48:34",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

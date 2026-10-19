@@ -10,7 +10,7 @@
     "query_result": "ID_PERSON IN (550876, 1124535, 1487683, 149404, 84028, 945130, 1176420, 1373074)"
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_PERSON.ID_PERSON FROM T_WC_T2S_PERSON WHERE T_WC_T2S_PERSON.COUNTRY_OF_BIRTH = 'jp' ORDER BY T_WC_T2S_PERSON.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-18T03:02:29",
+  "assertion_refresh_last": "2026-10-19T02:48:35",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
