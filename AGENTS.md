@@ -36,4 +36,5 @@ The scripts that import the API's own modules (`entity`, `main`, `text2sql`, `ra
 - Line endings are LF (`.gitattributes`), as everywhere in the stack.
 - Offline checks of the DSL need no database: `uv run --no-project --with pandas test-cell-condition.py`, `test-unified-schema-bridge.py`, `test-subset-301.py`.
 - One-off `.sql` files and their dated results move to `archive/` once their ticket is closed.
+- **Version:** `VERSION` at the root (MAJOR.MINOR.PATCH, 2.13.0 on 2026-10-19) is the source of truth. Bump it in the same commit as any change, PATCH by default, MINOR for a new option or behaviour, and add a row to the README version history. The wrapper's confirmation screen and the evaluator's first line print it.
 - Tickets about the evaluator are tracked in the T2S backlog (`Nestor/projets/t2s-backlog/`), under `repos/text2sql-eval.md` and the `EVALUATIONS-*` topic.

@@ -459,13 +459,16 @@ _parser.add_argument("--no-complex-question-processing", "--no-complex-model-use
 # TEXT2SQL-EVAL-002 (2026-10-18). Ask the API for OpenAI Flex processing: half the price of the
 # GPT-6 calls, slower. The API retries a refused Flex call, then sends it once at the standard
 # tier. Not part of the namespace (the model tuple of the skip rule): same models, same answers.
+# Default since 2026-10-19 (evaluator 2.13): on when one of the run's models is a Flex-eligible
+# OpenAI model (GPT-5.x, GPT-6), off otherwise, so a Claude or Gemini run is not labelled Flex.
 _parser.add_argument("--flex-processing", dest="flex_processing", action="store_true",
-                     help="Ask the API for OpenAI Flex processing (half price, slower; default: false)")
+                     help="Ask the API for OpenAI Flex processing (half price, slower; "
+                          "default: on when a model of the run is GPT-5.x or GPT-6)")
 _parser.add_argument("--no-flex-processing", dest="flex_processing", action="store_false",
-                     help="Standard OpenAI tier (default)")
+                     help="Standard OpenAI tier")
 _parser.set_defaults(store_to_cache=True)
 _parser.set_defaults(complex_question_processing=True)
-_parser.set_defaults(flex_processing=False)
+_parser.set_defaults(flex_processing=None)
 _parser.add_argument("--cache-guard-min-hit", type=float, default=0.7,
                      help="PROMPT-CACHING-010: stop the run when fewer than this share of the last "
                           "--cache-guard-window calls of a cacheable task read their prompt from "
@@ -531,7 +534,17 @@ try:
             blnstoretocache = _cli_args.store_to_cache
             blncomplexquestionprocessing = _cli_args.complex_question_processing
             # TEXT2SQL-EVAL-002: Flex mode and its counters, summed over the run for the end screen.
+            try:
+                with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "VERSION"), encoding="utf-8") as objversion:
+                    strevaluatorversion = objversion.read().strip()
+            except OSError:
+                strevaluatorversion = "unknown"
+            print(f"text2sql-eval {strevaluatorversion}")
             blnflexprocessing = _cli_args.flex_processing
+            if blnflexprocessing is None:
+                blnflexprocessing = t2s_eval.any_flex_eligible_model(
+                    strentityextractionmodeleval, strtext2sqlmodeleval,
+                    strcomplexmodeleval, strresultentitymodeleval)
             dictflexstats = {"rows": 0, "flex_calls": 0, "standard_calls": 0, "retries": 0,
                              "fallbacks": 0, "timeout_retries": 0}
             lngapitimeoutseconds = EVAL_API_FLEX_TIMEOUT_SECONDS if blnflexprocessing else EVAL_API_TIMEOUT_SECONDS

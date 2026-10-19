@@ -13,6 +13,16 @@ def format_api_version(version: str) -> str:
     return f"{int(version_parts[0]):03d}.{int(version_parts[1]):03d}.{int(version_parts[2]):03d}"
 
 
+# TEXT2SQL-EVAL-002: the models the API sends to OpenAI Flex (fastapi-text2sql
+# _FLEX_MODEL_PREFIXES). gpt-4o and gpt-4.1 are not offered in Flex.
+FLEX_MODEL_PREFIXES = ("gpt-5", "gpt-6")
+
+
+def any_flex_eligible_model(*models):
+    """True when at least one of the run's models is served in Flex by the API."""
+    return any(str(m or "").strip().lower().startswith(FLEX_MODEL_PREFIXES) for m in models)
+
+
 def flex_usage_counts(llm_usage: Any) -> dict:
     """Sum what OpenAI Flex processing did over one response's `llm_usage` (TEXT2SQL-EVAL-002).
 

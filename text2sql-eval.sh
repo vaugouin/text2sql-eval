@@ -46,7 +46,7 @@
 #   EVAL_LANGUAGE=fr ./text2sql-eval.sh
 #   API_VERSION=1.1.19 EVAL_LANGUAGE='*' ./text2sql-eval.sh
 #   TEXT2SQL_MODEL=gpt-5.6-terra API_VERSION=1.1.19 ./text2sql-eval.sh   # AFTER the baseline
-#   FLEX_PROCESSING=--flex-processing ./text2sql-eval.sh                 # OpenAI Flex, half price
+#   FLEX_PROCESSING=--no-flex-processing ./text2sql-eval.sh              # standard OpenAI tier, full price
 #
 # THE LANGUAGE VARIABLE IS EVAL_LANGUAGE, NOT LANGUAGE
 # LANGUAGE is the gettext locale list ("en_US:en") on any machine whose locale sets it, and
@@ -115,7 +115,19 @@ COMPLEX_QUESTION_PROCESSING=${COMPLEX_QUESTION_PROCESSING:-${COMPLEX_MODEL_USED:
 # standard tier, so the run always reaches its end. Not part of the namespace: a Flex run skips
 # the questions already run at the standard tier with the same models, and vice versa.
 # Needs archive/migrate-evaluation-execution-flex-processing.sql applied, and the API at TEXT2SQL-EVAL-002.
-FLEX_PROCESSING=${FLEX_PROCESSING:---no-flex-processing}
+# Default since 2026-10-19 (evaluator 2.13): on when one of the run's models is a GPT-5.x or GPT-6
+# (the models the API sends to Flex), off otherwise. Set it to force either way.
+if [ -z "${FLEX_PROCESSING:-}" ]; then
+    FLEX_PROCESSING=--no-flex-processing
+    FLEX_ORIGIN="auto: no GPT-5.x/GPT-6 model in the run"
+    for m in "$ENTITY_EXTRACTION_MODEL" "$TEXT2SQL_MODEL" "$COMPLEX_MODEL" "$RESULT_ENTITY_MODEL"; do
+        case "$m" in
+            gpt-5*|gpt-6*) FLEX_PROCESSING=--flex-processing; FLEX_ORIGIN="auto: OpenAI GPT-5.x/GPT-6 model in the run" ;;
+        esac
+    done
+else
+    FLEX_ORIGIN="set by FLEX_PROCESSING"
+fi
 # PROMPT-CACHING-010. The evaluator stops the run when fewer than this share of the last 20 calls
 # of a cacheable task read their prompt from the provider cache: the 2026-09-27 gpt-6-sol run
 # missed on 57 % of its text2sql calls and went to the end, measuring a price nobody would pay.
@@ -338,6 +350,7 @@ PF_BKTREES=$(pf PF_BKTREES)
 echo
 echo "================ text2sql evaluation campaign: pre-flight ================"
 echo "Date        : $(date '+%Y-%m-%d %H:%M:%S %Z')"
+echo "Evaluator   : $(cat "$EVAL_HOME/VERSION" 2>/dev/null || echo unknown)"
 echo "API version : $API_VERSION -> $COLOUR (patch $PATCH is $PARITY)"
 echo "Target      : $(pf PF_API_URL)  HTTP $(pf PF_API_STATUS)"
 echo "              answers api_version=${PF_API_VERSION_SEEN:-?}, bktrees_ready=${PF_BKTREES:-?}"
@@ -360,10 +373,11 @@ echo "Options:"
 echo "  Escalation  : $COMPLEX_QUESTION_PROCESSING (stronger-model retry, fired on 2.6 % of 001.001.018)"
 echo "  Cache write : $STORE_TO_CACHE (reads are always off: retrieve_from_cache=false)"
 if [ "$FLEX_PROCESSING" = "--flex-processing" ]; then
-    echo "  OpenAI Flex : ON ($FLEX_PROCESSING), half price on GPT-5.x/GPT-6 calls, slower; after the API's"
+    echo "  OpenAI Flex : ON ($FLEX_PROCESSING, $FLEX_ORIGIN), half price on GPT-5.x/GPT-6 calls, slower; after the API's"
     echo "                Flex retries a call runs once at the standard tier (TEXT2SQL-EVAL-002)"
 else
-    echo "  OpenAI Flex : off ($FLEX_PROCESSING), standard tier"
+    echo "  OpenAI Flex : off ($FLEX_PROCESSING, $FLEX_ORIGIN), standard tier"
+    echo "                for Flex: FLEX_PROCESSING=--flex-processing"
 fi
 echo "  Cache guard : stops the run under $CACHE_GUARD_MIN_HIT of provider-cache hits over the last 20 calls of a task (0 = off)"
 echo "  Pacing      : TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS and 429 retries, from $EVAL_HOME/.env"
