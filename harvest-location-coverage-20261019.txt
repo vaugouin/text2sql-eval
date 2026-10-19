@@ -1,0 +1,353 @@
+-- harvest-location-coverage.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-19 21:26:41 +0200
+--
++------------------------------------------------------------------+
+| SECTION                                                          |
++------------------------------------------------------------------+
+| 1a. DELETED values on T_WC_T2S_SERIE and T_WC_T2S_SERIE_LOCATION |
++------------------------------------------------------------------+
++----------------+---------+--------+
+| T              | DELETED | N      |
++----------------+---------+--------+
+| SERIE          | 0       | 102857 |
+| SERIE_LOCATION | 0       |  11389 |
+| MOVIE_LOCATION | 0       |  85900 |
++----------------+---------+--------+
++--------------------------------------------------------------------+
+| SECTION                                                            |
++--------------------------------------------------------------------+
+| 1b. Series set in Naples, with and without the DELETED = 0 filters |
++--------------------------------------------------------------------+
++---------------------+
+| SECTION             |
++---------------------+
+| 1c. Naples homonyms |
++---------------------+
++-------------+-------------+---------------+------------------+---------------+-------------+-------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME | LOCATION_NAME_FR | LOCATION_TYPE | MOVIE_COUNT | SERIE_COUNT |
++-------------+-------------+---------------+------------------+---------------+-------------+-------------+
+|         609 | Q189        | Iceland       | Islande          | country       |          99 |           3 |
+|        7803 | Q3740828    | Iceland       | Islande          | island        |           1 |           0 |
+|         697 | Q1030       | Namibia       | Namibie          | country       |          18 |           0 |
+|          65 | Q2634       | Naples        | Naples           | city          |         452 |           2 |
+|         158 | Q62         | San Francisco | San Francisco    | city          |         579 |         130 |
+|        1699 | Q3752500    | San Francisco | San Frantzisko   | city          |           0 |           1 |
+|       12983 | Q99673814   | San Francisco | NULL             | fiction       |           0 |           0 |
+|          54 | Q24639      | Vancouver     | Vancouver        | city          |         529 |         107 |
+|           7 | Q641        | Venice        | Venise           | country       |         209 |          10 |
+|         517 | Q57325      | Venice        | Venice           | city          |           1 |           0 |
+|         866 | Q773853     | Venice        | Venice           | city          |           1 |           2 |
++-------------+-------------+---------------+------------------+---------------+-------------+-------------+
++-----------------------------------------------------------------------------------------+
+| SECTION                                                                                 |
++-----------------------------------------------------------------------------------------+
+| 1d. Vancouver (Q24639), filming, movies and series through the hierarchy, by POPULARITY |
++-----------------------------------------------------------------------------------------+
++------------+--------------+---------------------------------+------------+----------------------+------------+
+| ID_CONTENT | CONTENT_TYPE | TITLE                           | POPULARITY | IMDB_RATING_WEIGHTED | IMDB_VOTES |
++------------+--------------+---------------------------------+------------+----------------------+------------+
+|       4087 | serie        | The X-Files                     |   146.2741 |    8.486232534996896 |     278128 |
+|       1412 | serie        | Arrow                           |   131.9822 |    7.477247738621267 |     463872 |
+|      63174 | serie        | Lucifer                         |    130.689 |     7.94886112345995 |     399126 |
+|       1705 | serie        | Fringe                          |   103.7311 |    8.298532867983303 |     273182 |
+|      39272 | serie        | Once Upon a Time                |    97.1435 |    7.551538089005025 |     249821 |
+|       2875 | serie        | MacGyver                        |    96.0011 |    7.402954908492722 |      45682 |
+|      48866 | serie        | The 100                         |     93.088 |    7.466559267450834 |     308927 |
+|      69050 | serie        | Riverdale                       |    83.9898 |    6.463358000286845 |     167874 |
+|      95057 | serie        | Superman & Lois                 |    81.4446 |    7.561384048986053 |      51600 |
+|      62643 | serie        | DC's Legends of Tomorrow        |    81.1147 |   6.7416761992113425 |     115637 |
+|      82452 | serie        | Avatar: The Last Airbender      |    78.5852 |    7.076806975971186 |      94206 |
+|    1083381 | movie        | Backrooms                       |    76.9781 |    6.722651826256191 |     230309 |
+|     103540 | serie        | Percy Jackson and the Olympians |     71.377 |    6.992342012296749 |      54793 |
+|     129552 | serie        | The Night Agent                 |    69.8456 |   7.3521329163312314 |     165860 |
+|     273240 | serie        | Off Campus                      |     55.174 |      7.5826649060193 |      58699 |
+|      62286 | serie        | Fear the Walking Dead           |    54.2493 |    6.732239726049869 |     155601 |
+|     202297 | serie        | Fire Country                    |    53.6081 |    7.031601648156807 |      18131 |
+|        597 | movie        | Titanic                         |    51.3494 |    7.985064236063418 |    1417236 |
+|     110492 | serie        | Peacemaker                      |    45.6664 |    8.084447713644593 |     201161 |
+|    1124620 | movie        | The Monkey                      |    44.4581 |    6.086782437795898 |      99081 |
++------------+--------------+---------------------------------+------------+----------------------+------------+
++-------------------------------+
+| SECTION                       |
++-------------------------------+
+| 2a. Game of Thrones locations |
++-------------------------------+
++----------+-----------------+---------------+-------------+------------------+---------------+------------+
+| ID_SERIE | SERIE_TITLE     | LOCATION_ROLE | ID_LOCATION | LOCATION_NAME    | LOCATION_TYPE | SL_DELETED |
++----------+-----------------+---------------+-------------+------------------+---------------+------------+
+|     1399 | Game of Thrones | filming       |         105 | Canada           | country       |          0 |
+|     1399 | Game of Thrones | filming       |         445 | Croatia          | country       |          0 |
+|     1399 | Game of Thrones | filming       |         609 | Iceland          | country       |          0 |
+|     1399 | Game of Thrones | filming       |         688 | Malta            | country       |          0 |
+|     1399 | Game of Thrones | filming       |         416 | Morocco          | country       |          0 |
+|     1399 | Game of Thrones | filming       |         611 | Northern Ireland | country       |          0 |
+|     1399 | Game of Thrones | filming       |          22 | Scotland         | country       |          0 |
+|     1399 | Game of Thrones | filming       |          56 | Spain            | country       |          0 |
+|     1399 | Game of Thrones | filming       |         258 | United Kingdom   | country       |          0 |
+|     1399 | Game of Thrones | filming       |         104 | United States    | country       |          0 |
+|     1399 | Game of Thrones | narrative     |        4392 | Essos            | NULL          |          0 |
+|     1399 | Game of Thrones | narrative     |         332 | Sothoryos        | NULL          |          0 |
+|     1399 | Game of Thrones | narrative     |        2669 | Westeros         | NULL          |          0 |
++----------+-----------------+---------------+-------------+------------------+---------------+------------+
++------------------------------------------+
+| SECTION                                  |
++------------------------------------------+
+| 2b. 2001: A Space Odyssey (62) locations |
++------------------------------------------+
++---------------+-------------+-------------+---------------------+---------------+
+| LOCATION_ROLE | ID_LOCATION | ID_WIKIDATA | LOCATION_NAME       | LOCATION_TYPE |
++---------------+-------------+-------------+---------------------+---------------+
+| filming       |        4957 | Q4739371    | Amalgamated Studios | structure     |
+| filming       |          23 | Q816        | Arizona             | region        |
+| filming       |        8856 | Q1122196    | Harris              | region        |
+| filming       |        2474 | Q192017     | Monument Valley     | region        |
+| filming       |         697 | Q1030       | Namibia             | country       |
+| filming       |        5012 | Q2278256    | Shepperton Studios  | structure     |
+| filming       |         190 | Q829        | Utah                | region        |
+| narrative     |          19 | Q15         | Africa              | region        |
+| narrative     |         410 | Q5129646    | Clavius Base        | NULL          |
+| narrative     |        2401 | Q3030246    | Discovery One       | fiction       |
+| narrative     |        1407 | Q319        | Jupiter             | NULL          |
+| narrative     |         341 | Q405        | Moon                | NULL          |
+| narrative     |        4074 | Q631696     | Tycho               | NULL          |
++---------------+-------------+-------------+---------------------+---------------+
++------------------------------+
+| SECTION                      |
++------------------------------+
+| 2c. The French title of 2001 |
++------------------------------+
++----------+-----------------------+-------------------------------+-----------------------+
+| ID_MOVIE | MOVIE_TITLE           | MOVIE_TITLE_FR                | ORIGINAL_TITLE        |
++----------+-----------------------+-------------------------------+-----------------------+
+|       62 | 2001: A Space Odyssey | 2001 : L'Odyssée de l'espace  | 2001: A Space Odyssey |
++----------+-----------------------+-------------------------------+-----------------------+
++------------------------------------------------------------------------------+
+| SECTION                                                                      |
++------------------------------------------------------------------------------+
+| 2d. Series set in Paris (Q90) through the hierarchy, by IMDB_RATING_WEIGHTED |
++------------------------------------------------------------------------------+
++----------+---------------------------------+----------------------+
+| ID_SERIE | SERIE_TITLE                     | IMDB_RATING_WEIGHTED |
++----------+---------------------------------+----------------------+
+|    87739 | The Queen's Gambit              |    8.454571745983545 |
+|    57736 | The Musketeers                  |    7.427435587160916 |
+|   103913 | Tehran                          |    7.364505103387137 |
+|    93816 | Great Pretender                 |   7.2128146087460046 |
+|    64249 | A Very Secret Service           |    7.110166042305112 |
+|   225383 | Étoile                          |    7.097516562670005 |
+|    24710 | Nadia: The Secret of Blue Water |    7.046916741624754 |
+|   128061 | La Commune (Paris, 1871)        |    7.042796074063673 |
+|   110232 | Us                              |   7.0320069132567165 |
+|   198090 | Class Act                       |     7.02473108993794 |
++----------+---------------------------------+----------------------+
++-----------------------------------------------------------------------------+
+| SECTION                                                                     |
++-----------------------------------------------------------------------------+
+| 3. Movies shot in France through the hierarchy, not linked to France itself |
++-----------------------------------------------------------------------------+
++----------+-----------------------------+----------------------+---------------------------------------------------------------------------+
+| ID_MOVIE | MOVIE_TITLE                 | IMDB_RATING_WEIGHTED | VIA                                                                       |
++----------+-----------------------------+----------------------+---------------------------------------------------------------------------+
+|    27205 | Inception                   |    8.786834935700456 | Palais Galliera | Paris | pont de Bir-Hakeim                              |
+|      857 | Saving Private Ryan         |     8.57986133724011 | Calvados | Normandy American Cemetery and Memorial                        |
+|      101 | Léon: The Professional      |    8.477044740043032 | Paris                                                                     |
+|    77338 | The Intouchables            |    8.470070189878335 | Merville-Franceville-Plage | Paris                                        |
+|    16869 | Inglourious Basterds        |    8.383831914710656 | Paris                                                                     |
+|       85 | Raiders of the Lost Ark     |    8.373928392097381 | La Rochelle                                                               |
+|      311 | Once Upon a Time in America |    8.236084848306813 | Paris                                                                     |
+|      387 | Das Boot                    |    8.211085579546765 | La Pallice | North Sea                                                    |
+|      194 | Amélie                      |      8.1704995236859 | Gare d'Ermont - Eaubonne | Montmartre | Paris | Porte des Lilas - Cinéma  |
+|      640 | Catch Me If You Can         |    8.081740861367024 | Paris                                                                     |
+|       80 | Before Sunset               |    8.031002176506993 | Paris                                                                     |
+|     2503 | The Bourne Ultimatum        |    7.969787470799633 | Paris                                                                     |
++----------+-----------------------------+----------------------+---------------------------------------------------------------------------+
++---------------------------+
+| SECTION                   |
++---------------------------+
+| 4. Every living Cambridge |
++---------------------------+
++-------------+-------------+---------------+------------------+---------------+-------------------------------------------------------------------+-------------+-------------+-----------------------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME | LOCATION_NAME_FR | LOCATION_TYPE | OVERVIEW                                                          | MOVIE_COUNT | SERIE_COUNT | ANCESTORS                   |
++-------------+-------------+---------------+------------------+---------------+-------------------------------------------------------------------+-------------+-------------+-----------------------------+
+|        2496 | Q49111      | Cambridge     | Cambridge        | city          | city in Middlesex County, Massachusetts, United States of America |           0 |           1 | Massachusetts,United States |
+|        2598 | Q350        | Cambridge     | Cambridge        | city          | city in Cambridgeshire, England                                   |           3 |           2 | England,United Kingdom      |
+|        7768 | Q1028279    | Cambridge     | Cambridge        | city          | city in the Regional Municipality of Waterloo, Ontario, Canada    |           1 |           1 | Canada,Ontario              |
+|       12132 | Q249454     | Cambridge     | Cambridge        | city          | city in and seat of Guernsey County, Ohio, United States          |           0 |           1 | Ohio,United States          |
++-------------+-------------+---------------+------------------+---------------+-------------------------------------------------------------------+-------------+-------------+-----------------------------+
++--------------------------------------------------------------+
+| SECTION                                                      |
++--------------------------------------------------------------+
+| 4b. Movies per Cambridge, filming then narrative, best first |
++--------------------------------------------------------------+
++-------------+---------------+----------+-------------------------------+----------------------+
+| ID_WIKIDATA | LOCATION_ROLE | ID_MOVIE | MOVIE_TITLE                   | IMDB_RATING_WEIGHTED |
++-------------+---------------+----------+-------------------------------+----------------------+
+| Q1028279    | filming       |  1167351 | Longing                       |    6.817434412431354 |
+| Q350        | filming       |   266856 | The Theory of Everything      |    7.671433187201535 |
+| Q350        | filming       |     5691 | The Canterbury Tales          |    6.766107481554087 |
+| Q350        | narrative     |   684281 | Adventures of a Mathematician |    6.862368569756015 |
++-------------+---------------+----------+-------------------------------+----------------------+
++-----------------------------------+
+| SECTION                           |
++-----------------------------------+
+| 5a. Places named Venice or Venise |
++-----------------------------------+
++-------------+-------------+---------------+------------------+---------------+-------------+-------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME | LOCATION_NAME_FR | LOCATION_TYPE | MOVIE_COUNT | SERIE_COUNT |
++-------------+-------------+---------------+------------------+---------------+-------------+-------------+
+|           7 | Q641        | Venice        | Venise           | country       |         209 |          10 |
+|         517 | Q57325      | Venice        | Venice           | city          |           1 |           0 |
+|         866 | Q773853     | Venice        | Venice           | city          |           1 |           2 |
+|        3026 | Q1303805    | Venice Beach  | Venice Beach     | structure     |           1 |           0 |
++-------------+-------------+---------------+------------------+---------------+-------------+-------------+
++--------------------------------------------------------------------------------+
+| SECTION                                                                        |
++--------------------------------------------------------------------------------+
+| 5b. Movies set in Venice (Q641) through the hierarchy, by IMDB_RATING_WEIGHTED |
++--------------------------------------------------------------------------------+
++----------+-----------------------------------------------+----------------------+
+| ID_MOVIE | MOVIE_TITLE                                   | IMDB_RATING_WEIGHTED |
++----------+-----------------------------------------------+----------------------+
+|    36557 | Casino Royale                                 |     7.97237452794603 |
+|   575264 | Mission: Impossible - Dead Reckoning Part One |    7.563051543214432 |
+|     1213 | The Talented Mr. Ripley                       |    7.369970816414742 |
+|     3080 | Top Hat                                       |    7.349086217851818 |
+|   429617 | Spider-Man: Far From Home                     |    7.290237865032253 |
+|      657 | From Russia with Love                         |    7.262405839194998 |
+|   310593 | Youth                                         |    7.238072124602953 |
+|     6619 | Death in Venice                               |   7.1517839615949494 |
+|    47697 | Othello                                       |    7.146904119520803 |
+|    29267 | Destiny                                       |    7.137877560744938 |
++----------+-----------------------------------------------+----------------------+
++--------------------------------+
+| SECTION                        |
++--------------------------------+
+| 6a. LOCATION_TYPE distribution |
++--------------------------------+
++---------------+------+
+| LOCATION_TYPE | N    |
++---------------+------+
+| NULL          | 1055 |
+| city          | 4329 |
+| country       |  368 |
+| fiction       |  575 |
+| island        |  240 |
+| nature        |  297 |
+| region        | 3204 |
+| structure     | 2910 |
++---------------+------+
++--------------------------------------------------------------+
+| SECTION                                                      |
++--------------------------------------------------------------+
+| 6b. Movies set in a fictional place, by IMDB_RATING_WEIGHTED |
++--------------------------------------------------------------+
++----------+-------------------------+----------------------+--------------------------------------------------------------------------------+
+| ID_MOVIE | MOVIE_TITLE             | IMDB_RATING_WEIGHTED | PLACES                                                                         |
++----------+-------------------------+----------------------+--------------------------------------------------------------------------------+
+|      155 | The Dark Knight         |    9.086363902941642 | Gotham City                                                                    |
+|   157336 | Interstellar            |    8.686338012091973 | Cooper Station | Edmund's Planet | Endurance | Mann's Planet | Miller's Planet |
+|     1891 | The Empire Strikes Back |    8.676706491937239 | Bespin | Dagobah | Hoth                                                        |
+|       11 | Star Wars               |    8.578934934423307 | Death Star | Tatooine                                                          |
+|     1585 | It's a Wonderful Life   |    8.541612688969314 | Bedford Falls                                                                  |
+|      105 | Back to the Future      |    8.478761302660754 | Hill Valley                                                                    |
+|   299534 | Avengers: Endgame       |     8.38038986460097 | Wakanda                                                                        |
+|   299536 | Avengers: Infinity War  |    8.379265344797847 | Titan | Wakanda                                                                |
+|    10681 | WALL·E                  |    8.378174024316964 | Axiom                                                                          |
+|      348 | Alien                   |    8.372902275707915 | USCSS Nostromo                                                                 |
+|      679 | Aliens                  |    8.365762064756954 | USS Sulaco                                                                     |
+|   693134 | Dune: Part Two          |    8.363645193630191 | Arrakis                                                                        |
++----------+-------------------------+----------------------+--------------------------------------------------------------------------------+
++--------------------------------------------+
+| SECTION                                    |
++--------------------------------------------+
+| 6c. Islands most used as filming locations |
++--------------------------------------------+
++-------------+-------------+---------------+------------------+-------------+-------------+
+| ID_LOCATION | ID_WIKIDATA | LOCATION_NAME | LOCATION_NAME_FR | MOVIE_COUNT | SERIE_COUNT |
++-------------+-------------+---------------+------------------+-------------+-------------+
+|         895 | Q18438      | Long Island   | Long Island      |          50 |           5 |
+|         452 | Q8828       | Mallorca      | Majorque         |          44 |           7 |
+|         520 | Q17070      | Réunion       | La Réunion       |          22 |           5 |
+|        1944 | Q42000      | Tahiti        | Tahiti           |          19 |           0 |
+|        1068 | Q34374      | Crete         | Crète            |          12 |           4 |
+|        1378 | Q52631      | Ibiza         | Ibiza            |          11 |           2 |
+|        2600 | Q1027830    | Gotland       | Gotland          |          10 |           2 |
+|        2143 | Q173292     | Capri         | Capri            |          10 |           0 |
+|        2015 | Q178925     | Gran Canaria  | Grande Canarie   |           9 |           2 |
+|        2273 | Q40846      | Tenerife      | Ténérife         |           9 |           2 |
++-------------+-------------+---------------+------------------+-------------+-------------+
++--------------------------------------------------------------+
+| SECTION                                                      |
++--------------------------------------------------------------+
+| 7. Best movies shot in France with no filming place in Paris |
++--------------------------------------------------------------+
++----------+-------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------+
+| ID_MOVIE | MOVIE_TITLE             | IMDB_RATING_WEIGHTED | FILMED_AT                                                                                                              |
++----------+-------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------+
+|      857 | Saving Private Ryan     |     8.57986133724011 | Calvados | Normandy American Cemetery and Memorial                                                                     |
+|       85 | Raiders of the Lost Ark |    8.373928392097381 | La Rochelle                                                                                                            |
+|      387 | Das Boot                |    8.211085579546765 | La Pallice | North Sea                                                                                                 |
+|   374720 | Dunkirk                 |   7.7796786376430305 | Calais–Dunkerque Airport | Dunkirk | Maillé-Brézé                                                                      |
+|     5528 | The Chorus              |    7.693779710752447 | Château de Ravel | Chauriat | Courpière | Manglieu                                                                     |
+|      777 | Grand Illusion          |    7.655620212678073 | Boulogne-Billancourt | Chamonix-Mont-Blanc | Château du Haut-Koenigsbourg | Colmar | Épinay-sur-Seine | Neuf-Brisach   |
+|     4480 | Jean de Florette        |    7.634931808369787 | Ansouis | Chapelle Saint-Joseph de Vaugines | Mirabeau | Riboux | Sommières                                            |
+|  1124566 | Sentimental Value       |    7.565142293671335 | Côte Fleurie | Dives-sur-Mer | Normandy                                                                                |
+|   915935 | Anatomy of a Fall       |    7.549552003474237 | Isère | Saintes | Savoie                                                                                               |
+|     4481 | Manon of the Spring     |    7.543646296705125 | Mirabeau | Vaugines                                                                                                    |
+|     1051 | The French Connection   |    7.524545033837045 | Marseille                                                                                                              |
+|     9289 | The Longest Day         |    7.520378194263154 | Ecquevilly | Studios de Boulogne                                                                                       |
++----------+-------------------------+----------------------+------------------------------------------------------------------------------------------------------------------------+
++--------------------------------------------------------------------------+
+| SECTION                                                                  |
++--------------------------------------------------------------------------+
+| 8. Filmed in Iceland, set only outside Iceland (hierarchy on both sides) |
++--------------------------------------------------------------------------+
++----------+----------------------------------------------------------------------+----------------------+
+| ID_MOVIE | MOVIE_TITLE                                                          | IMDB_RATING_WEIGHTED |
++----------+----------------------------------------------------------------------+----------------------+
+|   157336 | Interstellar                                                         |    8.686338012091973 |
+|      935 | Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb |    8.251895752675974 |
+|      272 | Batman Begins                                                        |    8.185509031400375 |
+|   271110 | Captain America: Civil War                                           |    7.782251040205303 |
+|   330459 | Rogue One: A Star Wars Story                                         |    7.778065101823285 |
+|     1251 | Letters from Iwo Jima                                                |    7.713251010553947 |
+|   140607 | Star Wars: The Force Awakens                                         |    7.685627871938458 |
+|    54138 | Star Trek Into Darkness                                              |    7.671522829766072 |
+|       18 | The Fifth Element                                                    |    7.577153564058971 |
+|     2270 | Stardust                                                             |    7.559290866202426 |
+|   116745 | The Secret Life of Walter Mitty                                      |    7.282875388644137 |
+|     1563 | Sans Soleil                                                          |   7.2553252234423695 |
+|   493529 | Dungeons & Dragons: Honor Among Thieves                              |    7.184151807363612 |
+|    62204 | Quest for Fire                                                       |    7.156581737232429 |
+|     3683 | Flags of Our Fathers                                                 |    7.082914529127039 |
++----------+----------------------------------------------------------------------+----------------------+
++------------+
+| SECTION    |
++------------+
+| 8b. 791373 |
++------------+
++---------------+---------------------------------+------------------------------+
+| LOCATION_ROLE | LOCATION_NAME                   | MOVIE_TITLE                  |
++---------------+---------------------------------+------------------------------+
+| narrative     | Metropolis                      | Zack Snyder's Justice League |
+| filming       | London                          | Zack Snyder's Justice League |
+| narrative     | London                          | Zack Snyder's Justice League |
+| narrative     | Paris                           | Zack Snyder's Justice League |
+| filming       | Hertfordshire                   | Zack Snyder's Justice League |
+| filming       | Iceland                         | Zack Snyder's Justice League |
+| narrative     | Iceland                         | Zack Snyder's Justice League |
+| narrative     | Central City                    | Zack Snyder's Justice League |
+| narrative     | Gotham City                     | Zack Snyder's Justice League |
+| narrative     | Stryker's Island                | Zack Snyder's Justice League |
+| narrative     | Pozharnov                       | Zack Snyder's Justice League |
+| filming       | Monaco                          | Zack Snyder's Justice League |
+| narrative     | Crete                           | Zack Snyder's Justice League |
+| narrative     | Atlantis                        | Zack Snyder's Justice League |
+| narrative     | Smallville                      | Zack Snyder's Justice League |
+| narrative     | Louvre Palace                   | Zack Snyder's Justice League |
+| narrative     | Batcave                         | Zack Snyder's Justice League |
+| narrative     | Themyscira                      | Zack Snyder's Justice League |
+| narrative     | Kent Farm                       | Zack Snyder's Justice League |
+| filming       | Warner Bros. Studios, Leavesden | Zack Snyder's Justice League |
+| filming       | Kleftiko                        | Zack Snyder's Justice League |
++---------------+---------------------------------+------------------------------+
