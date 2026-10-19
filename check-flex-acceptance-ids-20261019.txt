@@ -1,0 +1,37 @@
+-- check-flex-acceptance-ids.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-19 06:47:02
+--
++-----------------------------------------------------------+
+| SECTION                                                   |
++-----------------------------------------------------------+
+| 1. Eligible English ids not yet run in this configuration |
++-----------------------------------------------------------+
++----------+
+| N_TO_RUN |
++----------+
+|      852 |
++----------+
++-----------------------------------------------------------+
+| SECTION                                                   |
++-----------------------------------------------------------+
+| 2. The first of them, with their declared resolution mode |
++-----------------------------------------------------------+
++-------------------+-----------------+------------------------------------------------------------------+
+| ID_T2S_EVALUATION | RESOLUTION_MODE | QUESTION                                                         |
++-------------------+-----------------+------------------------------------------------------------------+
+|                 1 | standard        | What are the highest-grossing movies of all time?                |
+|                 2 | standard        | List all silent movies released after 1990                       |
+|                 3 | standard        | Which movies were filmed in 70mm format?                         |
+|                 4 | standard        | List all movies shot in CinemaScope                              |
+|                 5 | standard        | What color movies used Technicolor technology?                   |
+|                 6 | standard        | Which films have a 2.39:1 aspect ratio?                          |
+|                 7 | standard        | Which movies were shot using Franscope technology?               |
+|                 8 | standard        | What movies did Stanley Kubrick direct?                          |
+|                 9 | standard        | Which films feature both Robert De Niro and Al Pacino?           |
+|                10 | standard        | What movies did Akira Kurosawa write and direct?                 |
+|                11 | standard        | What character did Harrison Ford play in Star Wars?              |
+|                12 | standard        | Which movies are starring Lauren Bacall and Humphrey Bogart?     |
+|                13 | standard        | List movies directed by Sergio Leone and starring Clint Eastwood |
+|                14 | standard        | Movies shot in color with Humphrey Bogart                        |
+|                15 | standard        | List the TV series created by Alfred Hitchcock                   |
++-------------------+-----------------+------------------------------------------------------------------+
