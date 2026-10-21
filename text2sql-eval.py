@@ -619,6 +619,11 @@ try:
             arrllmusagestats = {}
             lng_llm_usage_rows = 0
             lng_llm_usage_missing = 0
+            # FASTAPI-TEXT2SQL-337. What the campaign cost at list prices, from `llm_cost` and
+            # `embedding_usage` in each JSON_RESULT (API 1.1.19 after 2026-10-21). Rows without
+            # them are counted apart, like the token rows above.
+            dictcoststats = {"rows": 0, "total_usd": 0.0, "llm_usd": 0.0, "embeddings_usd": 0.0,
+                             "embedding_calls": 0, "embedding_tokens": 0, "unpriced": set()}
             dbl_entity_extraction_processing_time_sum = 0.0
             lng_entity_extraction_processing_time_count = 0
             dbl_text2sql_processing_time_sum = 0.0
@@ -1454,10 +1459,21 @@ try:
                                                  "completion_tokens", "reasoning_tokens",
                                                  "cache_write_tokens"):
                                         _agg[_key] += int(_entry.get(_key) or 0)
+                                    _agg["cost_usd"] = _agg.get("cost_usd", 0.0) + float(_entry.get("cost_usd") or 0.0)
                             else:
                                 lng_llm_usage_missing += 1
                                 for _column in _token_columns:
                                     arrevalexeccouples[_column] = None
+                            # FASTAPI-TEXT2SQL-337. The request's cost summary and embeddings.
+                            _llm_cost = (response_json or {}).get("llm_cost")
+                            if isinstance(_llm_cost, dict):
+                                dictcoststats["rows"] += 1
+                                for _key in ("total_usd", "llm_usd", "embeddings_usd"):
+                                    dictcoststats[_key] += float(_llm_cost.get(_key) or 0.0)
+                                dictcoststats["unpriced"].update(_llm_cost.get("unpriced_models") or [])
+                                _embedding_usage = (response_json or {}).get("embedding_usage") or {}
+                                dictcoststats["embedding_calls"] += int(_embedding_usage.get("calls") or 0)
+                                dictcoststats["embedding_tokens"] += int(_embedding_usage.get("prompt_tokens") or 0)
 
                             if arrevalexeccouples["ENTITY_EXTRACTION_PROCESSING_TIME"] is not None:
                                 dbl_entity_extraction_processing_time_sum += arrevalexeccouples["ENTITY_EXTRACTION_PROCESSING_TIME"]
@@ -1839,7 +1855,22 @@ try:
                               f"{_a['cache_write_tokens']:12d}")
                     print("  Cache writes are part of 'uncached in', billed 1.25x on gpt-5.6 and later (PROMPT-CACHING-010).")
                     print("  Reasoning tokens are billed at the output price. A retried request counts the")
-                    print("  calls of both passes. Multiply by the model's own prices; none are stored here.")
+                    print("  calls of both passes.")
+                if dictcoststats["rows"]:
+                    # FASTAPI-TEXT2SQL-337. List-price estimate made by the API (llm_costs.py);
+                    # the invoice stays the reference. Flex calls are already at half price.
+                    _n = dictcoststats["rows"]
+                    print(f"Cost at list prices (FASTAPI-TEXT2SQL-337), {_n} rows priced:")
+                    for _task in sorted(arrllmusagestats, key=lambda t: -arrllmusagestats[t].get("cost_usd", 0.0)):
+                        _a = arrllmusagestats[_task]
+                        print(f"  {_task:22s} {','.join(sorted(_a['models'])):16s} ${_a.get('cost_usd', 0.0):10.4f}")
+                    print(f"  {'embeddings':22s} {dictcoststats['embedding_calls']:6d} calls "
+                          f"{dictcoststats['embedding_tokens']:9d} tok ${dictcoststats['embeddings_usd']:10.4f}")
+                    print(f"  {'total':22s} {'':16s} ${dictcoststats['total_usd']:10.4f}  "
+                          f"= ${dictcoststats['total_usd'] / _n:.5f} per question, "
+                          f"${1000 * dictcoststats['total_usd'] / _n:.2f} per 1,000")
+                    if dictcoststats["unpriced"]:
+                        print(f"  NOT in the totals, no price in llm_costs.py: {', '.join(sorted(dictcoststats['unpriced']))}")
                 print(f"Global score: {dblcumulatedscore}/{dblevalcount} = {dblglobalscore:.2%}")
                 if lng_entity_extraction_processing_time_count > 0:
                     str_entity_extraction_processing_time_sum_duration = cp.convert_seconds_to_duration(
