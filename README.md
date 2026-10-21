@@ -30,6 +30,7 @@ After scoring, the evaluator also exports the three evaluation tables (`T_WC_T2S
 11. [Interactive Web UI (PHP)](#11-interactive-web-ui-php)
 12. [Troubleshooting](#12-troubleshooting)
 13. [Version History](#13-version-history)
+14. [Load bench (Locust)](#14-load-bench-locust)
 
 ---
 
@@ -1045,6 +1046,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.15.0 | 2026-10-21 | **Load bench** (LOAD-TESTING-004): `load/locustfile.py`, Locust scenarios A to E (warm and cold search, detail routes, voice-agent, tmdb-front) with a one-second probe of `GET /`, load by steps (1, 2, 4 users) or endurance, and a per-step CSV with failures, 429s and percentiles. The cold scenario is refused without `LOAD_ALLOW_COLD=yes`. Section 14. The evaluator is unchanged. |
 | 2.14.0 | 2026-10-21 | **Campaign cost at list prices** (FASTAPI-TEXT2SQL-337): phase 20 prints a cost block after the token table, per task, embeddings and total, with the cost per question and per 1,000. It sums `llm_cost` and `embedding_usage`, which the API computes on each response from its price table `llm_costs.py`; rows answered by an API without them are left out and counted. A model without a price is named, never priced at zero. No column added: the figures live in `JSON_RESULT` and the exports. |
 | 2.13.2 | 2026-10-19 | **Location coverage** (EVALUATIONS-024): `harvest-location-coverage.sql` reads the facts, `update-evaluations-location-coverage.sql` repairs the location evaluations and adds the cases never tested (country through the hierarchy, homonym, French place name, fictional places, no upward containment). No evaluator code change. |
 | 2.13.1 | 2026-10-19 | **Episode locations in the bank** (EVALUATIONS-025): `harvest-episode-locations.sql` reads the facts, `new-evaluations-episode-locations.sql` adds the questions. No evaluator code change. |
@@ -1071,3 +1073,30 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 **Last Updated:** 2026-10-12
 **Maintainer:** See repository owner
 **Primary entry point:** [text2sql-eval.py](text2sql-eval.py)
+
+---
+
+## 14. Load bench (Locust)
+
+`load/locustfile.py` measures how many simultaneous users the stack holds before a public demo (LOAD-TESTING-004 in the T2S backlog, `topics/load-testing.md`). It is separate from the evaluator: it reads the question bank in `data/evaluation/` and this folder's `.env` (`TEXT2SQL_API_URL`, `API_PORT_GREEN`, `TEXT2SQL_API_KEY`), nothing else. Run it **from the PC**, never from the VPS, whose CPU it would then measure.
+
+**Before a run**, on the VPS: `bash ~/docker/off-all.sh` (and `docker stop` what still runs), no run at 00:00 or between 06:00 and 07:30, then start `~/docker/tools/watch-load.sh` (LOAD-TESTING-005) in its own terminal. **After the last run**: Ctrl-C the watcher, `bash ~/docker/on-all.sh`, and bring `~/load-watch/<date>/` back into `load/results/`.
+
+**One run, one scenario**, named by its user classes; always add `ProbeUser`, which asks the API's `GET /` every second (if it slows down, the event loop is blocked, LOAD-TESTING-006):
+
+| Scenario | Classes | Measures |
+|---|---|---|
+| A | `ApiWarmUser` | `/search/text2sql` on showcase questions, cache on: a prepared demo. Run it once at 1 user first, so the cache is warm |
+| B | `ApiColdUser` | the same route, cache off both ways: a question from the floor, and the OpenAI ceiling. **Paid**: refused unless `LOAD_ALLOW_COLD=yes`, announce the budget first |
+| C | `ApiDetailUser` | `GET /movies`, `/persons`, `/series/{id}`, the synchronous routes |
+| D | `VoiceToolUser` (`VoiceChatUser` adds an OpenAI turn) | voice-agent, the fronts' real path |
+| E | `TmdbSearchUser` + `TmdbPageUser` | tmdb-front: PHP-FPM, curl to the API, and whether pages without a search keep answering |
+
+```powershell
+cd C:\Users\vaugo\Code\text2sql-eval
+uv run --no-project --with locust locust -f load/locustfile.py --headless --only-summary ProbeUser ApiWarmUser --csv load/results/20261022-A --html load/results/20261022-A.html
+```
+
+**Shape** (`LOAD_SHAPE`): `steps` (default) holds `LOAD_STEPS` users (`1,2,4`) for `LOAD_STEP_SECONDS` (300) each; `endurance` holds `LOAD_USERS` (2) for `LOAD_ENDURANCE_MINUTES` (45). Other knobs: `LOAD_LANG` (`en`, `fr`, `both`), `LOAD_THINK_SECONDS` (`5,15`, the reading time between two questions of one user), `LOAD_QUESTION_LIMIT` (30), `LOAD_SEED`, `LOAD_API_BASE`, `LOAD_SITE_BASE`, `LOAD_API_KEY` (a key of its own, added to `API_KEYS`, keeps the bench apart in the API logs), `LOAD_MOVIE_IDS`, `LOAD_PERSON_IDS`, `LOAD_SERIE_IDS`.
+
+**Results**: Locust's own CSV and HTML aggregate the whole run. `<prefix>_steps.csv` splits it: one line per step and request name, with count, failures, HTTP 429s, p50, p90, p99 and max in seconds. A 200 whose body carries `error` counts as a failure, and so does a tmdb-front page showing its search error line. Keep the results, dated, in `load/results/`, and report one line per step in the topic.
