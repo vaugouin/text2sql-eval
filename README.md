@@ -1046,6 +1046,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.15.1 | 2026-10-22 | **Load bench, the session step by step** in section 14 (VPS preparation, cache warm-up, measured run, wrap-up), so the procedure needs no other document. |
 | 2.15.0 | 2026-10-21 | **Load bench** (LOAD-TESTING-004): `load/locustfile.py`, Locust scenarios A to E (warm and cold search, detail routes, voice-agent, tmdb-front) with a one-second probe of `GET /`, load by steps (1, 2, 4 users) or endurance, and a per-step CSV with failures, 429s and percentiles. The cold scenario is refused without `LOAD_ALLOW_COLD=yes`. Section 14. The evaluator is unchanged. |
 | 2.14.0 | 2026-10-21 | **Campaign cost at list prices** (FASTAPI-TEXT2SQL-337): phase 20 prints a cost block after the token table, per task, embeddings and total, with the cost per question and per 1,000. It sums `llm_cost` and `embedding_usage`, which the API computes on each response from its price table `llm_costs.py`; rows answered by an API without them are left out and counted. A model without a price is named, never priced at zero. No column added: the figures live in `JSON_RESULT` and the exports. |
 | 2.13.2 | 2026-10-19 | **Location coverage** (EVALUATIONS-024): `harvest-location-coverage.sql` reads the facts, `update-evaluations-location-coverage.sql` repairs the location evaluations and adds the cases never tested (country through the hierarchy, homonym, French place name, fictional places, no upward containment). No evaluator code change. |
@@ -1081,6 +1082,30 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 `load/locustfile.py` measures how many simultaneous users the stack holds before a public demo (LOAD-TESTING-004 in the T2S backlog, `topics/load-testing.md`). It is separate from the evaluator: it reads the question bank in `data/evaluation/` and this folder's `.env` (`TEXT2SQL_API_URL`, `API_PORT_GREEN`, `TEXT2SQL_API_KEY`), nothing else. Run it **from the PC**, never from the VPS, whose CPU it would then measure.
 
 **Before a run**, on the VPS: `bash ~/docker/off-all.sh` (and `docker stop` what still runs), no run at 00:00 or between 06:00 and 07:30, then start `~/docker/tools/watch-load.sh` (LOAD-TESTING-005) in its own terminal. **After the last run**: Ctrl-C the watcher, `bash ~/docker/on-all.sh`, and bring `~/load-watch/<date>/` back into `load/results/`.
+
+**A session, step by step** (scenario A shown; the other scenarios change only the class names and the file prefix):
+
+1. On the VPS, wait until no long job runs (a Wikidata load, a monthly Wikipedia ingest), outside 00:00 and 06:00-07:30.
+2. On the VPS: `cd ~/docker/tools && git pull --ff-only`, then `bash ~/docker/off-all.sh`, then `docker ps` and `docker stop` any crawler container still running.
+3. On the VPS, in a second terminal: `~/docker/tools/watch-load.sh` (leave it running).
+4. On the PC, warm the cache once, 1 user for 10 minutes (pays the 30 showcase questions once, roughly 0.25 to 1.50 USD):
+
+   ```powershell
+   cd C:\Users\vaugo\Code\text2sql-eval
+   $env:LOAD_STEPS="1"; $env:LOAD_STEP_SECONDS="600"
+   uv run --no-project --with locust locust -f load/locustfile.py --headless --only-summary ProbeUser ApiWarmUser --csv load/results/<YYYYMMDD>-A-warmup
+   Remove-Item Env:LOAD_STEPS, Env:LOAD_STEP_SECONDS
+   ```
+
+5. On the PC, the measured run (steps of 1, 2 and 4 users, 15 minutes):
+
+   ```powershell
+   uv run --no-project --with locust locust -f load/locustfile.py --headless --only-summary ProbeUser ApiWarmUser --csv load/results/<YYYYMMDD>-A --html load/results/<YYYYMMDD>-A.html
+   ```
+
+6. Other scenarios in the same session, if wanted: C (`ApiDetailUser`), D (`VoiceToolUser`), E (`TmdbSearchUser TmdbPageUser`), then the endurance run (`$env:LOAD_SHAPE="endurance"`). B only after announcing its budget.
+7. On the VPS: Ctrl-C the watcher, then `bash ~/docker/on-all.sh` (it re-enables only what `off-all.sh` switched off).
+8. Copy `~/load-watch/<date>/` from the VPS into `load/results/`, next to the run's files, and hand both to the session that reads them; the results then go, one line per step, into the T2S backlog topic `topics/load-testing.md` (LOAD-TESTING-004, -005, -008).
 
 **One run, one scenario**, named by its user classes; always add `ProbeUser`, which asks the API's `GET /` every second (if it slows down, the event loop is blocked, LOAD-TESTING-006):
 
