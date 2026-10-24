@@ -1,8 +1,10 @@
 """Load bench of the T2S stack before public demos (LOAD-TESTING-004, Nestor topics/load-testing.md).
 
-Run from the PC, never from the VPS (the bench would measure its own CPU). Switch the updates off
-first (~/docker/off-all.sh), avoid 00:00 and 06:00-07:30, and start tools/watch-load.sh on the VPS
-(LOAD-TESTING-005) before the first request. Commands and scenarios: README.md, section 14.
+Run from the PC, never from the VPS (the bench would measure its own CPU). Prefer the launcher
+`load/run_load.py`, which checks the VPS state, prints a recap and confirms before it starts Locust
+(README.md, section 14). Driving Locust by hand still works: switch the updates off first
+(~/docker/off-all.sh), avoid 00:00 and 06:00-07:30, and start tools/watch-load.sh on the VPS
+(LOAD-TESTING-005) before the first request.
 
 One run = one scenario, chosen by the user classes named on the command line, plus ProbeUser:
   A  ApiWarmUser        POST /search/text2sql, showcase questions, cache on (a prepared demo)

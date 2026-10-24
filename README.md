@@ -1046,6 +1046,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.16.0 | 2026-10-24 | **One-command launcher for the load bench** (LOAD-TESTING-004/-005): `load/run_load.py` mirrors the evaluator's pre-flight for the bench. From the PC it prints a recap (scenario, shape, targets, cache regime, question count, results path), probes the API `GET /` (version, `bktrees_ready`), reaches the VPS over SSH to check every scheduled task is off, that nothing competes and that swap/disk have room, refuses the forbidden windows (00:00, 06:00-07:30) and scenario B without `--allow-cold`, asks to confirm, then launches Locust locally. Section 14. The locustfile and the evaluator are unchanged. |
 | 2.15.1 | 2026-10-22 | **Load bench, the session step by step** in section 14 (VPS preparation, cache warm-up, measured run, wrap-up), so the procedure needs no other document. |
 | 2.15.0 | 2026-10-21 | **Load bench** (LOAD-TESTING-004): `load/locustfile.py`, Locust scenarios A to E (warm and cold search, detail routes, voice-agent, tmdb-front) with a one-second probe of `GET /`, load by steps (1, 2, 4 users) or endurance, and a per-step CSV with failures, 429s and percentiles. The cold scenario is refused without `LOAD_ALLOW_COLD=yes`. Section 14. The evaluator is unchanged. |
 | 2.14.0 | 2026-10-21 | **Campaign cost at list prices** (FASTAPI-TEXT2SQL-337): phase 20 prints a cost block after the token table, per task, embeddings and total, with the cost per question and per 1,000. It sums `llm_cost` and `embedding_usage`, which the API computes on each response from its price table `llm_costs.py`; rows answered by an API without them are left out and counted. A model without a price is named, never priced at zero. No column added: the figures live in `JSON_RESULT` and the exports. |
@@ -1081,7 +1082,23 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 `load/locustfile.py` measures how many simultaneous users the stack holds before a public demo (LOAD-TESTING-004 in the T2S backlog, `topics/load-testing.md`). It is separate from the evaluator: it reads the question bank in `data/evaluation/` and this folder's `.env` (`TEXT2SQL_API_URL`, `API_PORT_GREEN`, `TEXT2SQL_API_KEY`), nothing else. Run it **from the PC**, never from the VPS, whose CPU it would then measure.
 
-**Before a run**, on the VPS: `bash ~/docker/off-all.sh` (and `docker stop` what still runs), no run at 00:00 or between 06:00 and 07:30, then start `~/docker/tools/watch-load.sh` (LOAD-TESTING-005) in its own terminal. **After the last run**: Ctrl-C the watcher, `bash ~/docker/on-all.sh`, and bring `~/load-watch/<date>/` back into `load/results/`.
+### The launcher, `load/run_load.py` (recommended)
+
+The launcher does for the bench what `text2sql-eval.sh` does for a campaign: in one command it prints a recap of what the run will do, probes the target API, checks the VPS state over SSH, refuses the unsafe cases, confirms, then starts Locust locally.
+
+```powershell
+cd C:\Users\vaugo\Code\text2sql-eval
+uv run --no-project --with paramiko python load/run_load.py A            # scenario A, steps 1,2,4
+uv run --no-project --with paramiko python load/run_load.py A --warmup   # A at 1 user for 10 min (warm the cache)
+uv run --no-project --with paramiko python load/run_load.py E --shape endurance
+uv run --no-project --with paramiko python load/run_load.py B --allow-cold   # paid, announce the budget first
+```
+
+It reads the API target and key from this folder's `.env`, and the VPS SSH settings (`VPS_HOST`, `VPS_USER`, `VPS_KEY_FILE`, `VPS_PORT`) from `voice-agent/doc/logs-download/.env` by default (override with `--vps-env <path>`). The SSH key is encrypted, so the launcher may prompt for the passphrase: **run it in your own terminal**, as with the sync script. It reaches the VPS with the full SSH key, not the restricted `vps-agent` gate (which only runs `.sql`), because it must read `off.sh` state and run `docker ps`.
+
+What the recap and checks cover: scenario and user classes, API version and `bktrees_ready`, load shape, cache regime, how many bank questions the run samples, the results path; then every scheduled task's armed/off state, any competing container still running, swap/mem/disk, and the forbidden windows (00:00 and 06:00-07:30, aborted unless `--force`). Scenario B is refused without `--allow-cold`, and the launch is refused without an API key. Useful flags: `--lang en|fr|both`, `--steps`, `--step-seconds`, `--users`, `--endurance-minutes`, `--question-limit`, `--csv <prefix>`, `--with-chat` (scenario D), `--no-vps` (skip the SSH check), `--yes` (skip the prompt). The launcher does not touch the VPS state: you still run `off-all.sh`, the watcher and `on-all.sh` yourself, as it reminds you.
+
+The launcher still expects the VPS prepared by hand around it. **Before a run**, on the VPS: `bash ~/docker/off-all.sh` (and `docker stop` what still runs), no run at 00:00 or between 06:00 and 07:30, then start `~/docker/tools/watch-load.sh` (LOAD-TESTING-005) in its own terminal. **After the last run**: Ctrl-C the watcher, `bash ~/docker/on-all.sh`, and bring `~/load-watch/<date>/` back into `load/results/`.
 
 **A session, step by step** (scenario A shown; the other scenarios change only the class names and the file prefix):
 
