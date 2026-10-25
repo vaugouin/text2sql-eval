@@ -152,11 +152,11 @@ SHARED_DIR=${SHARED_DIR:-$HOME/docker/shared_data/text2sql-eval}
 # carries local edits; there is no flat copy left to drift.
 # Scheduled workloads to switch OFF for the duration of a run. Stopping a container is not
 # enough: cron relaunches it at its next tick, in the middle of a multi-hour campaign. The house
-# convention is that each repository under ~/docker carries an off.sh that renames the script
-# cron calls (tmdb-movie-preprocess.sh -> tmdb-movie-preprocess-off.sh) and an on.sh that puts
-# it back. The crontab never changes; its ticks simply find nothing to run. So the pre-flight
-# reads every ~/docker/*/off.sh, tells from its `mv` lines which tasks are still armed, and
-# recommends off.sh for each of them, including the ones not running right now (wikidata-crawler,
+# convention is that each repository under ~/docker carries an off.sh that writes the flag file
+# CRON_OFF next to the script cron calls, which then exits at once, and an on.sh that deletes it
+# (2026-10-25; before, off.sh renamed the script to <name>-off.sh). The crontab never changes;
+# its ticks simply start nothing. So the pre-flight looks at every ~/docker/*/off.sh folder,
+# tells from CRON_OFF which tasks are still armed, and recommends off.sh for each of them, including the ones not running right now (wikidata-crawler,
 # sqlite, ...), since an idle armed task can start at any minute.
 # Why it matters: the crawlers and preprocessors share the MariaDB and the CPU with the API and
 # inflate every latency the campaign records, and embedding-update rewrites the ChromaDB
@@ -478,33 +478,32 @@ else
     warn "$EVAL_HOME is not a git clone of text2sql-eval (git clone https://github.com/vaugouin/text2sql-eval.git)."
 fi
 
-# Scheduled workloads, see DOCKER_ROOT above. A task is ARMED when a source of an `mv` line of
-# its off.sh still exists, OFF when every target exists instead.
-ARMED=""; DISARMED=""; UNKNOWN=""; CONTAINER_NAMES=""
+# Scheduled workloads, see DOCKER_ROOT above. A task is OFF when its folder holds CRON_OFF, or
+# still a <name>-off.sh left by the old renaming off.sh, ARMED otherwise. The launchers are the
+# scripts of the folder that read CRON_OFF; their names are also the container names.
+ARMED=""; DISARMED=""; CONTAINER_NAMES=""
 for off in "$DOCKER_ROOT"/*/off.sh; do
     [ -f "$off" ] || continue
     dir=$(dirname "$off"); repo=$(basename "$dir")
     printf '%s\n' "$repo" | grep -Eq "$SCHEDULED_KEEP" && continue
-    state=off; seen=0
-    while read -r src dst; do
-        seen=1
-        CONTAINER_NAMES="$CONTAINER_NAMES|${src%.sh}"
-        if [ -f "$dir/$src" ]; then state=armed
-        elif [ ! -f "$dir/$dst" ] && [ "$state" = off ]; then state=unknown
-        fi
-    done < <(tr -d '\r' < "$off" | awk '$1 == "mv" { print $2, $3 }')
-    [ "$seen" -eq 1 ] || state=unknown
+    # A leftover <name>-off.sh still names a container.
+    for launcher in $(grep -l CRON_OFF "$dir"/*.sh 2>/dev/null) "$dir"/*-off.sh; do
+        case "$(basename "$launcher")" in
+            on.sh|off.sh|"*-off.sh") ;;
+            *) CONTAINER_NAMES="$CONTAINER_NAMES|$(basename "$launcher" .sh | sed 's/-off$//')" ;;
+        esac
+    done
     CONTAINER_NAMES="$CONTAINER_NAMES|$repo"
-    case "$state" in
-        armed)   ARMED="$ARMED $repo" ;;
-        off)     DISARMED="$DISARMED $repo" ;;
-        *)       UNKNOWN="$UNKNOWN $repo" ;;
-    esac
+    if [ -f "$dir/CRON_OFF" ] || ls "$dir"/*-off.sh >/dev/null 2>&1; then
+        DISARMED="$DISARMED $repo"
+    else
+        ARMED="$ARMED $repo"
+    fi
 done
 if [ -n "$ARMED" ]; then
     warn "scheduled tasks still ARMED, cron can start them at any minute of the run:"
     more " $ARMED"
-    more "switch them off first (renames the script cron calls, the crontab is untouched;"
+    more "switch them off first (writes CRON_OFF next to the script cron calls, crontab untouched;"
     more "docker stop alone is not enough, the next cron tick restarts the container):"
     if [ -f "$OFF_ALL" ]; then
         more "  bash $OFF_ALL"
@@ -521,7 +520,6 @@ else
     echo "  - every scheduled task under $DOCKER_ROOT is switched off."
 fi
 [ -n "$DISARMED" ] && echo "  - already off:$DISARMED"
-[ -n "$UNKNOWN" ] && warn "state unclear (neither the script nor its -off twin found):$UNKNOWN"
 
 # off.sh only prevents the NEXT launch: a container already running goes on until it ends.
 COMPETING_PATTERN=${COMPETING_PATTERN:-^(${CONTAINER_NAMES#|})}

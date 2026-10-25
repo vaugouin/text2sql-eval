@@ -104,33 +104,28 @@ def probe_api(base, key):
 
 # --- the VPS state, over SSH ---------------------------------------------------------------------
 
-# A read-only snapshot. The off.sh scan reproduces the one in text2sql-eval.sh (lines 481-537):
-# a task is ARMED when a source of an `mv` line of its off.sh still exists (cron would find it),
-# OFF when every target exists instead. Run through `bash -s` so the process substitution works
-# whatever the login shell. $ROOT defaults to ~/docker.
+# A read-only snapshot. The off.sh scan reproduces the one in text2sql-eval.sh: a task is OFF
+# when its folder holds the flag file CRON_OFF its off.sh writes (or still a <name>-off.sh left
+# by the old renaming off.sh, before 2026-10-25), ARMED otherwise. The scripts of the folder
+# that read CRON_OFF give the container names. Run through `bash -s` whatever the login shell.
+# $ROOT defaults to ~/docker.
 REMOTE_SNAPSHOT = r"""
 ROOT="${DOCKER_ROOT:-$HOME/docker}"
 echo "VPS_TIME=$(date '+%H:%M')"
 echo "VPS_WHEN=$(date '+%Y-%m-%d %H:%M:%S %Z')"
-armed=""; off=""; unknown=""; names=""
+armed=""; off=""; names=""
 for o in "$ROOT"/*/off.sh; do
   [ -f "$o" ] || continue
   d=$(dirname "$o"); repo=$(basename "$d")
   case " %KEEP% " in *" $repo "*) continue ;; esac
-  state=off; seen=0
-  while read -r src dst; do
-    seen=1; names="$names ${src%.sh}"
-    if [ -f "$d/$src" ]; then state=armed
-    elif [ ! -f "$d/$dst" ] && [ "$state" = off ]; then state=unknown
-    fi
-  done < <(tr -d '\r' < "$o" | awk '$1=="mv"{print $2,$3}')
-  [ "$seen" -eq 1 ] || state=unknown
+  for l in $(grep -l CRON_OFF "$d"/*.sh 2>/dev/null) "$d"/*-off.sh; do
+    case "$(basename "$l")" in on.sh|off.sh|"*-off.sh") ;; *) names="$names $(basename "$l" .sh | sed 's/-off$//')" ;; esac
+  done
   names="$names $repo"
-  case "$state" in armed) armed="$armed $repo";; off) off="$off $repo";; *) unknown="$unknown $repo";; esac
+  if [ -f "$d/CRON_OFF" ] || ls "$d"/*-off.sh >/dev/null 2>&1; then off="$off $repo"; else armed="$armed $repo"; fi
 done
 echo "ARMED=$armed"
 echo "OFF=$off"
-echo "UNKNOWN=$unknown"
 pat=$(echo $names | tr ' ' '\n' | grep -v '^$' | sort -u | paste -sd'|' -)
 comp=""
 [ -n "$pat" ] && comp=$(docker ps --format '{{.Names}}' | grep -E "^($pat)" | tr '\n' ' ' || true)
@@ -370,8 +365,6 @@ def main():
             print("  - every scheduled task under ~/docker is switched off.")
         if vps.get("OFF"):
             print("  - already off:" + vps["OFF"])
-        if vps.get("UNKNOWN"):
-            warn("state unclear (neither script nor its -off twin found):" + vps["UNKNOWN"])
         comp = vps.get("COMPETING", "").split()
         if comp:
             warn("containers running now (off.sh will not stop them; embedding-update changes the answers): "
