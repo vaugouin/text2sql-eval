@@ -1,0 +1,8 @@
+-- fix-2550-result-shape-assertion.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-29 21:48:06 +0100
+--
++-------------------+---------------------------------------------------------+
+| ID_T2S_EVALUATION | ASSERTIONS_RESULT_SHAPE                                 |
++-------------------+---------------------------------------------------------+
+|              2550 | result_kind == entity_rows; representation == card-grid |
++-------------------+---------------------------------------------------------+
