@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Collection_name1&quot;,&quot;Person_name1&quot;]) AND matches($.Person_name1, /^Yasujirō Ozu$/i)",
     "sql_query": null,
-    "query_result": "COUNT(*) == 3 AND\r\nID_MOVIE IN (20530, 50247, 18148)"
+    "query_result": "COUNT(*) == 3 AND\r\nID_MOVIE IN (20530, 50247, 18148)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

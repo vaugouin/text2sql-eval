@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Topic_name1&quot;])",
     "sql_query": "(?i)\\bTOPIC_NAME\\s*=\\s*[&#039;&quot;‘&#039;]vietnam\\s+war[&#039;&quot;‘&#039;]",
-    "query_result": null
+    "query_result": null,
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

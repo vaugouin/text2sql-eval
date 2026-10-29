@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?i)T_WC_T2S_SOURCE_WORK",
-    "query_result": "COUNT(*) == 0"
+    "query_result": "COUNT(*) == 0",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

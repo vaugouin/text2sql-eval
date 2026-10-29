@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Topic_name1&quot;]) AND matches($.Topic_name1, /^Philip Marlowe$/i)",
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (1834, 910, 1841, 1840, 1846, 1847, 1835, 1815, 1848, 130715, 213655, 844417, 651175)"
+    "query_result": "ID_MOVIE IN (1834, 910, 1841, 1840, 1846, 1847, 1835, 1815, 1848, 130715, 213655, 844417, 651175)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

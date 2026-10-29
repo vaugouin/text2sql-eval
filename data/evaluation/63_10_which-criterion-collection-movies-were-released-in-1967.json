@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)\\bWHERE\\b(?=.*\\bID_CRITERION\\s+IS\\s+NOT\\s+NULL\\b)(?=.*\\bID_CRITERION\\s*&gt;\\s*0\\b)",
-    "query_result": "ID_MOVIE IN (17905, 10227, 68442, 42695)"
+    "query_result": "ID_MOVIE IN (17905, 10227, 68442, 42695)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

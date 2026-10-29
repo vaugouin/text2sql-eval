@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]narrative[&#039;&quot;]",
-    "query_result": "ID_MOVIE IN (36557, 1213, 6619)"
+    "query_result": "ID_MOVIE IN (36557, 1213, 6619)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

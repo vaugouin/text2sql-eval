@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)(?=.*\\bDEATH_YEAR\\s+BETWEEN\\s+1990\\s+AND\\s+1999\\b)",
-    "query_result": "COUNT(*) &gt; 0"
+    "query_result": "COUNT(*) &gt; 0",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

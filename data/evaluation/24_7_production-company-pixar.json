@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Company_name1&quot;]) AND matches($.Company_name1, /^Pixar$/i)",
     "sql_query": null,
-    "query_result": "ID_COMPANY IN (3)"
+    "query_result": "ID_COMPANY IN (3)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

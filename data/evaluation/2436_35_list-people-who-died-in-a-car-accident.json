@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Death_name1&quot;])",
     "sql_query": null,
-    "query_result": "ID_PERSON IN (2948491, 2749, 98040, 9906, 45001, 45469, 55069, 1306064)"
+    "query_result": "ID_PERSON IN (2948491, 2749, 98040, 9906, 45001, 45469, 55069, 1306064)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT p.ID_PERSON FROM T_WC_T2S_PERSON p JOIN T_WC_T2S_PERSON_DEATH pd ON p.ID_PERSON = pd.ID_PERSON JOIN T_WC_T2S_DEATH d ON pd.ID_DEATH = d.ID_DEATH WHERE d.DEATH_NAME_FR = &#039;accident de voiture&#039; ORDER BY pd.DISPLAY_ORDER ASC LIMIT 8",
   "assertion_refresh_last": "2026-08-18T05:32:17",

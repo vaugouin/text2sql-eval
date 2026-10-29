@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_SERIE IN (1416, 1411, 83631, 41956, 1480, 1396, 549, 2190, 91759, 136315) AND ID_MOVIE IN (969681, 687163, 1003596, 1058424, 1368337, 1101412, 1400940, 1153576, 1291595, 1148365)"
+    "query_result": "ID_SERIE IN (1416, 2734, 4057, 1622, 456, 1411, 1668, 36, 194766, 2004) AND ID_MOVIE IN (969681, 1058424, 1101412, 1400940, 1368337, 20222, 1291595, 1561726, 1514026, 1148365)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT U.ID_CONTENT, U.CONTENT_TYPE\r\n  FROM (\r\n        (SELECT T_WC_T2S_MOVIE.ID_MOVIE AS ID_CONTENT, &#039;movie&#039; AS CONTENT_TYPE, T_WC_T2S_MOVIE.POPULARITY AS SORT_KEY\r\n           FROM T_WC_T2S_MOVIE\r\n          WHERE T_WC_T2S_MOVIE.DELETED = 0 AND T_WC_T2S_MOVIE.IS_MOVIE = 1\r\n          ORDER BY T_WC_T2S_MOVIE.POPULARITY DESC\r\n          LIMIT 10)\r\n        UNION ALL\r\n        (SELECT T_WC_T2S_SERIE.ID_SERIE AS ID_CONTENT, &#039;serie&#039; AS CONTENT_TYPE, T_WC_T2S_SERIE.POPULARITY AS SORT_KEY\r\n           FROM T_WC_T2S_SERIE\r\n          WHERE T_WC_T2S_SERIE.DELETED = 0\r\n          ORDER BY T_WC_T2S_SERIE.POPULARITY DESC\r\n          LIMIT 10)\r\n       ) AS U\r\n ORDER BY U.SORT_KEY DESC\r\n LIMIT 20",
-  "assertion_refresh_last": "2026-10-26T03:39:45",
+  "assertion_refresh_last": "2026-10-29T04:26:35",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

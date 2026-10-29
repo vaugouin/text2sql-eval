@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Location_name1&quot;]) AND matches($.Location_name1, /^Paris$/i)",
     "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]narrative[&#039;&quot;]",
-    "query_result": "ID_MOVIE IN (27205, 49013, 77931, 350, 792307, 2062, 603692, 16869)"
+    "query_result": "ID_MOVIE IN (27205, 49013, 77931, 2062, 350, 603692, 792307, 353081)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION_ANCESTOR ON T_WC_T2S_LOCATION_ANCESTOR.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_LOCATION_ANCESTOR.ID_ANCESTOR WHERE T_WC_T2S_LOCATION.ID_WIKIDATA = &#039;Q90&#039; AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;narrative&#039; ORDER BY T_WC_T2S_MOVIE.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-26T03:39:41",
+  "assertion_refresh_last": "2026-10-29T04:26:29",
   "comment": "2026-10-17: refresh SQL moved from the Wikidata V1 tables (T_WC_WIKIDATA_ITEM_PROPERTY P840, T_WC_T2S_ITEM label) to the locations read-model, Paris named by its QID Q90, role narrative. 2026-10-19 (EVALUATIONS-024): refresh SQL through T_WC_T2S_LOCATION_ANCESTOR, so that places in Paris count, as the API answers since FASTAPI-TEXT2SQL-332.",
   "keywords": null,
   "keywords_auto": null,

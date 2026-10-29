@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)(?=.*\\bRELEASE_YEAR\\s+BETWEEN\\s+1970\\s+AND\\s+1979\\b)",
-    "query_result": "ID_MOVIE IN (238, 28, 103, 3175, 216, 1398, 1396, 4495, 44012, 27432, 27019, 80560, 77771)"
+    "query_result": "ID_MOVIE IN (238, 28, 103, 3175, 216, 1398, 1396, 4495, 44012, 27432, 27019, 80560, 77771)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

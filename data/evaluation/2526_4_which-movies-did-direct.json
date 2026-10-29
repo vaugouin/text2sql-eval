@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?i)(Hayao Miyazaki|ID_PERSON ?= ?608)",
-    "query_result": "COUNT(*) &gt; 0 AND ID_MOVIE IN (129, 128)"
+    "query_result": "COUNT(*) &gt; 0 AND ID_MOVIE IN (129, 128)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,
@@ -18,7 +19,7 @@
   "is_sample": 1,
   "display_order": null,
   "dat_creat": "2026-10-05",
-  "tim_updated": "2026-10-05T17:15:48",
+  "tim_updated": "2026-10-28T09:15:31",
   "is_showcase": 0,
   "deleted": 0,
   "id_creator": 1,

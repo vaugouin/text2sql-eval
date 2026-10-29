@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "(COUNT(*) == 5 OR COUNT(*) == 6) AND ID_MOVIE IN (10178, 488, 5996, 34689, 63618) AND ID_MOVIE NOT IN (289, 3090, 11016, 910, 963, 27725)"
+    "query_result": "(COUNT(*) == 5 OR COUNT(*) == 6) AND ID_MOVIE IN (10178, 488, 5996, 34689, 63618) AND ID_MOVIE NOT IN (289, 3090, 11016, 910, 963, 27725)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Movie_title1&quot;,&quot;Release_year1&quot;]) AND matches($.Movie_title1, /^Manhattan$/i) AND matches($.Release_year1, /^1979$/i)",
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (696)"
+    "query_result": "ID_MOVIE IN (696)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

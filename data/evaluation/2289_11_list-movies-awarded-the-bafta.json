@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Award_name1&quot;])",
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (76203, 68734, 74643, 45269, 12405)"
+    "query_result": "ID_MOVIE IN (76203, 68734, 74643, 45269, 12405)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

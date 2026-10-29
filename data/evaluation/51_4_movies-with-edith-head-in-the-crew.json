@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (567, 599, 37257, 996, 426, 9277, 705, 642, 11697, 804, 303, 6844, 25364, 571, 28580, 16305, 28571, 983, 6620, 164)"
+    "query_result": "ID_MOVIE IN (567, 599, 37257, 996, 426, 9277, 705, 642, 11697, 804, 303, 6844, 25364, 571, 28580, 16305, 28571, 983, 6620, 164)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,
@@ -18,7 +19,7 @@
   "is_sample": 1,
   "display_order": null,
   "dat_creat": "2025-10-30",
-  "tim_updated": "2026-04-18T12:13:53",
+  "tim_updated": "2026-10-28T09:15:31",
   "is_showcase": null,
   "deleted": 0,
   "id_creator": 1,

@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "T_WC_T2S_SERIE_COLLECTION",
-    "query_result": "ID_MOVIE IN (777, 346, 940, 7857, 147, 648, 10971, 10835, 11782, 36040, 490, 11031, 274, 31372, 31374, 31378, 5336, 26031, 25504, 14924) OR ID_T2S_COLLECTION IN (5035)"
+    "query_result": "ID_MOVIE IN (777, 346, 940, 7857, 147, 648, 10971, 10835, 11782, 36040, 490, 11031, 274, 31372, 31374, 31378, 5336, 26031, 25504, 14924) OR ID_T2S_COLLECTION IN (5035)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": "2026-09-16T02:37:10",

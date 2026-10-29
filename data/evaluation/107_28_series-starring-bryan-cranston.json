@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_SERIE IN (\r\n  10504, 119492, 4469, 4442, 93, 2119, 15215, 4788, 4521, 2,\r\n  86430, 1396, 11622, 61098, 63214, 13734, 15839, 2004,\r\n  279471, 30090, 25126, 76558\r\n)"
+    "query_result": "ID_SERIE IN (\r\n  10504, 119492, 4469, 4442, 93, 2119, 15215, 4788, 4521, 2,\r\n  86430, 1396, 11622, 61098, 63214, 13734, 15839, 2004,\r\n  279471, 30090, 25126, 76558\r\n)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

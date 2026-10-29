@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;TMDb_ID1&quot;]) AND matches($.TMDb_ID1, /^1$/i)",
     "sql_query": null,
-    "query_result": "ID_PERSON IN (1)"
+    "query_result": "ID_PERSON IN (1)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_SERIE IN (1416, 1411, 83631, 41956, 1480, 1396, 549, 2190)"
+    "query_result": "ID_SERIE IN (1416, 2734, 4057, 1622, 456, 1411, 1668, 36)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT ID_SERIE FROM T_WC_T2S_SERIE ORDER BY POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-26T03:39:33",
+  "assertion_refresh_last": "2026-10-29T04:26:17",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (157336, 935, 272, 271110, 330459, 1251, 140607, 54138, 18, 2270, 116745, 1563, 493529, 62204, 3683)"
+    "query_result": "ID_MOVIE IN (157336, 935, 272, 271110, 330459, 1251, 140607, 54138, 18, 2270, 116745, 1563, 493529, 62204, 3683)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION filming_link ON filming_link.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION_ANCESTOR filming_ancestor ON filming_ancestor.ID_LOCATION = filming_link.ID_LOCATION JOIN T_WC_T2S_LOCATION iceland ON iceland.ID_LOCATION = filming_ancestor.ID_ANCESTOR WHERE iceland.ID_WIKIDATA = &#039;Q189&#039; AND iceland.DELETED = 0 AND filming_link.LOCATION_ROLE = &#039;filming&#039; AND EXISTS (SELECT 1 FROM T_WC_T2S_MOVIE_LOCATION narrative_link WHERE narrative_link.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE AND narrative_link.LOCATION_ROLE = &#039;narrative&#039;) AND NOT EXISTS (SELECT 1 FROM T_WC_T2S_MOVIE_LOCATION narrative_here JOIN T_WC_T2S_LOCATION_ANCESTOR narrative_ancestor ON narrative_ancestor.ID_LOCATION = narrative_here.ID_LOCATION WHERE narrative_here.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE AND narrative_here.LOCATION_ROLE = &#039;narrative&#039; AND narrative_ancestor.ID_ANCESTOR = iceland.ID_LOCATION) ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 15",
-  "assertion_refresh_last": "2026-10-26T03:39:37",
+  "assertion_refresh_last": "2026-10-29T04:26:22",
   "comment": "2026-10-19 (EVALUATIONS-024): French question repaired (it read \"tournés W Islandii\", Polish). Refresh SQL through T_WC_T2S_LOCATION_ANCESTOR on both sides: filmed anywhere in Iceland (Q189), and no narrative place inside Iceland, as the API writes it since FASTAPI-TEXT2SQL-332; first value written now.",
   "keywords": null,
   "keywords_auto": null,

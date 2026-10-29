@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Character_name1&quot;]) AND matches($.Character_name1, /^Charlotte Corday$/i)",
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (42536, 530986, 4228, 44258, 537037, 506043, 165218)"
+    "query_result": "ID_MOVIE IN (42536, 530986, 4228, 44258, 537037, 506043, 165218)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

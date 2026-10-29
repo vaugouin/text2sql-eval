@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)(?=.*\\bFIRST_AIR_YEAR\\s+BETWEEN\\s+1960\\s+AND\\s+1969\\b)",
-    "query_result": "ID_SERIE IN (212608, 128062, 43808)"
+    "query_result": "ID_SERIE IN (212608, 128062, 43808)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (4727, 1875, 1870, 2798, 46655, 25866, 19178, 761, 760, 11915, 9317, 14257, 8290, 10516, 95197, 63961, 78475, 158550, 74580, 130650, 600127, 300503, 36179, 53470, 79878, 4732) AND \r\nTYPE_IMAGE == &#039;poster&#039;"
+    "query_result": "ID_MOVIE IN (4727, 1875, 1870, 2798, 46655, 25866, 19178, 761, 760, 11915, 9317, 14257, 8290, 10516, 95197, 63961, 78475, 158550, 74580, 130650, 600127, 300503, 36179, 53470, 79878, 4732) AND \r\nTYPE_IMAGE == &#039;poster&#039;",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

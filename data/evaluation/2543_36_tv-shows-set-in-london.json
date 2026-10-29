@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)^(?!.*T_WC_T2S_EPISODE_LOCATION).*T_WC_T2S_SERIE_LOCATION",
-    "query_result": "ID_SERIE IN (19885, 60574, 67070) AND ID_SERIE NOT IN (42009, 456, 8592, 72750)"
+    "query_result": "ID_SERIE IN (19885, 60574, 67070) AND ID_SERIE NOT IN (42009, 456, 8592, 72750)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

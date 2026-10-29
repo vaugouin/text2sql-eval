@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Wikidata_ID1&quot;]) AND matches($.Wikidata_ID1, /^Q24815$/i)",
     "sql_query": null,
-    "query_result": "ID_MOVIE == 15"
+    "query_result": "ID_MOVIE == 15",
+    "result_shape": "result_kind == entity_rows; representation == entity-page"
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

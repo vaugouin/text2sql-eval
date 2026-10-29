@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "eq($.question, &quot;{{Company_name1}}&quot;) AND eq($.Company_name1, &quot;Ginza cosmetics&quot;) AND seteq(entity_keys($), [&quot;Company_name1&quot;])",
     "sql_query": null,
-    "query_result": null
+    "query_result": null,
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

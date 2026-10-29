@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)T_WC_T2S_LOCATION_ANCESTOR.*LOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]",
-    "query_result": "ID_MOVIE IN (27205, 857, 101, 77338, 16869, 85, 311, 387, 194, 640, 80, 2503, 63, 147, 827)"
+    "query_result": "ID_MOVIE IN (27205, 857, 101, 77338, 16869, 85, 311, 387, 194, 640, 80, 2503, 63, 147, 827)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE, T_WC_T2S_MOVIE.MOVIE_TITLE, T_WC_T2S_MOVIE.DAT_RELEASE, T_WC_T2S_MOVIE.ID_IMDB, T_WC_T2S_MOVIE.IMDB_RATING, T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED, T_WC_T2S_MOVIE.IMDB_VOTES, T_WC_T2S_MOVIE.POSTER_PATH, T_WC_T2S_MOVIE.RUNTIME, T_WC_T2S_MOVIE.TAGLINE, T_WC_T2S_MOVIE.ID_CRITERION_SPINE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION_ANCESTOR ON T_WC_T2S_LOCATION_ANCESTOR.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_LOCATION_ANCESTOR.ID_ANCESTOR WHERE T_WC_T2S_LOCATION.LOCATION_NAME = &#039;France&#039; AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;filming&#039; ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 15",
-  "assertion_refresh_last": "2026-10-26T03:39:27",
+  "assertion_refresh_last": "2026-10-29T04:26:07",
   "comment": "EVALUATIONS-024. A country covers the places it contains (T_WC_T2S_LOCATION_ANCESTOR, TMDB-MOVIE-PREPROCESS-048). Inception (Paris), Saving Private Ryan (Calvados) and The Intouchables (Paris, Merville-Franceville) are filming-linked to places in France and never to France itself: without the hierarchy they cannot come. Before 2026-10-19, 27 movies were shot &quot;in France&quot;; through the hierarchy, 1 796.",
   "keywords": null,
   "keywords_auto": null,

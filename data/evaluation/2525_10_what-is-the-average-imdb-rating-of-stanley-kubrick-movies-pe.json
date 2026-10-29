@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)\\A(?=.*\\bAVG\\s*\\(\\s*(?:DISTINCT\\s+)?(?:\\w+\\.)?IMDB_RATING\\b)(?=.*\\b(?:Director|Directing)\\b)(?!.*\\bCREDIT_TYPE\\s*=\\s*\\x27cast\\x27)",
-    "query_result": "COUNT(*) &gt;= 5 AND COUNT(*) &lt;= 6"
+    "query_result": "COUNT(*) &gt;= 5 AND COUNT(*) &lt;= 6",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)(?=.*\\bID_GENRE\\s*=\\s*35\\b)\r\n(?=.*\\bORIGINAL_LANGUAGE\\s*=\\s*[&#039;&quot;‘&#039;]en[&#039;&quot;‘&#039;])\r\n(?=.*\\bRELEASE_YEAR\\s+BETWEEN\\s+1950\\s+AND\\s+1959\\b)\r\n(?=.*\\bIS_SHORT_FILM\\s*=\\s*0\\b)\r\n(?=.*\\bIS_MOVIE\\s*=\\s*1\\b)",
-    "query_result": null
+    "query_result": null,
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

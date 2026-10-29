@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)\\A(?=.*\\bAVG\\s*\\(\\s*(?:DISTINCT\\s+)?(?:\\w+\\.)?RUNTIME\\b)(?=.*\\b(?:Director|Directing)\\b)(?!.*\\bGROUP\\s+BY\\b)(?!.*\\bCREDIT_TYPE\\s*=\\s*\\x27cast\\x27)",
-    "query_result": "COUNT(*) == 1"
+    "query_result": "COUNT(*) == 1",
+    "result_shape": "result_kind == scalar; representation == number-card; unit(*) == minutes"
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

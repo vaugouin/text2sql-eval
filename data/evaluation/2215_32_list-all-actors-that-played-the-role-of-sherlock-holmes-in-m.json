@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Character_name1&quot;]) AND matches($.Character_name1, /^Sherlock Holmes$/i)",
     "sql_query": null,
-    "query_result": "ID_PERSON IN (22462, 3223, 73968, 119460, 290, 23659, 71580, 1327, 3895, 27906)"
+    "query_result": "ID_PERSON IN (22462, 3223, 73968, 119460, 290, 23659, 71580, 1327, 3895, 27906)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (345985, 294021, 594556, 305733, 604529, 291246, 942419, 796487, 691204, 671214)"
+    "query_result": "ID_MOVIE IN (345985, 294021, 594556, 305733, 604529, 291246, 942419, 796487, 691204, 671214)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

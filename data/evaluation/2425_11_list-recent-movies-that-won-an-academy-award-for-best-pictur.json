@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Award_name1&quot;])",
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (1054867, 1064213, 872585, 545611, 776503, 581734, 496243, 490132)"
+    "query_result": "ID_MOVIE IN (1054867, 1064213, 872585, 545611, 776503, 581734, 496243, 490132)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT m.ID_MOVIE FROM T_WC_T2S_MOVIE m JOIN T_WC_T2S_MOVIE_AWARD ma ON ma.ID_MOVIE = m.ID_MOVIE JOIN T_WC_T2S_AWARD a ON a.ID_AWARD = ma.ID_AWARD WHERE a.AWARD_NAME = &#039;Academy Award for Best Picture&#039; ORDER BY m.DAT_RELEASE DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-26T03:39:41",
+  "assertion_refresh_last": "2026-10-29T04:26:29",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Movie_title1&quot;])",
     "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]",
-    "query_result": "ID_LOCATION IN (697, 2474, 4957, 5012)"
+    "query_result": "ID_LOCATION IN (697, 2474, 4957, 5012)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

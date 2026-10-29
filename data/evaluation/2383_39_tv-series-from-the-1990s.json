@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)(?=.*\\bFIRST_AIR_YEAR\\s+BETWEEN\\s+1990\\s+AND\\s+1999\\b)",
-    "query_result": "ID_SERIE IN (1398, 37854, 1668, 2098, 30991, 2190, 688, 1920)"
+    "query_result": "ID_SERIE IN (1398, 37854, 1668, 2098, 30991, 2190, 688, 1920)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE WHERE YEAR(T_WC_T2S_SERIE.DAT_FIRST_AIR) BETWEEN 1990 AND 1999 ORDER BY T_WC_T2S_SERIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-26T03:39:41",
+  "assertion_refresh_last": "2026-10-29T04:26:29",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

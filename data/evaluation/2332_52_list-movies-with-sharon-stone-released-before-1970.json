@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Person_name1&quot;]) AND matches($.Person_name1, /^Sharon Stone$/i)",
     "sql_query": "(?is)(?=.*\\bRELEASE_YEAR\\s*<\\s*1970\\b)",
-    "query_result": "COUNT(*) == 0"
+    "query_result": "COUNT(*) == 0",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

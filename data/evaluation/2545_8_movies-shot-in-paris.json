@@ -7,7 +7,8 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]",
-    "query_result": "ID_MOVIE IN (27205, 101) AND ID_MOVIE NOT IN (857, 85, 387, 374720)"
+    "query_result": "ID_MOVIE IN (27205, 101) AND ID_MOVIE NOT IN (857, 85, 387, 374720)",
+    "result_shape": null
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

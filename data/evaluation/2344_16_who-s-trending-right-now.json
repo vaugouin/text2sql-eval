@@ -7,10 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_PERSON IN (1247604, 18270, 22303, 1438183, 1081095, 1183234, 22066, 27020, 550876, 2209233, 3012621, 17146, 3115096, 2568605, 1744300)"
+    "query_result": "ID_PERSON IN (1247604, 18270, 22303, 1438183, 1081095, 1183234, 22066, 27020, 550876, 2209233, 3012621, 17146, 3115096, 2568605, 1744300)",
+    "result_shape": null
   },
   "assertion_refresh_sql": "SELECT ID_PERSON FROM T_WC_T2S_PERSON ORDER BY POPULARITY DESC LIMIT 15",
-  "assertion_refresh_last": "2026-10-26T03:39:33",
+  "assertion_refresh_last": "2026-10-29T04:26:17",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
