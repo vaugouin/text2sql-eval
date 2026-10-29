@@ -552,7 +552,7 @@ uv run --no-project python check-result-shape.py \
   <.../evaluation_execution/001.001.020_en_gpt-6-sol_..._...>   # [--strict]
 ```
 
-A question whose export predates -349 (no `result_kind` in `api_output`) is reported NOT-EMITTED, not failed. Adding or editing this assertion therefore leaves every campaign number untouched and comparable: it evaluates the feature without perturbing accuracy.
+A question whose export predates -349 (no `result_kind` in `api_output`) is **recomputed offline** from the stored `sql_query` and result rows, with the same deterministic module the API uses (`fastapi-text2sql/result_shape.py`), so an old campaign is checked without any re-run or token cost (`--no-recompute` disables it; `--fastapi-dir` points at the clone). Only an export that also lacks the rows stays NOT-EMITTED, which genuinely needs re-execution. Adding or editing this assertion leaves every campaign number untouched and comparable: it evaluates the feature without perturbing accuracy.
 
 **Grammar** (parser and checker in `result_shape_assertions.py`). One clause per line, or `;`- or ` AND `-separated, each `LHS OP RHS` with `OP` in `==` / `!=`:
 
@@ -1071,6 +1071,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.17.0 | 2026-10-29 | **Result-shape check without re-running (FASTAPI-TEXT2SQL-349)**: `check-result-shape.py` now recomputes the hint offline, from the stored `sql_query` and result rows, with the same deterministic module the API uses (`fastapi-text2sql/result_shape.py`), so a pre-349 campaign is checked with no re-execution and no token cost. Flags `--no-recompute` and `--fastapi-dir`; an export lacking the rows stays NOT-EMITTED. Also corrected the budget/revenue/profit assertion (id 2550) to `entity_rows / card-grid`: the first Green run showed the model answers it with a window aggregate over entity rows, not a bare stat strip. §4.7. |
 | 2.16.1 | 2026-10-25 | **Scheduled tasks switched off by a flag file**: the pre-flight of `text2sql-eval.sh` and of `load/run_load.py` reads `CRON_OFF`, which each task's `off.sh` now writes next to its launcher (on.sh deletes it), instead of the `mv` lines of the old renaming `off.sh`. A leftover `<name>-off.sh` still counts as off. |
 | 2.16.0 | 2026-10-24 | **One-command launcher for the load bench** (LOAD-TESTING-004/-005): `load/run_load.py` mirrors the evaluator's pre-flight for the bench. From the PC it prints a recap (scenario, shape, targets, cache regime, question count, results path), probes the API `GET /` (version, `bktrees_ready`), reaches the VPS over SSH to check every scheduled task is off, that nothing competes and that swap/disk have room, refuses the forbidden windows (00:00, 06:00-07:30) and scenario B without `--allow-cold`, asks to confirm, then launches Locust locally. Section 14. The locustfile and the evaluator are unchanged. |
 | 2.15.1 | 2026-10-22 | **Load bench, the session step by step** in section 14 (VPS preparation, cache warm-up, measured run, wrap-up), so the procedure needs no other document. |

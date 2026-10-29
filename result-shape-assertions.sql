@@ -15,14 +15,17 @@
 --              unambiguous (count, single-entity page, scalar, plain grid). Each UPDATE is
 --              guarded on an empty value, so it never clobbers a hand-written one.
 --   Section B  Insert the two questions no existing one covers: a runtime SUM in minutes
---              (number card) and a budget/revenue/profit triple (stat strip). Each INSERT
---              is guarded by NOT EXISTS on the English question, so a second pass inserts
---              nothing (the subquery is wrapped in a derived table to avoid MariaDB 1093).
+--              (number card) and a budget/revenue/profit triple. Each INSERT is guarded by
+--              NOT EXISTS on the English question, so a second pass inserts nothing (the
+--              subquery is wrapped in a derived table to avoid MariaDB 1093). B2 also carries
+--              a self-healing UPDATE: see its note for why its assertion became card-grid.
 --
 -- WHY ONLY THESE EXISTING IDS
 -- The sweep of 2026-10-29 found the asserted bank is almost all card-grid. Counts (72) and
 -- single-entity pages (19) are well covered; the scalar-with-unit case that motivated -349
--- (a SUM in minutes) and the stat strip are the real gaps, filled in Section B. The
+-- (a SUM in minutes) is the real gap, filled by B1. A stat strip remains uncovered: the
+-- model prefers a window aggregate over entity rows (see B2's note), so no bank question
+-- yields one yet. The
 -- card-grid-versus-ranked-bars tie is deliberately NOT asserted on existing questions: the
 -- standard entity projection carries several metric columns, so the shape is card-grid,
 -- and a ranked-bars example belongs on a question with a single-metric projection, to be
@@ -100,7 +103,14 @@ WHERE NOT EXISTS (
   ) AS guard
 );
 
--- B2. Budget, revenue and profit together -> stat strip (2 to 5 scalar columns, no GROUP BY).
+-- B2. Budget, revenue and profit together.
+-- INTENDED a stat strip, but the first Green run (2026-10-29, id 2550) showed the model does
+-- NOT write a bare 2-to-5-column aggregate for this question: it writes a WINDOW aggregate
+-- (SUM(...) OVER ()) that projects all 30 Nolan movies as entity rows with the totals repeated
+-- on each row. That result IS entity_rows / card-grid, and the classifier describes it faithfully.
+-- So the assertion is aligned on the shape the pipeline actually produces. A genuine stat-strip
+-- example still has no home in the bank (it needs a question the model answers with a bare
+-- multi-scalar aggregate, no id projection); left as a TODO rather than a false assertion here.
 INSERT INTO T_WC_T2S_EVALUATION
   (QUESTION, QUESTION_FR, ID_T2S_EVALUATION_CATEGORY, IS_EVAL, IS_SAMPLE, IS_SHOWCASE, DELETED,
    DAT_CREAT, ID_CREATOR, ID_OWNER, ASSERTIONS_QUERY_RESULT, ASSERTIONS_RESULT_SHAPE)
@@ -109,7 +119,7 @@ SELECT
   'Quels sont le budget total, les recettes totales au box-office et le profit global de tous les films de Christopher Nolan ?',
   22, 1, 0, 0, 0, CURDATE(), 1, 1,
   'CELL(0, 0) &gt; 0',
-  'result_kind == scalar; representation == stat-strip'
+  'result_kind == entity_rows; representation == card-grid'
 FROM DUAL
 WHERE NOT EXISTS (
   SELECT 1 FROM (
@@ -117,3 +127,10 @@ WHERE NOT EXISTS (
     WHERE QUESTION = 'What is the total budget, total box office revenue and overall profit of all Christopher Nolan movies?'
   ) AS guard
 );
+
+-- Self-healing: a DB where B2 was already inserted with the old stat-strip assertion (the first
+-- run) is corrected here. Guarded on the old value, so it fires once and is a no-op afterwards.
+UPDATE T_WC_T2S_EVALUATION
+  SET ASSERTIONS_RESULT_SHAPE = 'result_kind == entity_rows; representation == card-grid'
+  WHERE QUESTION = 'What is the total budget, total box office revenue and overall profit of all Christopher Nolan movies?'
+    AND ASSERTIONS_RESULT_SHAPE = 'result_kind == scalar; representation == stat-strip';
