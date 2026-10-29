@@ -1555,6 +1555,12 @@ try:
                                         "entity_extraction": (row.get('ASSERTIONS_ENTITY_EXTRACTION') or "").strip() or None,
                                         "sql_query": (row.get('ASSERTIONS_SQL_QUERY') or "").strip() or None,
                                         "query_result": (row.get('ASSERTIONS_QUERY_RESULT') or "").strip() or None,
+                                        # FASTAPI-TEXT2SQL-349: the result-shape assertion
+                                        # (result_kind / representation / unit). Checked
+                                        # out of score by check-result-shape.py, never by
+                                        # the campaign scorer. Null until the column is
+                                        # populated, so older banks export as before.
+                                        "result_shape": (row.get('ASSERTIONS_RESULT_SHAPE') or "").strip() or None,
                                     },
                                     # Not a scored assertion but the SELECT that regenerates one:
                                     # tmdb-movie-preprocess (process 70) re-runs it and rewrites
@@ -1576,7 +1582,7 @@ try:
                                     "id", "ID_T2S_EVALUATION", "ID_T2S_EVALUATION_CATEGORY",
                                     "QUESTION", "QUESTION_FR",
                                     "ASSERTIONS_ENTITY_EXTRACTION", "ASSERTIONS_SQL_QUERY",
-                                    "ASSERTIONS_QUERY_RESULT",
+                                    "ASSERTIONS_QUERY_RESULT", "ASSERTIONS_RESULT_SHAPE",
                                     "ASSERTION_REFRESH_SQL", "ASSERTION_REFRESH_LAST",
                                     "LONG_DESC", "MOT_CLE", "MOT_CLE_AUTO", "IS_EVAL", "IS_SAMPLE",
                                     "DISPLAY_ORDER", "DAT_CREAT", "TIM_UPDATED",

@@ -40,7 +40,7 @@ The evaluator is a **single-pass multi-phase pipeline** driven by a numeric proc
 
 | Table | Role |
 |---|---|
-| `T_WC_T2S_EVALUATION` | Question bank (EN + FR) + three assertion columns (`ASSERTIONS_ENTITY_EXTRACTION`, `ASSERTIONS_SQL_QUERY`, `ASSERTIONS_QUERY_RESULT`) |
+| `T_WC_T2S_EVALUATION` | Question bank (EN + FR) + four assertion columns: the scored `ASSERTIONS_QUERY_RESULT`, plus `ASSERTIONS_ENTITY_EXTRACTION`, `ASSERTIONS_SQL_QUERY` and the out-of-score `ASSERTIONS_RESULT_SHAPE` (§4.7) |
 | `T_WC_T2S_EVALUATION_CATEGORY` | Taxonomy (categories of questions) |
 | `T_WC_T2S_EVALUATION_EXECUTION` | One row per `(eval_id, api_version, entity_extraction_model, text2sql_model, complex_model, language)` combination — stores the full JSON response, per-assertion scores, aggregated `ASSERTIONS_TOTAL_SCORE`, and timing breakdown |
 
@@ -540,6 +540,31 @@ UPDATE T_WC_T2S_EVALUATION SET ASSERTIONS_QUERY_RESULT = 'COUNT(*) &gt; 0 AND ID
 ```
 
 To change a value already set, guard on the **exact current value** instead of on emptiness: the statement applies once, does nothing on re-run, and withdraws itself if someone edited the value in between. After import, re-run **Phase 20 alone**: scoring is offline against the stored `JSON_RESULT`, so no API call and no LLM token is spent.
+
+### 4.7 `ASSERTIONS_RESULT_SHAPE` — the rendering-hint assertion (out of score)
+
+A fourth assertion column, `ASSERTIONS_RESULT_SHAPE`, asserts on the rendering hint the API emits since FASTAPI-TEXT2SQL-349: `result_kind`, `representation`, and the role and unit of each column. It answers a question the other three cannot: did the API label this result so a client can draw it (a number card, a stat strip, a ranking) rather than guess from column names?
+
+**It never enters a campaign score.** Phase 20 scores `ASSERTIONS_QUERY_RESULT` alone (see `harness/harness_lib.py`); the three other columns, this one included, are not summed into the pass. This column is read only by the out-of-score checker `check-result-shape.py`, which reads a campaign's execution exports (the hint is already in each `api_output`) and the bank's assertion, and prints a PASS/FAIL report:
+
+```bash
+uv run --no-project python check-result-shape.py \
+  <.../evaluation_execution/001.001.020_en_gpt-6-sol_..._...>   # [--strict]
+```
+
+A question whose export predates -349 (no `result_kind` in `api_output`) is reported NOT-EMITTED, not failed. Adding or editing this assertion therefore leaves every campaign number untouched and comparable: it evaluates the feature without perturbing accuracy.
+
+**Grammar** (parser and checker in `result_shape_assertions.py`). One clause per line, or `;`- or ` AND `-separated, each `LHS OP RHS` with `OP` in `==` / `!=`:
+
+| LHS | asserts |
+|---|---|
+| `result_kind == scalar` | the `result_kind` field (`entity_rows` \| `scalar` \| `count` \| `bound` \| `unknown`) |
+| `representation == number-card` | the `representation` field (`entity-page` \| `card-grid` \| `number-card` \| `stat-strip` \| `ranked-bars` \| `table`) |
+| `unit(TOTAL_RUNTIME) == minutes` | the unit of a named column (`minutes` \| `usd` \| `years` \| `count` \| `ratio` \| `null`) |
+| `unit(*) == minutes` | the unit of the **single metric column**, the robust form when the aggregate alias is the model's choice; fails if there is not exactly one metric |
+| `role(GENRE_NAME) == label` | the role of a column (`entity_id` \| `label` \| `metric` \| `date` \| `other`) |
+
+All clauses must hold. An empty assertion passes vacuously. Populate the column with `result-shape-assertions.sql` (schema migration plus the first slice of assertions). Prefer `unit(*)` over a named column on a generated query, whose alias the bank does not control.
 
 ---
 
