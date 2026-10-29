@@ -1,0 +1,7 @@
+step,name,count,failures,http_429,p50_s,p90_s,p99_s,max_s
+step 1: 1 users,D voice /tool/text2sql,30,0,0,0.16,0.35,3.72,3.72
+step 1: 1 users,probe GET /,291,0,0,0.02,0.03,0.06,0.08
+step 2: 2 users,D voice /tool/text2sql,57,0,0,0.17,0.32,0.62,0.85
+step 2: 2 users,probe GET /,290,0,0,0.02,0.03,0.07,0.1
+step 3: 4 users,D voice /tool/text2sql,115,0,0,0.16,0.32,3.12,3.18
+step 3: 4 users,probe GET /,289,0,0,0.02,0.04,0.09,1.42

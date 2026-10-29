@@ -1,0 +1,3 @@
+step,name,count,failures,http_429,p50_s,p90_s,p99_s,max_s
+endurance 2 users,A text2sql warm,527,0,0,0.15,0.4,3.12,3.57
+endurance 2 users,probe GET /,2622,0,0,0.02,0.02,0.08,0.44

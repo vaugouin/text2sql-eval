@@ -1,0 +1,13 @@
+step,name,count,failures,http_429,p50_s,p90_s,p99_s,max_s
+step 1: 1 users,C GET /movies/{id},14,0,0,0.42,0.62,0.79,0.79
+step 1: 1 users,C GET /persons/{id},12,0,0,0.33,0.45,0.47,0.47
+step 1: 1 users,C GET /series/{id},1,0,0,0.56,0.56,0.56,0.56
+step 1: 1 users,probe GET /,289,0,0,0.02,0.04,0.19,0.66
+step 2: 2 users,C GET /movies/{id},33,0,0,0.32,0.53,0.69,0.69
+step 2: 2 users,C GET /persons/{id},20,0,0,0.3,0.39,0.51,0.51
+step 2: 2 users,C GET /series/{id},8,0,0,0.39,0.54,1.41,1.41
+step 2: 2 users,probe GET /,290,0,0,0.02,0.05,0.13,0.38
+step 3: 4 users,C GET /movies/{id},61,0,0,0.36,0.53,0.58,0.71
+step 3: 4 users,C GET /persons/{id},38,0,0,0.34,0.52,0.91,0.91
+step 3: 4 users,C GET /series/{id},25,0,0,0.38,0.47,0.74,0.74
+step 3: 4 users,probe GET /,287,0,0,0.02,0.06,0.26,0.36

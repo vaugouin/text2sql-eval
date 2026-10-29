@@ -1,0 +1,7 @@
+step,name,count,failures,http_429,p50_s,p90_s,p99_s,max_s
+step 1: 1 users,B text2sql cold,19,0,0,4.74,10.4,16.01,16.01
+step 1: 1 users,probe GET /,292,0,0,0.02,0.03,0.04,0.05
+step 2: 2 users,B text2sql cold,39,0,0,4.75,10.47,15.01,15.01
+step 2: 2 users,probe GET /,292,0,0,0.02,0.02,0.04,0.06
+step 3: 4 users,B text2sql cold,75,0,0,4.57,12.67,19.34,19.78
+step 3: 4 users,probe GET /,292,0,0,0.02,0.03,0.08,0.11
