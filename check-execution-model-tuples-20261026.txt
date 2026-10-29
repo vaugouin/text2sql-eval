@@ -1,0 +1,32 @@
+-- check-execution-model-tuples.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-26 11:47:41 +0100
+--
++-------------+-------------------------+-----------------+---------------+---------------------+---------------------------+------+------------+----------------+
+| API_VERSION | ENTITY_EXTRACTION_MODEL | TEXT2SQL_MODEL  | COMPLEX_MODEL | RESULT_ENTITY_MODEL | ANSWER_SINGLE_VALUE_MODEL | LANG | executions | distinct_evals |
++-------------+-------------------------+-----------------+---------------+---------------------+---------------------------+------+------------+----------------+
+| 001.001.019 | gpt-6-sol               | gpt-6-sol       | gpt-4o        | gpt-6-luna          | gpt-4o                    | fr   |        903 |            903 |
+| 001.001.019 | claude-opus-5-5         | claude-opus-5-5 | gpt-4o        | gpt-6-luna          | gpt-4o                    | en   |        902 |            902 |
+| 001.001.019 | gpt-6-sol               | gpt-6-sol       | gpt-4o        | gpt-6-luna          | gpt-4o                    | en   |        902 |            902 |
+| 001.001.019 | claude-opus-5-5         | claude-opus-5-5 | gpt-4o        | gpt-6-luna          | gpt-4o                    | fr   |        902 |            902 |
+| 001.001.019 | gpt-4o                  | gpt-6-sol       | gpt-4o        | gpt-4o              | gpt-4o                    | en   |        874 |            874 |
+| 001.001.019 | gpt-4o                  | gpt-6-sol       | gpt-4o        | gpt-4o              | gpt-4o                    | fr   |        874 |            874 |
+| 001.001.018 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | en   |        852 |            852 |
+| 001.001.018 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | fr   |        852 |            852 |
+| 001.001.019 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | en   |        844 |            844 |
+| 001.001.019 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | fr   |        844 |            844 |
+| 001.001.017 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | en   |        833 |            833 |
+| 001.001.016 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | en   |        728 |            728 |
+| 001.001.016 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | fr   |        728 |            728 |
+| 001.001.015 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | fr   |        724 |            724 |
+| 001.001.015 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | en   |        724 |            724 |
+| 001.001.014 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | en   |        716 |            716 |
+| 001.001.014 | gpt-4o                  | gpt-4o          | gpt-4o        | NULL                | NULL                      | fr   |        716 |            716 |
+| 001.001.019 | gpt-6-sol               | gpt-6-sol       | gpt-6.1-sol   | gpt-6-luna          | gpt-4o                    | fr   |         65 |             65 |
+| 001.001.019 | gpt-6-sol               | gpt-6-sol       | gpt-6-sol     | gpt-6-luna          | gpt-4o                    | fr   |         65 |             65 |
+| 001.001.019 | gpt-6-sol               | gpt-6-sol       | gpt-6.1-sol   | gpt-6-luna          | gpt-4o                    | en   |         53 |             53 |
+| 001.001.019 | gpt-6-sol               | gpt-6-sol       | gpt-6-sol     | gpt-6-luna          | gpt-4o                    | en   |         48 |             48 |
+| 001.001.019 | gpt-4o                  | gpt-4o          | gpt-4o        | gpt-4o              | gpt-4o                    | fr   |         28 |             28 |
+| 001.001.019 | gpt-4o                  | gpt-4o          | gpt-4o        | gpt-4o              | gpt-4o                    | en   |         28 |             28 |
+| 001.001.015 | gemma-4-google          | gemma-4-google  | gpt-4o        | NULL                | NULL                      | fr   |          5 |              5 |
+| 001.001.015 | gemma-4-google          | gemma-4-google  | gpt-4o        | NULL                | NULL                      | en   |          5 |              5 |
++-------------+-------------------------+-----------------+---------------+---------------------+---------------------------+------+------------+----------------+
