@@ -1,0 +1,28 @@
+{
+  "evaluation_id": 2543,
+  "evaluation_category_id": 36,
+  "question_en": "TV shows set in London",
+  "question_fr": "Séries qui se passent à Londres",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": "(?is)^(?!.*T_WC_T2S_EPISODE_LOCATION).*T_WC_T2S_SERIE_LOCATION",
+    "query_result": "ID_SERIE IN (19885, 60574, 67070) AND ID_SERIE NOT IN (42009, 456, 8592, 72750)"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "EVALUATIONS-025, the trap. &quot;Series set in X&quot; stays on T_WC_T2S_SERIE_LOCATION (FASTAPI-TEXT2SQL-334). Black Mirror, The Simpsons, Parks and Recreation and Killing Eve reach London only through an episode; all four rate above the 100th row of the correct answer (7.08 on 2026-10-19), so a query that adds the episode table brings them in and fails the NOT IN. Sample 2435 asks the same at series level with a refresh SQL; this one keeps fixed anchors so that the counter-example survives process 70.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-10-19",
+  "tim_updated": "2026-10-22T18:11:35",
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": 1,
+  "resolution_mode": null
+}

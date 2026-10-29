@@ -7,18 +7,18 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Location_name1&quot;]) AND matches($.Location_name1, /^Tokyo$/i)",
     "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]",
-    "query_result": "ID_MOVIE IN (27205, 153, 28422, 14525, 44737, 42041, 1053460, 899139)"
+    "query_result": "ID_MOVIE IN (27205, 976893, 153, 28422, 36095, 17962, 70846, 33763)"
   },
-  "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION WHERE T_WC_T2S_LOCATION.ID_WIKIDATA IN (&#039;Q1490&#039;, &#039;Q7473516&#039;) AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;filming&#039; ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-19T02:48:45",
-  "comment": "2026-10-17: refresh SQL moved from the Wikidata V1 tables (T_WC_WIKIDATA_ITEM_PROPERTY P915, T_WC_T2S_ITEM label) to the locations read-model, Tokyo named by its QID Q1490, role filming. 2026-10-17, correction: Tokyo is cited under two QIDs, Q1490 (metropolis) and Q7473516 (special wards); the refresh SQL takes both.",
+  "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_LOCATION ON T_WC_T2S_MOVIE_LOCATION.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_LOCATION_ANCESTOR ON T_WC_T2S_LOCATION_ANCESTOR.ID_LOCATION = T_WC_T2S_MOVIE_LOCATION.ID_LOCATION JOIN T_WC_T2S_LOCATION ON T_WC_T2S_LOCATION.ID_LOCATION = T_WC_T2S_LOCATION_ANCESTOR.ID_ANCESTOR WHERE T_WC_T2S_LOCATION.ID_WIKIDATA IN (&#039;Q1490&#039;, &#039;Q7473516&#039;) AND T_WC_T2S_LOCATION.DELETED = 0 AND T_WC_T2S_MOVIE_LOCATION.LOCATION_ROLE = &#039;filming&#039; ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
+  "assertion_refresh_last": "2026-10-26T03:39:41",
+  "comment": "2026-10-17: refresh SQL moved from the Wikidata V1 tables (T_WC_WIKIDATA_ITEM_PROPERTY P915, T_WC_T2S_ITEM label) to the locations read-model, Tokyo named by its QID Q1490, role filming. 2026-10-17, correction: Tokyo is cited under two QIDs, Q1490 (metropolis) and Q7473516 (special wards); the refresh SQL takes both. 2026-10-19 (EVALUATIONS-024): refresh SQL through T_WC_T2S_LOCATION_ANCESTOR, so that places in Tokyo count, as the API answers since FASTAPI-TEXT2SQL-332.",
   "keywords": null,
   "keywords_auto": null,
   "is_eval": 0,
   "is_sample": 1,
   "display_order": null,
   "dat_creat": "2026-07-13",
-  "tim_updated": "2026-10-17T18:15:35",
+  "tim_updated": "2026-10-19T19:32:43",
   "is_showcase": 1,
   "deleted": 0,
   "id_creator": 1,

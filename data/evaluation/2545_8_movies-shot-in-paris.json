@@ -1,0 +1,28 @@
+{
+  "evaluation_id": 2545,
+  "evaluation_category_id": 8,
+  "question_en": "Movies shot in Paris",
+  "question_fr": "Films tournés à Paris",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]",
+    "query_result": "ID_MOVIE IN (27205, 101) AND ID_MOVIE NOT IN (857, 85, 387, 374720)"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "EVALUATIONS-024. Containment goes down, never up: a smaller place does not cover a bigger one. Saving Private Ryan, Raiders of the Lost Ark, Das Boot and Dunkirk were shot in France and nowhere in Paris; a query that matches the country, or walks the hierarchy the wrong way, brings them in. All four rate above row 100 of the correct answer (7.07 on 2026-10-19), so their absence is a decision of the query, not an effect of the LIMIT.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 0,
+  "display_order": null,
+  "dat_creat": "2026-10-19",
+  "tim_updated": "2026-10-19T19:32:43",
+  "is_showcase": null,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null
+}

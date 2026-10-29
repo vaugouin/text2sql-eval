@@ -1,0 +1,28 @@
+{
+  "evaluation_id": 2546,
+  "evaluation_category_id": 8,
+  "question_en": "Movies filmed in Cambridge, England",
+  "question_fr": "Films tournés à Cambridge, en Angleterre",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]filming[&#039;&quot;]",
+    "query_result": "ID_MOVIE IN (266856) AND ID_MOVIE NOT IN (1167351)"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "EVALUATIONS-024, homonyms (FASTAPI-TEXT2SQL-258). Four living places are named Cambridge (England Q350, Massachusetts Q49111, Ontario Q1028279, Ohio Q249454). The Theory of Everything was filmed in the English one; Longing (1167351) in the Ontario one and must not come. On 2026-10-19 the French form passes (Cambridge and England as two places, joined through the hierarchy) and the English one returns nothing (the API looks up the literal name &quot;Cambridge, England&quot;): red until homonyms are resolved.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-10-19",
+  "tim_updated": "2026-10-22T18:10:48",
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": 1,
+  "resolution_mode": null
+}

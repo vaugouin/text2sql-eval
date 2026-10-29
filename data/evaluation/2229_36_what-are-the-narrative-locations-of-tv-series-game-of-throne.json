@@ -6,19 +6,19 @@
   "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
   "assertions": {
     "entity_extraction": null,
-    "sql_query": null,
-    "query_result": "COUNT(*) &gt; 0"
+    "sql_query": "(?is)\\bLOCATION_ROLE\\s*=\\s*[&#039;&quot;]narrative[&#039;&quot;]",
+    "query_result": "ID_LOCATION IN (2669, 4392, 332) AND ID_LOCATION NOT IN (445, 611, 609)"
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,
-  "comment": null,
+  "comment": "2026-10-19 (EVALUATIONS-024): COUNT(*) > 0 replaced by the three narrative places of Game of Thrones (Westeros, Essos, Sothoryos); its filming countries (Croatia, Northern Ireland, Iceland) must not come, which catches a query that drops the role.",
   "keywords": null,
   "keywords_auto": null,
   "is_eval": 1,
   "is_sample": 1,
   "display_order": null,
   "dat_creat": "2026-02-19",
-  "tim_updated": "2026-04-01T21:57:37",
+  "tim_updated": "2026-10-19T19:32:43",
   "is_showcase": null,
   "deleted": 0,
   "id_creator": 1,
