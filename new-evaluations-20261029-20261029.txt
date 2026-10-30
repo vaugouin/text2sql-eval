@@ -1,0 +1,15 @@
+-- new-evaluations-20261029.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-29 22:45:10 +0100
+--
++-------------------+----------------------------+------------------------------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | ASSERTIONS_QUERY_RESULT                  | ASSERTIONS_RESULT_SHAPE                                                  | QUESTION                                                                        |
++-------------------+----------------------------+------------------------------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------------+
+|               792 |                         16 | COUNT(*) == 1 AND CELL(0, 0) &gt; 300000 | NULL                                                                     | How many persons are there?                                                     |
+|              2551 |                          6 | COUNT(*) == 1 AND CELL(0, 0) &gt; 0      | result_kind == count; representation == number-card                      | How many TV series are there?                                                   |
+|              2552 |                         47 | COUNT(*) == 1 AND CELL(0, 0) &gt; 0      | result_kind == count; representation == number-card                      | How many collections are there?                                                 |
+|              2553 |                          8 | COUNT(*) == 1 AND CELL(0, 0) &gt; 0      | result_kind == count; representation == number-card                      | How many locations are there?                                                   |
+|              2554 |                         12 | CELL(0, 0) &gt; 0                        | result_kind == scalar; representation == number-card; unit(*) == minutes | How long would it take to watch all the Harry Potter movies back to back?       |
+|              2555 |                         22 | CELL(0, 0) &gt; 0                        | result_kind == scalar; representation == number-card; unit(*) == usd     | What is the total budget of all Harry Potter movies?                            |
+|              2556 |                         22 | CELL(0, 0) &gt; 0                        | result_kind == scalar; representation == number-card; unit(*) == usd     | What is the total revenue of all Harry Potter movies?                           |
+|              2557 |                         12 | COUNT(*) &gt; 1                          | NULL                                                                     | List the Harry Potter movies with only their runtime, from longest to shortest. |
++-------------------+----------------------------+------------------------------------------+--------------------------------------------------------------------------+---------------------------------------------------------------------------------+
