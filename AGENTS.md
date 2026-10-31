@@ -1,40 +1,34 @@
 # AGENTS.md - Agent Guide for the Text2SQL evaluator
 
-This file is for agent-facing operating context only. The evaluator itself (phases, CLI, assertion DSL, schema, exports, PHP UI, troubleshooting) is documented in @README.md, which is canonical and not duplicated here. The conversational benchmark has its own guide, @harness/AGENTS.md.
+Agent-facing operating context only. The evaluator itself (phases, CLI, assertion DSL, schema, exports, PHP UI, launcher pre-flight, troubleshooting, version history) is documented in @README.md, which is canonical. The conversational benchmark has its own guide, @harness/AGENTS.md.
 
 ## Related repositories (project ecosystem)
 
-`text2sql-eval` is one stage of **Agent BBB**, a multi-repository movie/TV database system owned by GitHub user `vaugouin`. All sibling repos live under `%USERPROFILE%/Code/<repo>` and at `github.com/vaugouin/<repo>`; they converge on a shared MariaDB database (`T_WC_*` tables) and a ChromaDB vector store. The canonical roster is `%USERPROFILE%/Nestor/projets/t2s-backlog/topics/related-repositories.txt` (documentation repo `Nestor`, outside `Code/`).
+Evaluation stage of **Agent BBB** (`vaugouin`, siblings under `%USERPROFILE%/Code/<repo>`; roster `%USERPROFILE%/Nestor/projets/t2s-backlog/topics/related-repositories.txt`). A pure HTTP client of `fastapi-text2sql` (`/search/text2sql`), like `voice-agent` or `tmdb-front`: it never imports the API's code. Scripts that test the API's internals live in `fastapi-text2sql/checks/`; some read this repo through `../text2sql-eval`.
 
-**This repository's role:** Evaluation stage. A client of the `fastapi-text2sql` API, in the same way as `voice-agent` or `tmdb-front`: it sends the questions of the evaluation bank (`T_WC_T2S_EVALUATION`) to `/search/text2sql` over HTTP, stores each answer in `T_WC_T2S_EVALUATION_EXECUTION`, scores it against the assertions and exports the results as JSON. It never imports the API's code.
-
-**The benchmark's name is the Cinéphile Bench** (2026-10-14): the bank run in English and French, measuring the API's cinema and TV knowledge. Its headline figure, the Cinéphile score, pools both languages and is always shown with the EN and FR pass rates; the definition is at the top of @README.md. Use this name in docs, posts and reports, with the accent. A score always names its version: **v1** is the 902 questions frozen on 2026-10-14, listed with content fingerprints in `cinephile-bench-v1-20261014.txt` (from `cinephile-bench-v1.sql`, which stays at the root as a living reference, not an archive candidate).
+**Cinéphile Bench** (definition at the top of @README.md): use this name, with the accent, in docs, posts and reports. A score always names its bench version (v1 = 902 questions frozen 2026-10-14) and shows the EN and FR pass rates next to the pooled figure. `cinephile-bench-v1.sql` stays at the root as a living reference, not an archive candidate.
 
 ## History
 
-Until 2026-10-12 this code lived in `fastapi-text2sql/eval/`. It was split out with its git history (`git filter-repo --subdirectory-filter eval`), so `git log` and `git blame` go back to 2026-02-08. Commit messages and closed tickets written before that date say `eval/...`: read them as paths of this repository.
-
-The scripts that import the API's own modules (`entity`, `main`, `text2sql`, `rapidfuzz_query`, `json_guardrails`) did **not** move: they test the API's internals, not the API as a client. They live in `fastapi-text2sql/checks/` (benches, `verif-*`, `check-*`, `eval-309`, the Jev bench, the ChromaDB checks). A few of them still read this repository's files, through the sibling folder `../text2sql-eval`.
+Until 2026-10-12 this code lived in `fastapi-text2sql/eval/` (history kept by `git filter-repo`): commit messages and tickets before that date say `eval/...`, read them as paths of this repository.
 
 ## Deployment on the VPS
 
-- `~/docker/text2sql-eval` is a **git clone** of this repository. Update it with `git pull --ff-only`; never copy files into it by hand. Before 2026-10-12 it was a flat copy of `fastapi-text2sql-green/eval/*`, which drifted silently.
-- Its `.env` is not tracked (`.gitignore`) and is the only file there that git does not bring. `.env.example` lists the keys.
-- `text2sql-eval.sh` builds the image `text2sql-eval-python-app`, runs a read-only pre-flight (which also warns when the clone is behind `origin/main` or carries local edits) and waits for a typed `yes` before spending anything. `harness-eval.sh` runs the harness with the same image.
-- Results go to `~/docker/shared_data/text2sql-eval` (mounted as `/shared`).
-- After a campaign, bring them to the PC with `~/Code/voice-agent/doc/logs-download/sync_vps_docker.py` (`cd C:\Users\vaugo\Code\voice-agent\doc\logs-download` then `uv run --no-project --with paramiko python sync_vps_docker.py`, in a Windows terminal from that folder; additive VPS mirror, Philippe 2026-10-17). It asks for the SSH key passphrase: suggest the command to Philippe at the end of every campaign, never launch it from a session.
-- A `.sql` of this repository runs with `~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/<file>.sql`, after a `git pull` in the clone; the result lands next to the `.sql` as `<file>-YYYYMMDD.txt`.
+- `~/docker/text2sql-eval` is a **git clone**: update it with `git pull --ff-only`, never copy files in by hand. Its untracked `.env` is the only file git does not bring (`.env.example` lists the keys).
+- `text2sql-eval.sh` (and `harness-eval.sh`) build and run the image after a read-only pre-flight and a typed `yes`; results go to `~/docker/shared_data/text2sql-eval` (`/shared`).
+- After a campaign, suggest to Philippe the PC-side mirror `cd C:\Users\vaugo\Code\voice-agent\doc\logs-download` then `uv run --no-project --with paramiko python sync_vps_docker.py` (Windows terminal; it asks for the SSH key passphrase). Never launch it from a session.
+- A `.sql` of this repo runs on the VPS per rule `sql-vps.md` (clone `text2sql-eval`); the dated result `<file>-YYYYMMDD.txt` lands next to the `.sql`.
 
 ## Local layout
 
-- Tracked: the evaluator (`text2sql-eval.py`, `text2sql_eval_functions.py`, `entity_extraction_eval_functions.py`, `citizenphil.py`), its launchers and Dockerfile, `harness/`, the bank migrations (`*.sql` and their dated results), `archive/`, and `data/evaluation/` plus `data/evaluation_category/` (the question bank, refreshed from the VPS export by `voice-agent/doc/logs-download`).
+- Tracked: evaluator, launchers, Dockerfile, `harness/`, bank migrations (`*.sql` and dated results), `archive/`, and `data/evaluation/` plus `data/evaluation_category/` (the question bank, refreshed from the VPS export by `voice-agent/doc/logs-download`).
 - Local only (`.gitignore`): `.env`, `lib/` (the PHP graph UI, deliberately unversioned), `claude/`, `codex/`, `logs/`, `data/evaluation_execution/`, `data/harness/`, `data/bench/`.
 - The DDL of the evaluation tables stays in `fastapi-text2sql/doc/sql/T2S_EVALUATION-tables.sql`.
 
 ## Conventions
 
-- Line endings are LF (`.gitattributes`), as everywhere in the stack.
-- Offline checks of the DSL need no database: `uv run --no-project --with pandas test-cell-condition.py`, `test-unified-schema-bridge.py`, `test-subset-301.py`.
+- Line endings are LF (`.gitattributes`).
+- Offline DSL checks, no database: `uv run --no-project --with pandas test-cell-condition.py`, `test-unified-schema-bridge.py`, `test-subset-301.py`.
 - One-off `.sql` files and their dated results move to `archive/` once their ticket is closed.
-- **Version:** `VERSION` at the root (MAJOR.MINOR.PATCH, 2.13.0 on 2026-10-19) is the source of truth. Bump it in the same commit as any change, PATCH by default, MINOR for a new option or behaviour, and add a row to the README version history. The wrapper's confirmation screen and the evaluator's first line print it.
-- Tickets about the evaluator are tracked in the T2S backlog (`Nestor/projets/t2s-backlog/`), under `repos/text2sql-eval.md` and the `EVALUATIONS-*` topic.
+- **Version:** `VERSION` at the root (MAJOR.MINOR.PATCH) is the source of truth. Bump it in the same commit as any change (PATCH by default, MINOR for a new option or behaviour) and add a row to the README version history.
+- Tickets: T2S backlog (`Nestor/projets/t2s-backlog/`), `repos/text2sql-eval.md` and the `EVALUATIONS-*` topic.

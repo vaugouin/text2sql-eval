@@ -1,7 +1,7 @@
 # Text2SQL Evaluator
 
-**Version:** 2.11
-**Last Updated:** 2026-10-14
+**Version:** 2.17.1 (source of truth: [VERSION](VERSION))
+**Last Updated:** 2026-10-31
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
 
@@ -40,11 +40,11 @@ The evaluator is a **single-pass multi-phase pipeline** driven by a numeric proc
 
 | Table | Role |
 |---|---|
-| `T_WC_T2S_EVALUATION` | Question bank (EN + FR) + four assertion columns: the scored `ASSERTIONS_QUERY_RESULT`, plus `ASSERTIONS_ENTITY_EXTRACTION`, `ASSERTIONS_SQL_QUERY` and the out-of-score `ASSERTIONS_RESULT_SHAPE` (§4.7) |
+| `T_WC_T2S_EVALUATION` | Question bank (EN + FR) + four assertion columns: the three scored ones (`ASSERTIONS_QUERY_RESULT`, `ASSERTIONS_ENTITY_EXTRACTION`, `ASSERTIONS_SQL_QUERY`) and the out-of-score `ASSERTIONS_RESULT_SHAPE` (§4.8) |
 | `T_WC_T2S_EVALUATION_CATEGORY` | Taxonomy (categories of questions) |
 | `T_WC_T2S_EVALUATION_EXECUTION` | One row per `(eval_id, api_version, entity_extraction_model, text2sql_model, complex_model, language)` combination — stores the full JSON response, per-assertion scores, aggregated `ASSERTIONS_TOTAL_SCORE`, and timing breakdown |
 
-Phases run in order: **translations → cleanup → run → process → export**. Rerunning the same command is idempotent — the `run` phase skips combinations already present in `T_WC_T2S_EVALUATION_EXECUTION`, and the `export` phases skip files that already exist on disk.
+Phases run in order: **translations → cleanup → run → process → export**. Rerunning the same command is idempotent: the `run` phase skips combinations already present in `T_WC_T2S_EVALUATION_EXECUTION`, and the `export` phases rewrite a file only when its content changed (§10).
 
 Phase 11 hits the FastAPI server over HTTP. Phase 20 does the scoring offline against the stored `JSON_RESULT`. Phases 30/31/32 dump the three tables to `/shared/<subfolder>/` as one JSON file per row for downstream LLM analysis. This separation means scoring and export can be re-run after an assertion correction without re-spending LLM tokens.
 
@@ -128,13 +128,16 @@ The `/shared` mount is now **read-write**. Phases 30/31/32 write JSON exports th
 | `--language` | `*` | Language filter: `en`, `fr`, or `*` for both |
 | `--store-to-cache` | `true` | Store evaluation API results in the FastAPI cache |
 | `--no-store-to-cache` | `false` | Disable cache writes for the evaluation run |
-| `--complex-model-used` | `false` | Send `complex_model_used=true` in the API input |
-| `--no-complex-model-used` | `false` | Send `complex_model_used=false` in the API input |
+| `--complex-question-processing` (alias `--complex-model-used`) | `true` | Send `complex_question_processing=true`: the API may escalate to the complex model (FASTAPI-TEXT2SQL-256) |
+| `--no-complex-question-processing` (alias `--no-complex-model-used`) | | Send `complex_question_processing=false`: no escalation, the API returns the raw error or empty result |
 | `--flex-processing` / `--no-flex-processing` | on when a model of the run is GPT-5.x or GPT-6, else off | **OpenAI Flex processing** (TEXT2SQL-EVAL-002, 2026-10-18; default since 2.13.0). Sends `flex_processing=true`: the API asks OpenAI for `service_tier="flex"` on its GPT-5.x and GPT-6 calls, billed at Batch API rates (half the standard price) but slower. The API retries a Flex call refused for lack of capacity (429) or timed out, up to 5 attempts, then sends it once at the standard tier, so the run always ends. The evaluator waits up to `TEXT2SQL_EVAL_API_FLEX_TIMEOUT_SECONDS` per question and resends a question that timed out. **Not part of the namespace**: a Flex run skips questions already run at the standard tier with the same models, and the export folder names do not change. The run aborts on the first answer if the API does not echo `flex_processing: true`. Needs `archive/migrate-evaluation-execution-flex-processing.sql`. From the wrapper: unset = automatic, `FLEX_PROCESSING=--no-flex-processing` forces the standard tier, `FLEX_PROCESSING=--flex-processing` forces Flex |
 | `--eval-ids` | none | Comma-separated evaluation ids: phases 11 (run), 20 (score) and 32 (export) cover only them (FASTAPI-TEXT2SQL-301). Phases 4-6, 10, 30 and 31 work on the bank and stay whole |
 | `--eval-ids-file` | none | Same, from a file of ids, one per line, `#` comments allowed |
 | `--subset` | none | `escalated`: the questions the baseline run escalated (`COMPLEX_MODEL_USED = 1`) united with those the bank declares `RESOLUTION_MODE = 'complex'`. The baseline is this run's configuration with `--complex-model` replaced by `--subset-baseline-complex-model`, so only the complex model differs and the first pass that decides who escalates is the same. Combined with `--eval-ids`, the intersection. Phase 20 then ends on a head-to-head |
 | `--subset-baseline-complex-model` | `gpt-4o` | Complex model of the baseline the `escalated` subset is read from and compared against |
+| `--cache-guard-min-hit` | `0.7` | Prompt-cache guard (PROMPT-CACHING-010): stop the run when fewer than this share of the last calls of a cacheable task read their prompt from the provider cache; `0` disables it |
+| `--cache-guard-window` | `20` | Calls per task the cache guard looks back over |
+| `--cache-guard-warmup` | `3` | First calls of each task the cache guard ignores |
 
 **Measuring the complex model on the escalated questions only (FASTAPI-TEXT2SQL-301, GPT-6-007).** A full campaign replays the whole bank (869 questions per language) to exercise the complex model on the one in ten that escalates. The subset runs only those. Three runs, in this order:
 
@@ -175,7 +178,7 @@ The evaluator computes the API port from the patch parity of `--api-version` (ev
 
 `--store-to-cache` / `--no-store-to-cache` control the API payload field `store_to_cache`. The default is to keep the previous behavior and write successful responses to the API cache. Use `--no-store-to-cache` when you want a clean evaluator run that does not populate the cache, for example while testing direct Google Gemma 4 quota behavior.
 
-`--complex-model-used` / `--no-complex-model-used` control the API payload field `complex_model_used`. The default is `false`. This is useful when you want the evaluator to explicitly simulate requests that already come from a stronger-model path or to keep that signal disabled during normal baseline runs.
+`--complex-question-processing` / `--no-complex-question-processing` (old spellings `--complex-model-used` / `--no-complex-model-used` kept as aliases) control the API payload field `complex_question_processing`. The default is `true`, which is what runs have always done: before FASTAPI-TEXT2SQL-256 the flag sent a `complex_model_used` field the API does not declare, so it changed nothing. Use `--no-complex-question-processing` to measure the first pass alone, without the stronger-model escalation.
 
 The evaluator also supports built-in pacing and retry for retryable provider quota / rate-limit failures. It waits `TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS` before each API call, then retries the same `(question, language)` pair when the API or provider indicates a retryable `429` / `RESOURCE_EXHAUSTED` condition. If the API returns a structured `retry_after_seconds` hint, the evaluator uses that delay plus a small safety buffer; otherwise it falls back to `TEXT2SQL_EVAL_API_429_FALLBACK_DELAY_SECONDS`. Once `TEXT2SQL_EVAL_API_429_MAX_RETRIES` is exhausted, the evaluator stops the run instead of silently skipping the failed case.
 
@@ -185,7 +188,7 @@ For retryable quota / rate-limit failures, the FastAPI endpoint is intentionally
 
 ## 3. Processes
 
-Phases are defined by `arrprocessscope` at [text2sql-eval.py:107](text2sql-eval.py#L107). Every phase reports progress via [citizenphil](citizenphil.py) server variables (`strtext2sqlevalcurrentprocess`, `strtext2sqlevalprocessesexecuted`, etc.) so long-running runs can be monitored externally.
+Phases are defined by `arrprocessscope` at [text2sql-eval.py:604](text2sql-eval.py#L604). Every phase reports progress via [citizenphil](citizenphil.py) server variables (`strtext2sqlevalcurrentprocess`, `strtext2sqlevalprocessesexecuted`, etc.) so long-running runs can be monitored externally.
 
 ### Phase 4 — Translate categories EN→FR
 - Reads `T_WC_T2S_EVALUATION_CATEGORY` rows where `DESCRIPTION` is set and `DESCRIPTION_FR` is empty
@@ -197,6 +200,7 @@ Phases are defined by `arrprocessscope` at [text2sql-eval.py:107](text2sql-eval.
 
 ### Phase 6 — Translate questions FR→EN
 - Reverse direction: fills `QUESTION` when only `QUESTION_FR` exists
+- Capped at 10 rows per run (`LIMIT 10` is active on this phase only)
 
 ### The guards on phases 4-6 (EVALUATIONS-019, 2026-09-25)
 Fifteen bank rows once stored the translation model's refusal ("Je suis désolé, je ne peux pas vous aider avec ça.") as their French question, because phase 5 had been handed French text typed into the English column; and the 2025 film *Sorry, Baby* came back as "Film désolé bébé". Since then, `guarded_translation()` in `text2sql-eval.py`, with the pure helpers of `text2sql_eval_functions.py`:
@@ -215,7 +219,7 @@ A translation that still reads as the source language is stored with a `WARNING`
 - **Skips combinations already executed** for this `(api_version, entity_extraction_model, text2sql_model, complex_model, language)` tuple (no wasted API calls)
 - **One API call per `(question, language)` pair**: each call sends `ui_language` matching the question language (`"en"` for `QUESTION`, `"fr"` for `QUESTION_FR`). Even if `QUESTION == QUESTION_FR`, the API is called twice because the `answer` field in the response depends on `ui_language`
 - Uses the optional server variable `strtext2sqlevalrunevalid` to resume from a specific ID
-- Posts to `POST {TEXT2SQL_API_URL}/search/text2sql` with `complex_question_processing=True`, `retrieve_from_cache=False`, `store_to_cache=<CLI flag>`, `complex_model_used=<CLI flag>`, `rows_per_page=100`, `ui_language=<lang>`
+- Posts to `POST {TEXT2SQL_API_URL}/search/text2sql` with `complex_question_processing=<CLI flag, default True>`, `complex_question_already_resolved=False`, `retrieve_from_cache=False`, `store_to_cache=<CLI flag>`, `flex_processing=<CLI flag>`, the four `llm_model_*` fields, `rows_per_page=100`, `ui_language=<lang>`
 - Waits `TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS` before each API call to reduce the risk of upstream provider throttling
 - Retries retryable LLM quota / rate-limit failures (`HTTP 429`, API `error_code=429`, provider strings such as `RESOURCE_EXHAUSTED`) for the same evaluation case instead of immediately failing it
 - Uses provider retry hints when available (`retry_after_seconds`, `Retry-After`, or provider error text such as `Please retry in 27s`), otherwise falls back to `TEXT2SQL_EVAL_API_429_FALLBACK_DELAY_SECONDS`
@@ -224,7 +228,7 @@ A translation that still reads as the source language is stored with a `WARNING`
 - Aborts the full evaluation run with a clear error once `TEXT2SQL_EVAL_API_429_MAX_RETRIES` is exhausted for a case
 - **Configuration guard**: if `api_version` / `llm_model_*` in the response do not match the CLI args, the script exits immediately to avoid burning tokens with a misconfigured server
 - Persists the full JSON response (including `answer`, `answer_anonymized`, `ui_language`) as `JSON_RESULT` in `T_WC_T2S_EVALUATION_EXECUTION`
-- No per-run cap on number of evaluations. The previous `LIMIT 10` safety throttle at [text2sql-eval.py:287](text2sql-eval.py#L287) is commented out — every eligible row from the question bank is processed in a single pass. Re-enable it if you want a quick smoke test instead of a full run.
+- No per-run cap on number of evaluations. The previous `LIMIT 10` safety throttle at [text2sql-eval.py:747](text2sql-eval.py#L747) is commented out: every eligible row from the question bank is processed in a single pass. Re-enable it if you want a quick smoke test instead of a full run.
 
 ### Phase 20 — Score stored executions
 For every `JSON_RESULT` in `T_WC_T2S_EVALUATION_EXECUTION` matching the CLI filters, the evaluator:
@@ -541,11 +545,11 @@ UPDATE T_WC_T2S_EVALUATION SET ASSERTIONS_QUERY_RESULT = 'COUNT(*) &gt; 0 AND ID
 
 To change a value already set, guard on the **exact current value** instead of on emptiness: the statement applies once, does nothing on re-run, and withdraws itself if someone edited the value in between. After import, re-run **Phase 20 alone**: scoring is offline against the stored `JSON_RESULT`, so no API call and no LLM token is spent.
 
-### 4.7 `ASSERTIONS_RESULT_SHAPE` — the rendering-hint assertion (out of score)
+### 4.8 `ASSERTIONS_RESULT_SHAPE`: the rendering-hint assertion (out of score)
 
 A fourth assertion column, `ASSERTIONS_RESULT_SHAPE`, asserts on the rendering hint the API emits since FASTAPI-TEXT2SQL-349: `result_kind`, `representation`, and the role and unit of each column. It answers a question the other three cannot: did the API label this result so a client can draw it (a number card, a stat strip, a ranking) rather than guess from column names?
 
-**It never enters a campaign score.** Phase 20 scores `ASSERTIONS_QUERY_RESULT` alone (see `harness/harness_lib.py`); the three other columns, this one included, are not summed into the pass. This column is read only by the out-of-score checker `check-result-shape.py`, which reads a campaign's execution exports (the hint is already in each `api_output`) and the bank's assertion, and prints a PASS/FAIL report:
+**It never enters a campaign score.** Phase 20 aggregates only the three scored columns (§4.4) and never reads this one; the conversational harness (`harness/harness_lib.py`) scores `ASSERTIONS_QUERY_RESULT` alone. This column is read only by the out-of-score checker `check-result-shape.py`, which reads a campaign's execution exports (the hint is already in each `api_output`) and the bank's assertion, and prints a PASS/FAIL report:
 
 ```bash
 uv run --no-project python check-result-shape.py \
@@ -621,7 +625,7 @@ One row per execution. Key columns:
 **On a request the complex model retried, every timing covers BOTH passes** (FASTAPI-TEXT2SQL-204). The endpoint runs twice and the durations are summed, `TOTAL_PROCESSING_TIME` being the real end-to-end elapsed rather than the sum of the steps. `COMPLEX_QUESTION_PROCESSING_TIME` is the simplification call itself and is non-zero only there, which makes it the cleanest filter for retried rows. The two counts are NOT summed: they describe the resolution that produced the returned result.
 - Resolution signals: `ENTITY_RAW_FALLBACK_COUNT`, `NO_ENTITY_EXTRACTED`
 
-**These columns are a deliberate duplicate.** `JSON_RESULT` already holds the entire API response, so every field is in the database whether or not it has a column, and the Phase 32 export copies that JSON verbatim into `api_output`. A column exists only so a campaign can be sliced in SQL without `JSON_EXTRACT` on every row, which is what the PHP graphs under [lib/](lib/) do. Adding a field to `Text2SQLResponse` therefore reaches the database and the export **on its own**; adding a column is the separate, optional step, and it needs both [../doc/sql/T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) and a migration under [../maintenance/](../maintenance/).
+**These columns are a deliberate duplicate.** `JSON_RESULT` already holds the entire API response, so every field is in the database whether or not it has a column, and the Phase 32 export copies that JSON verbatim into `api_output`. A column exists only so a campaign can be sliced in SQL without `JSON_EXTRACT` on every row, which is what the PHP graphs under [lib/](lib/) do. Adding a field to `Text2SQLResponse` therefore reaches the database and the export **on its own**; adding a column is the separate, optional step, and it needs both the DDL in fastapi-text2sql, [doc/sql/T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql), and a migration `.sql` in this repo (`migrate-evaluation-execution-*.sql`, at the root or in [archive/](archive/) once applied).
 
 **`ENTITY_RESOLUTION_PLANNING_TIME` is already included in `EMBEDDINGS_PROCESSING_TIME`.** The latter adds the overlapped work back in so it stays comparable with campaigns run before the fork-join (FASTAPI-TEXT2SQL-201). Never sum the two.
 
@@ -631,7 +635,7 @@ Rows written before an indicator existed keep `NULL`, which says "this campaign 
 - Costs (reserved): `ENTITY_EXTRACTION_COST`, `TEXT2SQL_COST`, `TOTAL_COST`
 - Audit: `DELETED`, `DAT_CREAT`, `TIM_UPDATED`, `TIM_EXECUTION`
 
-Schema DDL lives at [T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) and [T2S_EVALUATION-tables-with-data.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables-with-data.sql).
+Schema DDL lives at [T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) in the fastapi-text2sql repo.
 
 ### Common queries
 
@@ -730,10 +734,16 @@ ASSERTIONS_ENTITY_EXTRACTION: PASS
 | [test-name-ambiguity.py](test-name-ambiguity.py) | Standalone non-regression battery for the `name_ambiguity` flag (FASTAPI-TEXT2SQL-157). Integration test: calls the live `/search/text2sql`, no DB. Reads `.env` (`TEXT2SQL_API_URL` + `API_PORT_GREEN`/`BLUE` + `TEXT2SQL_API_KEY`). Run `python test-name-ambiguity.py [--color blue] [--base-url URL] [--verbose]`; exit 0 = all pass. 20 cases: 1-row/list/narrowed → no flag; duplicate movie **and TV-series** titles & homonym persons (incl. high-count clusters) → flag with `count == distinct ID_IMDB`; comma/colon/apostrophe literals; page-1-only guard. Extend via the `CASES` list; the module docstring carries the `GROUP BY … HAVING COUNT(*)>1` queries used to find duplicate candidates per entity |
 | [test-unified-schema-bridge.py](test-unified-schema-bridge.py) | Standalone regression test for the unified-schema column bridge (`ID_CONTENT` + `CONTENT_TYPE` → virtual `ID_MOVIE` / `ID_SERIE` / `ID_PERSON`); see [§4.3 Unified-schema column bridge](#unified-schema-column-bridge) |
 | [Dockerfile](Dockerfile) | `python:3.11-slim` base; installs `requirements.txt`; entrypoint `python ./text2sql-eval.py` |
-| [text2sql-eval.sh](text2sql-eval.sh) | Build image + run container (detached, host network). **Asks before spending anything** (2026-09-23): it builds the image, runs a read-only pre-flight inside it and prints the target colour and the version it answers, `bktrees_ready`, the language(s), the model of each of the five tasks, every option, how many calls are left per language after the skip rule, the rows phase 10 will hard-delete, an estimated wall-clock and cost, drift between `~/docker/text2sql-eval` and the git clone, and every scheduled task under `~/docker` that is still armed, that is without the flag file `CRON_OFF` its `off.sh` writes (since 2026-10-25; before, `off.sh` renamed the launcher) (tmdb-movie-preprocess, wikipedia-crawler, wikidata-crawler, movieparadise, sqlite, embedding-update and the others; `letsencrypt` is kept on). Stopping a container is not enough, cron relaunches it at its next tick. **One command each way** (2026-09-26): `bash ~/docker/off-all.sh` runs every `off.sh` before the campaign, `bash ~/docker/on-all.sh` every `on.sh` after it; the script says so at startup, recommends them in the pre-flight (falling back to the per-folder loop if either is missing, `OFF_ALL`/`ON_ALL` override the paths), and repeats the `on-all.sh` reminder at launch, since the run is detached and nothing else will remind you when it ends. Order: `off-all.sh` first, then `docker stop` for the containers still running, which `off.sh` does not stop; `on-all.sh` once the last campaign of the session has ended, not between the English and French halves. Only a typed `yes` launches the run; with no terminal attached it aborts unless `EVAL_CONFIRM=yes` is set. **Prompt-cache guard** (2026-09-28, PROMPT-CACHING-010): the evaluator stops the run, exit code 3, as soon as fewer than `CACHE_GUARD_MIN_HIT` (default 0.7) of the last 20 calls of a cacheable task read their prompt from the provider cache, after 3 warm-up calls per task. Rows already stored are kept and the same command resumes. Replayed on the 2026-09-27 gpt-6-sol run, it stops at question 23 instead of paying 869 calls at the cache-write price; `CACHE_GUARD_MIN_HIT=0` disables it. **Exception, the rescore-only run** (2026-09-25): when the pre-flight counts zero API calls left and zero bank rows to translate, no LLM token can be spent, and the script launches without asking. That is the run that follows an assertion correction: phase 10 purges the soft-deleted executions, phase 20 rescores, phases 30-32 re-export. Everything is overridable from the environment: `API_VERSION`, `EVAL_LANGUAGE` (not `LANGUAGE`, which is the gettext locale variable and may hold `en_US:en`), `ENTITY_EXTRACTION_MODEL`, `TEXT2SQL_MODEL`, `COMPLEX_MODEL`, `RESULT_ENTITY_MODEL`, `ANSWER_SINGLE_VALUE_MODEL`, `STORE_TO_CACHE`, `COMPLEX_MODEL_USED`. The last two model variables were added with FASTAPI-TEXT2SQL-232; since FASTAPI-TEXT2SQL-234 each has its own column, and a run that moves either one is announced as landing in its own folder (`_re-<model>`, `_asv-<model>`). **The defaults were the baseline run** (2026-09-14 to 2026-10-03): `API_VERSION=1.1.19` and gpt-4o on all five tasks. Since LLM-TASKS-010, `ENTITY_EXTRACTION_MODEL` and `TEXT2SQL_MODEL` default to `gpt-6-sol` like the API, so a bare run measures production; the baseline is `ENTITY_EXTRACTION_MODEL=gpt-4o TEXT2SQL_MODEL=gpt-4o RESULT_ENTITY_MODEL=gpt-4o ./text2sql-eval.sh` (`RESULT_ENTITY_MODEL` followed the API to `gpt-6-luna` on the same day, LLM-TASKS-003). That run is the prerequisite to any model comparison, because the prompts moved substantially after the `001.001.018` reference and its pass rates no longer describe the code. Example of the comparison that follows it: `TEXT2SQL_MODEL=gpt-5.6-terra API_VERSION=1.1.19 ./text2sql-eval.sh` |
+| [text2sql-eval.sh](text2sql-eval.sh) | Build image + run container (detached, host network). **Asks before spending anything** (2026-09-23): it builds the image, runs a read-only pre-flight inside it and prints the target colour and the version it answers, `bktrees_ready`, the language(s), the model of each of the five tasks, every option, how many calls are left per language after the skip rule, the rows phase 10 will hard-delete, an estimated wall-clock and cost, drift between `~/docker/text2sql-eval` and the git clone, and every scheduled task under `~/docker` that is still armed, that is without the flag file `CRON_OFF` its `off.sh` writes (since 2026-10-25; before, `off.sh` renamed the launcher) (tmdb-movie-preprocess, wikipedia-crawler, wikidata-crawler, movieparadise, sqlite, embedding-update and the others; `letsencrypt` is kept on). Stopping a container is not enough, cron relaunches it at its next tick. **One command each way** (2026-09-26): `bash ~/docker/off-all.sh` runs every `off.sh` before the campaign, `bash ~/docker/on-all.sh` every `on.sh` after it; the script says so at startup, recommends them in the pre-flight (falling back to the per-folder loop if either is missing, `OFF_ALL`/`ON_ALL` override the paths), and repeats the `on-all.sh` reminder at launch, since the run is detached and nothing else will remind you when it ends. Order: `off-all.sh` first, then `docker stop` for the containers still running, which `off.sh` does not stop; `on-all.sh` once the last campaign of the session has ended, not between the English and French halves. Only a typed `yes` launches the run; with no terminal attached it aborts unless `EVAL_CONFIRM=yes` is set. **Prompt-cache guard** (2026-09-28, PROMPT-CACHING-010): the evaluator stops the run, exit code 3, as soon as fewer than `CACHE_GUARD_MIN_HIT` (default 0.7) of the last 20 calls of a cacheable task read their prompt from the provider cache, after 3 warm-up calls per task. Rows already stored are kept and the same command resumes. Replayed on the 2026-09-27 gpt-6-sol run, it stops at question 23 instead of paying 869 calls at the cache-write price; `CACHE_GUARD_MIN_HIT=0` disables it. **Exception, the rescore-only run** (2026-09-25): when the pre-flight counts zero API calls left and zero bank rows to translate, no LLM token can be spent, and the script launches without asking. That is the run that follows an assertion correction: phase 10 purges the soft-deleted executions, phase 20 rescores, phases 30-32 re-export. Everything is overridable from the environment: `API_VERSION`, `EVAL_LANGUAGE` (not `LANGUAGE`, which is the gettext locale variable and may hold `en_US:en`), `ENTITY_EXTRACTION_MODEL`, `TEXT2SQL_MODEL`, `COMPLEX_MODEL`, `RESULT_ENTITY_MODEL`, `ANSWER_SINGLE_VALUE_MODEL`, `STORE_TO_CACHE`, `COMPLEX_QUESTION_PROCESSING` (the old name `COMPLEX_MODEL_USED` still works), `FLEX_PROCESSING`, `CACHE_GUARD_MIN_HIT`, and for a subset run `EVAL_SUBSET`, `EVAL_IDS`, `EVAL_IDS_FILE`, `SUBSET_BASELINE_COMPLEX_MODEL`. The last two model variables were added with FASTAPI-TEXT2SQL-232; since FASTAPI-TEXT2SQL-234 each has its own column, and a run that moves either one is announced as landing in its own folder (`_re-<model>`, `_asv-<model>`). **The defaults were the baseline run** (2026-09-14 to 2026-10-03): `API_VERSION=1.1.19` and gpt-4o on all five tasks. Since LLM-TASKS-010, `ENTITY_EXTRACTION_MODEL` and `TEXT2SQL_MODEL` default to `gpt-6-sol` like the API, so a bare run measures production; the baseline is `ENTITY_EXTRACTION_MODEL=gpt-4o TEXT2SQL_MODEL=gpt-4o RESULT_ENTITY_MODEL=gpt-4o ./text2sql-eval.sh` (`RESULT_ENTITY_MODEL` followed the API to `gpt-6-luna` on the same day, LLM-TASKS-003). That run is the prerequisite to any model comparison, because the prompts moved substantially after the `001.001.018` reference and its pass rates no longer describe the code. Example of the comparison that follows it: `TEXT2SQL_MODEL=gpt-5.6-terra API_VERSION=1.1.19 ./text2sql-eval.sh` |
 | [requirements.txt](requirements.txt) | `requests`, `pymysql`, `pandas>=1.5`, `numpy>=1.21`, `pytest>=7`, `pytz`, `python-dotenv>=1`, `openai>=1` |
-| [T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) | DDL for the three evaluation tables |
-| [T2S_EVALUATION-tables-with-data.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables-with-data.sql) | DDL + seed question bank |
+| [VERSION](VERSION) | Evaluator version (MAJOR.MINOR.PATCH), printed on the confirmation screen and on the evaluator's first line |
+| [check-result-shape.py](check-result-shape.py) | Out-of-score checker of `ASSERTIONS_RESULT_SHAPE` against a campaign's execution exports, see [§4.8](#48-assertions_result_shape-the-rendering-hint-assertion-out-of-score) |
+| [result_shape_assertions.py](result_shape_assertions.py) | Parser and checker of the result-shape assertion grammar, used by `check-result-shape.py` |
+| [test-cell-condition.py](test-cell-condition.py) | Small standalone check of `CELL(...)` assertions on a hand-built DataFrame |
+| [harness/](harness/) + [harness-eval.sh](harness-eval.sh) | Conversational benchmark of the voice-agent, shipped in the same image; see [harness/README.md](harness/README.md) |
+| [load/](load/) | Locust load bench and its launcher, see [§14](#14-load-bench-locust) |
+| [archive/](archive/) | One-off `.sql` files (migrations, batches, fixes) whose operation is closed, with their dated results |
+| [T2S_EVALUATION-tables.sql](https://github.com/vaugouin/fastapi-text2sql/blob/main/doc/sql/T2S_EVALUATION-tables.sql) | DDL for the three evaluation tables (fastapi-text2sql repo) |
 | [how-many-samples-evals-by-category.ipynb](how-many-samples-evals-by-category.ipynb) | Coverage-by-category reporting notebook — reads the Phase 30/31 JSON exports under [data/evaluation_category/](data/evaluation_category/) and [data/evaluation/](data/evaluation/), aggregates `is_sample` / `is_eval` per category, and saves a dated horizontal bar chart `how-many-samples-evals-by-category-<YYYYMMDD>.png`. Figure height auto-scales with the number of categories. |
 | [how-many-samples-evals-by-category.sql](how-many-samples-evals-by-category.sql) | Equivalent direct-DB query (legacy CSV source, kept for reference) |
 | [assertions-year-bounds.sql](archive/assertions-year-bounds.sql) | One-shot batch (FASTAPI-TEXT2SQL-187): SQL-regex assertions on the 18 bank questions that name a year, a decade or an interval, plus two new person-decade evaluations. Written because `ID_MOVIE IN (...)` accepts extra rows and so cannot catch a widened year bound. Run once against the DB, then re-run the evaluator to refresh the JSON exports |
@@ -800,7 +810,7 @@ Outputs into `claude/` (suffixed by version, e.g. `_v1_1_16`):
   (Wikidata) joins, and topic/genre scans returning 100 rows.
 
 Run (version-parameterized):
-`cd eval && python claude/load_executions.py 1.1.16 && python claude/compute_efficiency.py claude/executions_v1_1_16.csv`.
+`python claude/load_executions.py 1.1.16 && python claude/compute_efficiency.py claude/executions_v1_1_16.csv`, from the repo root (`claude/` is local only, not versioned).
 
 **Key takeaway (latest run, v1.1.16, EN+FR).** DB execution is near-instant at the
 median (~7 ms) — the read-model is well-indexed — so end-to-end cost is dominated by
@@ -1071,7 +1081,8 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
-| 2.17.0 | 2026-10-29 | **Result-shape check without re-running (FASTAPI-TEXT2SQL-349)**: `check-result-shape.py` now recomputes the hint offline, from the stored `sql_query` and result rows, with the same deterministic module the API uses (`fastapi-text2sql/result_shape.py`), so a pre-349 campaign is checked with no re-execution and no token cost. Flags `--no-recompute` and `--fastapi-dir`; an export lacking the rows stays NOT-EMITTED. Also corrected the budget/revenue/profit assertion (id 2550) to `entity_rows / card-grid`: the first Green run showed the model answers it with a window aggregate over entity rows, not a bare stat strip. §4.7. |
+| 2.17.1 | 2026-10-31 | **README matched to the code**: header version synced with `VERSION`; `--complex-question-processing` (aliases `--complex-model-used`) documented with its real default (`true`) and payload field; cache-guard flags and the launcher's subset, Flex and cache-guard variables listed; phase 6 `LIMIT 10` noted; result-shape section renumbered §4.8 and its scoring sentence corrected (phase 20 aggregates the three scored columns); dead links (`T2S_EVALUATION-tables-with-data.sql`, `../maintenance/`) removed; source files table completed. No code change. |
+| 2.17.0 | 2026-10-29 | **Result-shape check without re-running (FASTAPI-TEXT2SQL-349)**: `check-result-shape.py` now recomputes the hint offline, from the stored `sql_query` and result rows, with the same deterministic module the API uses (`fastapi-text2sql/result_shape.py`), so a pre-349 campaign is checked with no re-execution and no token cost. Flags `--no-recompute` and `--fastapi-dir`; an export lacking the rows stays NOT-EMITTED. Also corrected the budget/revenue/profit assertion (id 2550) to `entity_rows / card-grid`: the first Green run showed the model answers it with a window aggregate over entity rows, not a bare stat strip. §4.8. |
 | 2.16.1 | 2026-10-25 | **Scheduled tasks switched off by a flag file**: the pre-flight of `text2sql-eval.sh` and of `load/run_load.py` reads `CRON_OFF`, which each task's `off.sh` now writes next to its launcher (on.sh deletes it), instead of the `mv` lines of the old renaming `off.sh`. A leftover `<name>-off.sh` still counts as off. |
 | 2.16.0 | 2026-10-24 | **One-command launcher for the load bench** (LOAD-TESTING-004/-005): `load/run_load.py` mirrors the evaluator's pre-flight for the bench. From the PC it prints a recap (scenario, shape, targets, cache regime, question count, results path), probes the API `GET /` (version, `bktrees_ready`), reaches the VPS over SSH to check every scheduled task is off, that nothing competes and that swap/disk have room, refuses the forbidden windows (00:00, 06:00-07:30) and scenario B without `--allow-cold`, asks to confirm, then launches Locust locally. Section 14. The locustfile and the evaluator are unchanged. |
 | 2.15.1 | 2026-10-22 | **Load bench, the session step by step** in section 14 (VPS preparation, cache warm-up, measured run, wrap-up), so the procedure needs no other document. |
@@ -1099,7 +1110,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 ---
 
-**Last Updated:** 2026-10-12
+**Last Updated:** 2026-10-31
 **Maintainer:** See repository owner
 **Primary entry point:** [text2sql-eval.py](text2sql-eval.py)
 
