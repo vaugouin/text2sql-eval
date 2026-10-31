@@ -1,0 +1,171 @@
+-- check-award-nomination-data.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-31 18:28:39 +0100
+--
++-------------+-------+-------------+-------------+--------------+
+| TABLE_NAME  | ROWS_ | MOVIE_LINKS | SERIE_LINKS | PERSON_LINKS |
++-------------+-------+-------------+-------------+--------------+
+| nominations |  2988 |       23669 |        1131 |        25571 |
+| awards      | 18095 |       14288 |        1455 |       145446 |
++-------------+-------+-------------+-------------+--------------+
++-------------------+-----------------+-------+-------------+--------------+
+| NOMINATION_SOURCE | NOMINATION_TYPE | ROWS_ | MOVIE_LINKS | PERSON_LINKS |
++-------------------+-----------------+-------+-------------+--------------+
+| P1411             | nomination      |  2988 |       23669 |        25571 |
++-------------------+-----------------+-------+-------------+--------------+
++-----------------------+-----------------------+------------------------+------------------+-------------------+
+| MOVIE_NOMINATION_ROWS | SERIE_NOMINATION_ROWS | PERSON_NOMINATION_ROWS | MOVIE_AWARD_ROWS | PERSON_AWARD_ROWS |
++-----------------------+-----------------------+------------------------+------------------+-------------------+
+|                 23673 |                  1135 |                  25573 |            14322 |            145452 |
++-----------------------+-----------------------+------------------------+------------------+-------------------+
++---------------+-------------+----------------------------------------------------------+-------------------+-----------------+-------------+-------------+--------------+
+| ID_NOMINATION | ID_WIKIDATA | NOMINATION_NAME                                          | NOMINATION_SOURCE | NOMINATION_TYPE | MOVIE_COUNT | SERIE_COUNT | PERSON_COUNT |
++---------------+-------------+----------------------------------------------------------+-------------------+-----------------+-------------+-------------+--------------+
+|          2679 | Q125506406  | International Submission to the Academy Awards           | P1411             | nomination      |        2857 |           1 |            0 |
+|           153 | Q102427     | Academy Award for Best Picture                           | P1411             | nomination      |         604 |           0 |          610 |
+|           668 | Q107258     | Academy Award for Best Writing, Adapted Screenplay       | P1411             | nomination      |         437 |           0 |          563 |
+|         14975 | Q41417      | Academy Award for Best Writing, Original Screenplay      | P1411             | nomination      |         393 |           0 |          539 |
+|         22308 | Q830079     | Academy Award for Best Sound                             | P1411             | nomination      |         493 |           0 |          350 |
+|         11733 | Q277751     | Academy Award for Best Production Design                 | P1411             | nomination      |         344 |           0 |          417 |
+|         11895 | Q281939     | Academy Award for Best Film Editing                      | P1411             | nomination      |         425 |           0 |          329 |
+|           530 | Q106291     | Academy Award for Best Supporting Actor                  | P1411             | nomination      |         392 |           0 |          341 |
+|           532 | Q106301     | Academy Award for Best Supporting Actress                | P1411             | nomination      |         380 |           0 |          343 |
+|           220 | Q103360     | Academy Award for Best Director                          | P1411             | nomination      |         442 |           0 |          254 |
+|          4415 | Q1425151    | Academy Award for Best Documentary (Short Subject)       | P1411             | nomination      |         354 |           0 |          339 |
+|           235 | Q103618     | Academy Award for Best Actress                           | P1411             | nomination      |         444 |           0 |          246 |
+|           254 | Q103916     | Academy Award for Best Actor                             | P1411             | nomination      |         435 |           0 |          251 |
+|         23188 | Q917808     | Academy Award for Best Animated Short Film               | P1411             | nomination      |         370 |           1 |          291 |
+|          3412 | Q1324407    | Academy Award for Best Live Action Short Film            | P1411             | nomination      |         278 |           0 |          361 |
+|          1053 | Q111332     | Academy Award for Best Documentary Feature Film          | P1411             | nomination      |         293 |           2 |          339 |
+|          3327 | Q131520     | Academy Award for Best Cinematography                    | P1411             | nomination      |         318 |           0 |          180 |
+|         14800 | Q393686     | Academy Award for Best Visual Effects                    | P1411             | nomination      |         145 |           0 |          306 |
+|         11727 | Q277536     | Academy Award for Best Costume Design                    | P1411             | nomination      |         271 |           0 |          148 |
+|         16327 | Q488651     | Academy Award for Best Original Score                    | P1411             | nomination      |         270 |           0 |          139 |
+|          1170 | Q112243     | Academy Award for Best Original Song                     | P1411             | nomination      |          13 |           0 |          367 |
+|           399 | Q105304     | Academy Award for Best International Feature Film        | P1411             | nomination      |         333 |           0 |           12 |
+|         16274 | Q487136     | Academy Award for Best Makeup and Hairstyling            | P1411             | nomination      |         110 |           0 |          199 |
+|          9520 | Q22253133   | Academy Award for Best Art Direction, Black and White    | P1411             | nomination      |         137 |           0 |          147 |
+|         16671 | Q504298     | Academy Award for Best Story                             | P1411             | nomination      |         126 |           0 |          153 |
+|           613 | Q106800     | Academy Award for Best Animated Feature                  | P1411             | nomination      |         103 |           0 |          172 |
+|          9519 | Q22253131   | Academy Award for Best Art Direction, Color              | P1411             | nomination      |         111 |           0 |          150 |
+|          8969 | Q21995139   | Academy Award for Best Cinematography, Black-and-White   | P1411             | nomination      |         160 |           0 |           77 |
+|         16326 | Q488645     | Academy Award for Best Sound Editing                     | P1411             | nomination      |         124 |           0 |           90 |
+|          9722 | Q22752868   | Academy Award for Best Original Dramatic or Comedy Score | P1411             | nomination      |         149 |           0 |           62 |
+|          8968 | Q21995136   | Academy Award for Best Cinematography, Color             | P1411             | nomination      |         135 |           0 |           75 |
+|         15788 | Q4671338    | Academy Award for Best Original Musical Score            | P1411             | nomination      |         135 |           0 |           74 |
+|          9721 | Q22752811   | Academy Award for Best Score, Adaptation or Treatment    | P1411             | nomination      |          95 |           0 |           69 |
+|          9791 | Q22917729   | Academy Award for Best Special Effects                   | P1411             | nomination      |          91 |           0 |           72 |
+|          9451 | Q22120066   | Academy Award for Best Costume Design, Color             | P1411             | nomination      |          77 |           0 |           44 |
+|          9452 | Q22120095   | Academy Award for Best Costume Design, Black-and-White   | P1411             | nomination      |          77 |           0 |           40 |
+|          8214 | Q20078689   | European Film Academy Young Audience Award               | P1411             | nomination      |          35 |           0 |           81 |
+|          9502 | Q22235329   | Academy Award for Best Original Dramatic Score           | P1411             | nomination      |          65 |           0 |           46 |
+|          9591 | Q22335251   | Academy Award for Best Live Action Short Film, One-Reel  | P1411             | nomination      |          90 |           0 |           20 |
+|          4273 | Q1401974    | Academy Award for Best Short Subject, Two-reel           | P1411             | nomination      |          81 |           0 |           23 |
++---------------+-------------+----------------------------------------------------------+-------------------+-----------------+-------------+-------------+--------------+
++----------+-------------+-------------------------------------------------------------------------+--------------+------------+-------------+-------------+--------------+
+| ID_AWARD | ID_WIKIDATA | AWARD_NAME                                                              | AWARD_SOURCE | AWARD_TYPE | MOVIE_COUNT | SERIE_COUNT | PERSON_COUNT |
++----------+-------------+-------------------------------------------------------------------------+--------------+------------+-------------+-------------+--------------+
+|    28960 | Q830079     | Academy Award for Best Sound                                            | P166         | award      |          89 |           0 |          147 |
+|      146 | Q102427     | Academy Award for Best Picture                                          | P166         | award      |          98 |           0 |          128 |
+|      985 | Q107258     | Academy Award for Best Writing, Adapted Screenplay                      | P166         | award      |          92 |           0 |          124 |
+|    19715 | Q41417      | Academy Award for Best Writing, Original Screenplay                     | P166         | award      |          83 |           0 |          121 |
+|    15189 | Q277751     | Academy Award for Best Production Design                                | P166         | award      |          70 |           0 |          131 |
+|    22653 | Q52382875   | Fellow of the American Academy of Arts and Sciences                     | P166         | award      |           1 |           0 |          198 |
+|    15462 | Q281939     | Academy Award for Best Film Editing                                     | P166         | award      |          88 |           0 |           99 |
+|      297 | Q103916     | Academy Award for Best Actor                                            | P166         | award      |          99 |           0 |           87 |
+|     1730 | Q111332     | Academy Award for Best Documentary Feature Film                         | P166         | award      |          84 |           1 |          102 |
+|      269 | Q103618     | Academy Award for Best Actress                                          | P166         | award      |          97 |           0 |           82 |
+|    27239 | Q727328     | Academy Honorary Award                                                  | P166         | award      |          12 |           0 |          166 |
+|    29909 | Q917808     | Academy Award for Best Animated Short Film                              | P166         | award      |          92 |           0 |           86 |
+|    19450 | Q393686     | Academy Award for Best Visual Effects                                   | P166         | award      |          49 |           0 |          128 |
+|      753 | Q106301     | Academy Award for Best Supporting Actress                               | P166         | award      |          85 |           0 |           88 |
+|     6157 | Q1425151    | Academy Award for Best Documentary (Short Subject)                      | P166         | award      |          82 |           0 |           90 |
+|      228 | Q103360     | Academy Award for Best Director                                         | P166         | award      |          95 |           0 |           77 |
+|      752 | Q106291     | Academy Award for Best Supporting Actor                                 | P166         | award      |          87 |           0 |           80 |
+|     5158 | Q1324407    | Academy Award for Best Live Action Short Film                           | P166         | award      |          66 |           0 |           89 |
+|     1885 | Q112243     | Academy Award for Best Original Song                                    | P166         | award      |          15 |           0 |          125 |
+|     5004 | Q131520     | Academy Award for Best Cinematography                                   | P166         | award      |          66 |           0 |           62 |
+|    21656 | Q487136     | Academy Award for Best Makeup and Hairstyling                           | P166         | award      |          38 |           0 |           76 |
+|    21736 | Q488651     | Academy Award for Best Original Score                                   | P166         | award      |          53 |           0 |           52 |
+|    15182 | Q277536     | Academy Award for Best Costume Design                                   | P166         | award      |          56 |           0 |           47 |
+|    12593 | Q22253131   | Academy Award for Best Art Direction, Color                             | P166         | award      |          25 |           0 |           57 |
+|    24416 | Q5942236    | Hundred Flowers Award for Best Picture                                  | P166         | award      |          82 |           0 |            0 |
+|    21735 | Q488645     | Academy Award for Best Sound Editing                                    | P166         | award      |          39 |           0 |           39 |
+|      542 | Q105304     | Academy Award for Best International Feature Film                       | P166         | award      |          71 |           0 |            3 |
+|    12594 | Q22253133   | Academy Award for Best Art Direction, Black and White                   | P166         | award      |          25 |           0 |           45 |
+|      872 | Q106800     | Academy Award for Best Animated Feature                                 | P166         | award      |          25 |           0 |           41 |
+|    22150 | Q504298     | Academy Award for Best Story                                            | P166         | award      |          27 |           0 |           34 |
+|    29366 | Q8636       | Academy Award for Technical Achievement                                 | P166         | award      |           0 |           0 |           56 |
+|    12379 | Q21995136   | Academy Award for Best Cinematography, Color                            | P166         | award      |          27 |           0 |           28 |
+|    12846 | Q22917729   | Academy Award for Best Special Effects                                  | P166         | award      |          25 |           0 |           26 |
+|    12380 | Q21995139   | Academy Award for Best Cinematography, Black-and-White                  | P166         | award      |          27 |           0 |           24 |
+|      890 | Q10684929   | Swedish Academy's Theatre Award                                         | P166         | award      |           0 |           0 |           48 |
+|    23643 | Q5579757    | Golden Rooster Award for Best Picture                                   | P166         | award      |          45 |           0 |            0 |
+|    11233 | Q20078689   | European Film Academy Young Audience Award                              | P166         | award      |          12 |           0 |           32 |
+|    21058 | Q4671338    | Academy Award for Best Original Musical Score                           | P166         | award      |          22 |           0 |           21 |
+|    14604 | Q2620100    | Academy of Canadian Cinema and Television Award for Best Motion Picture | P166         | award      |          35 |           0 |            7 |
+|    22419 | Q514445     | European Film Academy Lifetime Achievement Award                        | P166         | award      |           0 |           0 |           42 |
++----------+-------------+-------------------------------------------------------------------------+--------------+------------+-------------+-------------+--------------+
++---------------+-----------------------------------------------------+-------------------+-------------+--------------+
+| ID_NOMINATION | NOMINATION_NAME                                     | NOMINATION_SOURCE | MOVIE_COUNT | PERSON_COUNT |
++---------------+-----------------------------------------------------+-------------------+-------------+--------------+
+|          2679 | International Submission to the Academy Awards      | P1411             |        2857 |            0 |
+|           153 | Academy Award for Best Picture                      | P1411             |         604 |          610 |
+|         22308 | Academy Award for Best Sound                        | P1411             |         493 |          350 |
+|           235 | Academy Award for Best Actress                      | P1411             |         444 |          246 |
+|           220 | Academy Award for Best Director                     | P1411             |         442 |          254 |
+|           668 | Academy Award for Best Writing, Adapted Screenplay  | P1411             |         437 |          563 |
+|           254 | Academy Award for Best Actor                        | P1411             |         435 |          251 |
+|         11895 | Academy Award for Best Film Editing                 | P1411             |         425 |          329 |
+|         14975 | Academy Award for Best Writing, Original Screenplay | P1411             |         393 |          539 |
+|           530 | Academy Award for Best Supporting Actor             | P1411             |         392 |          341 |
+|         18825 | IFFR audience award                                 | P1411             |         385 |            0 |
+|           532 | Academy Award for Best Supporting Actress           | P1411             |         380 |          343 |
+|         23188 | Academy Award for Best Animated Short Film          | P1411             |         370 |          291 |
+|          4415 | Academy Award for Best Documentary (Short Subject)  | P1411             |         354 |          339 |
+|         11733 | Academy Award for Best Production Design            | P1411             |         344 |          417 |
++---------------+-----------------------------------------------------+-------------------+-------------+--------------+
++---------------+----------------------------------------------------------------------+-------------------+-------------+--------------+
+| ID_NOMINATION | NOMINATION_NAME                                                      | NOMINATION_SOURCE | MOVIE_COUNT | PERSON_COUNT |
++---------------+----------------------------------------------------------------------+-------------------+-------------+--------------+
+|           153 | Academy Award for Best Picture                                       | P1411             |         604 |          610 |
+|           668 | Academy Award for Best Writing, Adapted Screenplay                   | P1411             |         437 |          563 |
+|         14975 | Academy Award for Best Writing, Original Screenplay                  | P1411             |         393 |          539 |
+|         11733 | Academy Award for Best Production Design                             | P1411             |         344 |          417 |
+|         19034 | European Film Award – People's Choice Award for Best European Film   | P1411             |         143 |          403 |
+|          1170 | Academy Award for Best Original Song                                 | P1411             |          13 |          367 |
+|          3412 | Academy Award for Best Live Action Short Film                        | P1411             |         278 |          361 |
+|         22308 | Academy Award for Best Sound                                         | P1411             |         493 |          350 |
+|           532 | Academy Award for Best Supporting Actress                            | P1411             |         380 |          343 |
+|           530 | Academy Award for Best Supporting Actor                              | P1411             |         392 |          341 |
+|          1053 | Academy Award for Best Documentary Feature Film                      | P1411             |         293 |          339 |
+|          4415 | Academy Award for Best Documentary (Short Subject)                   | P1411             |         354 |          339 |
+|         11895 | Academy Award for Best Film Editing                                  | P1411             |         425 |          329 |
+|         21581 | European Film Award for Best Film                                    | P1411             |         214 |          327 |
+|         14800 | Academy Award for Best Visual Effects                                | P1411             |         145 |          306 |
++---------------+----------------------------------------------------------------------+-------------------+-------------+--------------+
++----------------------------------------+--------------+------------+
+| NOMINATION_NAME                        | RELEASE_YEAR | FILM_COUNT |
++----------------------------------------+--------------+------------+
+| Academy Award for Best Picture         |         2010 |         10 |
+| Academy Award for Best Picture         |         2011 |          9 |
+| Academy Award for Best Picture         |         2012 |          9 |
+| Academy Award for Best Picture         |         2013 |          9 |
+| Academy Award for Best Picture         |         2014 |          8 |
+| Academy Award for Best Picture         |         2015 |          8 |
+| Academy Award for Best Picture         |         2016 |          9 |
+| Academy Award for Best Picture         |         2017 |          9 |
+| Academy Award for Best Picture         |         2018 |          8 |
+| Academy Award for Best Picture         |         2019 |          9 |
+| Academy Award for Best Picture         |         2020 |          6 |
+| Academy Award for Best Picture         |         2021 |         12 |
+| Academy Award for Best Picture         |         2022 |         10 |
+| Academy Award for Best Picture         |         2023 |          6 |
+| Academy Award for Best Picture         |         2024 |          6 |
+| Academy Award for Best Picture         |         2025 |          3 |
+| Ariel Award for Best Picture           |         2013 |          1 |
+| FAMAS Award for Best Picture           |         2025 |          5 |
+| Golden Rooster Award for Best Picture  |         2012 |          1 |
+| Hundred Flowers Award for Best Picture |         2013 |          1 |
+| Nika Award for Best Picture            |         2010 |          1 |
+| Nika Award for Best Picture            |         2012 |          1 |
++----------------------------------------+--------------+------------+

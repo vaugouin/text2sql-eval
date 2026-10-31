@@ -1,0 +1,145 @@
+-- check-mcu-collection.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-31 18:28:37 +0100
+--
++----------------+---------------------------------+-----------------------------------+--------------+---------+--------------------+---------------------+------------------+---------------+---------+------------+---------------------+
+| ID_CUSTOM_LIST | LIST_NAME                       | LIST_NAME_FR                      | TARGET_TABLE | SORT_BY | TMDB_TARGET_RECORD | WIKIDATA_PROPERTIES | IMDB_LIST_LENGTH | IMDB_ID_COUNT | DELETED | DAT_CREAT  | TIM_UPDATED         |
++----------------+---------------------------------+-----------------------------------+--------------+---------+--------------------+---------------------+------------------+---------------+---------+------------+---------------------+
+|              4 | Roger Ebert's Great Movies List |                                   |            1 |       1 | NULL               | Q212173             |            41072 |     2106.0000 |       0 | 2026-03-28 | 2026-04-14 12:17:25 |
+|             14 | Reddit Top 250 movies           |                                   |            1 |       1 | NULL               | Q1136               |            10253 |      499.0000 |       0 | 2026-03-28 | 2026-04-22 20:43:28 |
+|             31 | National Film Registry          |                                   |            1 |       4 | NULL               | P361 Q823422        |            17240 |      907.0000 |       0 | 2026-03-29 | 2026-03-29 22:40:03 |
+|             49 | Marvel Cinematic Universe (MCU) | Univers cinématographique Marvel  |            2 |       5 |                    | Q642878             |             4268 |      218.0000 |       0 | 2026-05-13 | 2026-05-13 17:53:18 |
++----------------+---------------------------------+-----------------------------------+--------------+---------+--------------------+---------------------+------------------+---------------+---------+------------+---------------------+
++-------------------+-----------+-------------------+-----------------+-------------------------------------+-------------+-------------+
+| ID_T2S_COLLECTION | ID_RECORD | COLLECTION_SOURCE | COLLECTION_TYPE | COLLECTION_NAME                     | MOVIE_COUNT | SERIE_COUNT |
++-------------------+-----------+-------------------+-----------------+-------------------------------------+-------------+-------------+
+|              2516 |    623911 | collection        | collection      | Captain Marvel Collection           |           2 |           0 |
+|              2527 |    627234 | collection        | collection      | Marvel Rising Collection            |           6 |           0 |
+|              2977 |    752937 | collection        | collection      | LEGO Marvel Super Heroes Collection |           3 |           0 |
+|              4817 |        49 | custom            | collection      | Marvel Cinematic Universe (MCU)     |          73 |           0 |
++-------------------+-----------+-------------------+-----------------+-------------------------------------+-------------+-------------+
++-------------------+-------------------------------------+---------------+----------+-------------------------------------------------+-------------+------------+
+| ID_T2S_COLLECTION | COLLECTION_NAME                     | DISPLAY_ORDER | ID_MOVIE | TITLE                                           | DAT_RELEASE | ID_IMDB    |
++-------------------+-------------------------------------+---------------+----------+-------------------------------------------------+-------------+------------+
+|              2516 | Captain Marvel Collection           |             1 |   299537 | Captain Marvel                                  | 2019-03-06  | tt4154664  |
+|              2516 | Captain Marvel Collection           |             2 |   609681 | The Marvels                                     | 2023-11-08  | tt10676048 |
+|              2527 | Marvel Rising Collection            |             1 |   491633 | Marvel Rising: Secret Warriors                  | 2018-09-30  | tt7728344  |
+|              2527 | Marvel Rising Collection            |             2 |   576743 | Marvel Rising: Chasing Ghosts                   | 2019-01-16  | tt9073748  |
+|              2527 | Marvel Rising Collection            |             3 |   583209 | Marvel Rising: Heart of Iron                    | 2019-04-03  | tt9073746  |
+|              2527 | Marvel Rising Collection            |             4 |   592687 | Marvel Rising: Battle of the Bands              | 2019-08-28  | tt10863978 |
+|              2527 | Marvel Rising Collection            |             5 |   592688 | Marvel Rising: Operation Shuri                  | 2019-10-11  | tt11113964 |
+|              2527 | Marvel Rising Collection            |             6 |   592689 | Marvel Rising: Playing with Fire                | 2019-12-18  | tt11483514 |
+|              2977 | LEGO Marvel Super Heroes Collection |             1 |   368304 | LEGO Marvel Super Heroes: Avengers Reassembled! | 2015-11-16  | tt5371572  |
+|              2977 | LEGO Marvel Super Heroes Collection |             2 |  1154598 | LEGO Marvel Avengers: Code Red                  | 2023-10-26  | tt28477867 |
+|              2977 | LEGO Marvel Super Heroes Collection |             3 |  1359227 | LEGO Marvel Avengers: Mission Demolition        | 2024-10-17  | tt33653255 |
+|              4817 | Marvel Cinematic Universe (MCU)     |             1 |    10658 | Howard the Duck                                 | 1986-08-01  | tt0091225  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             2 |     8867 | The Punisher                                    | 1989-10-05  | tt0098141  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             3 |    13995 | Captain America                                 | 1990-12-14  | tt0103923  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             4 |    22059 | The Fantastic Four                              | 1994-01-19  | tt0109770  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             5 |    36647 | Blade                                           | 1998-08-21  | tt0120611  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             6 |    36657 | X-Men                                           | 2000-07-13  | tt0120903  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             7 |    36586 | Blade II                                        | 2002-03-22  | tt0187738  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             8 |      557 | Spider-Man                                      | 2002-05-01  | tt0145487  |
+|              4817 | Marvel Cinematic Universe (MCU)     |             9 |     9480 | Daredevil                                       | 2003-02-14  | tt0287978  |
+|              4817 | Marvel Cinematic Universe (MCU)     |            10 |    36658 | X2                                              | 2003-04-27  | tt0290334  |
+|              4817 | Marvel Cinematic Universe (MCU)     |            11 |     1927 | Hulk                                            | 2003-06-19  | tt0286716  |
+|              4817 | Marvel Cinematic Universe (MCU)     |            12 |     7220 | The Punisher                                    | 2004-04-15  | tt0330793  |
++-------------------+-------------------------------------+---------------+----------+-------------------------------------------------+-------------+------------+
++-----------+----------+-------------------------------------------+--------------+
+| ID_IMDB   | ID_MOVIE | TITLE                                     | RELEASE_YEAR |
++-----------+----------+-------------------------------------------+--------------+
+| tt0091225 |    10658 | Howard the Duck                           |         1986 |
+| tt0098141 |     8867 | The Punisher                              |         1989 |
+| tt0103923 |    13995 | Captain America                           |         1990 |
+| tt0109770 |    22059 | The Fantastic Four                        |         1994 |
+| tt0120611 |    36647 | Blade                                     |         1998 |
+| tt0120903 |    36657 | X-Men                                     |         2000 |
+| tt0187738 |    36586 | Blade II                                  |         2002 |
+| tt0145487 |      557 | Spider-Man                                |         2002 |
+| tt0287978 |     9480 | Daredevil                                 |         2003 |
+| tt0286716 |     1927 | Hulk                                      |         2003 |
+| tt0290334 |    36658 | X2                                        |         2003 |
+| tt0359013 |    36648 | Blade: Trinity                            |         2004 |
+| tt0316654 |      558 | Spider-Man 2                              |         2004 |
+| tt0330793 |     7220 | The Punisher                              |         2004 |
+| tt0357277 |     9947 | Elektra                                   |         2005 |
+| tt0120667 |     9738 | Fantastic Four                            |         2005 |
+| tt0376994 |    36668 | X-Men: The Last Stand                     |         2006 |
+| tt0486576 |     1979 | Fantastic Four: Rise of the Silver Surfer |         2007 |
+| tt0259324 |     1250 | Ghost Rider                               |         2007 |
+| tt0413300 |      559 | Spider-Man 3                              |         2007 |
+| tt0450314 |    13056 | Punisher: War Zone                        |         2008 |
+| tt0458525 |     2080 | X-Men Origins: Wolverine                  |         2009 |
+| tt1071875 |    71676 | Ghost Rider: Spirit of Vengeance          |         2011 |
+| tt1270798 |    49538 | X-Men: First Class                        |         2011 |
+| tt0948470 |     1930 | The Amazing Spider-Man                    |         2012 |
+| tt1430132 |    76170 | The Wolverine                             |         2013 |
+| tt1872181 |   102382 | The Amazing Spider-Man 2                  |         2014 |
+| tt1877832 |   127585 | X-Men: Days of Future Past                |         2014 |
+| tt1502712 |   166424 | Fantastic Four                            |         2015 |
+| tt1431045 |   293660 | Deadpool                                  |         2016 |
+| tt3385516 |   246655 | X-Men: Apocalypse                         |         2016 |
+| tt3315342 |   263115 | Logan                                     |         2017 |
++-----------+----------+-------------------------------------------+--------------+
++------------+--------------------+---------------------------------------------------------------------+------+---------------+---------+--------------+
+| ID_IMDB    | KIND               | TITLE                                                               | YEAR | IS_SHORT_FILM | RUNTIME | HAS_WIKIDATA |
++------------+--------------------+---------------------------------------------------------------------+------+---------------+---------+--------------+
+| tt19037048 | movie              | Nova                                                                | NULL |             0 |       0 | no           |
+| tt16357306 | movie              | Untitled Shang-Chi and the Legend of the Ten Rings Sequel           | NULL |             0 |       0 | yes          |
+| tt2011109  | movie              | Marvel One-Shot: A Funny Thing Happened on the Way to Thor's Hammer | 2011 |             1 |       4 | yes          |
+| tt2011118  | movie              | Marvel One-Shot: The Consultant                                     | 2011 |             1 |       4 | yes          |
+| tt2247732  | movie              | Marvel One-Shot: Item 47                                            | 2012 |             1 |      12 | yes          |
+| tt3067038  | movie              | Marvel One-Shot: Agent Carter                                       | 2013 |             1 |      15 | yes          |
+| tt3438640  | movie              | Marvel One-Shot: All Hail the King                                  | 2014 |             1 |      14 | yes          |
+| tt3591568  | movie              | Marvel Studios: Assembling a Universe                               | 2014 |             1 |      43 | yes          |
+| tt4128102  | movie              | Marvel: 75 Years, from Pulp to Pop!                                 | 2014 |             1 |      42 | yes          |
+| tt6016776  | movie              | Team Thor                                                           | 2016 |             1 |       3 | yes          |
+| tt6599818  | movie              | Team Thor: Part 2                                                   | 2017 |             1 |       5 | yes          |
+| tt5675620  | movie              | The Punisher                                                        | 2017 |             0 |     156 | yes          |
+| tt8023090  | movie              | Team Darryl                                                         | 2018 |             1 |       6 | yes          |
+| tt11295300 | movie              | Marvel Studios: Expanding the Universe                              | 2019 |             1 |      12 | yes          |
+| tt15318872 | movie              | Werewolf by Night                                                   | 2022 |             1 |      55 | yes          |
+| tt36042156 | movie              | The Punisher: One Last Kill                                         | 2026 |             1 |      51 | yes          |
+| tt37884905 | movie              | Black Panther 3                                                     | 2028 |             0 |       0 | yes          |
+| tt43711959 | movie              | Ghost Rider                                                         | 2028 |             0 |       0 | yes          |
+| tt29347085 | movie              | Untitled X-Men Film                                                 | 2028 |             0 |       0 | yes          |
+| tt10671440 | not in TMDb tables | NULL                                                                | NULL |          NULL |    NULL | no           |
+| tt13623128 | not in TMDb tables | NULL                                                                | NULL |          NULL |    NULL | no           |
+| tt6243582  | not in TMDb tables | NULL                                                                | NULL |          NULL |    NULL | no           |
+| tt48452696 | series             | Zodiac                                                              | NULL |          NULL |    NULL | no           |
+| tt2364582  | series             | Marvel's Agents of S.H.I.E.L.D.                                     | 2013 |          NULL |    NULL | yes          |
+| tt3475734  | series             | Marvel's Agent Carter                                               | 2015 |          NULL |    NULL | yes          |
+| tt3322312  | series             | Marvel's Daredevil                                                  | 2015 |          NULL |    NULL | yes          |
+| tt2357547  | series             | Marvel's Jessica Jones                                              | 2015 |          NULL |    NULL | yes          |
+| tt4501242  | series             | Marvel’s Agents of S.H.I.E.L.D.: Double Agent                       | 2015 |          NULL |    NULL | no           |
+| tt5296048  | series             | WHIH Newsfront                                                      | 2015 |          NULL |    NULL | yes          |
+| tt6313900  | series             | Marvel's Agents of S.H.I.E.L.D.: Slingshot                          | 2016 |          NULL |    NULL | yes          |
+| tt3322314  | series             | Marvel's Luke Cage                                                  | 2016 |          NULL |    NULL | yes          |
+| tt4154858  | series             | Marvel's Inhumans                                                   | 2017 |          NULL |    NULL | yes          |
+| tt3322310  | series             | Marvel's Iron Fist                                                  | 2017 |          NULL |    NULL | yes          |
+| tt1236246  | series             | Marvel's Runaways                                                   | 2017 |          NULL |    NULL | yes          |
+| tt4230076  | series             | Marvel's The Defenders                                              | 2017 |          NULL |    NULL | yes          |
+| tt5614844  | series             | Marvel's Cloak & Dagger                                             | 2018 |          NULL |    NULL | yes          |
+| tt15450042 | series             | The Daily Bugle                                                     | 2019 |          NULL |    NULL | yes          |
+| tt10266874 | series             | Helstrom                                                            | 2020 |          NULL |    NULL | yes          |
+| tt10160804 | series             | Hawkeye                                                             | 2021 |          NULL |    NULL | yes          |
+| tt9140554  | series             | Loki                                                                | 2021 |          NULL |    NULL | yes          |
+| tt14094206 | series             | Marvel Studios Assembled                                            | 2021 |          NULL |    NULL | yes          |
+| tt13650480 | series             | Marvel Studios Legends                                              | 2021 |          NULL |    NULL | yes          |
+| tt9208876  | series             | The Falcon and the Winter Soldier                                   | 2021 |          NULL |    NULL | yes          |
+| tt9140560  | series             | WandaVision                                                         | 2021 |          NULL |    NULL | yes          |
+| tt10168312 | series             | What If...?                                                         | 2021 |          NULL |    NULL | yes          |
+| tt13623148 | series             | I Am Groot                                                          | 2022 |          NULL |    NULL | yes          |
+| tt10234724 | series             | Moon Knight                                                         | 2022 |          NULL |    NULL | yes          |
+| tt10857164 | series             | Ms. Marvel                                                          | 2022 |          NULL |    NULL | yes          |
+| tt10857160 | series             | She-Hulk: Attorney at Law                                           | 2022 |          NULL |    NULL | yes          |
+| tt13157618 | series             | Secret Invasion                                                     | 2023 |          NULL |    NULL | yes          |
+| tt15571732 | series             | Agatha All Along                                                    | 2024 |          NULL |    NULL | yes          |
+| tt13966962 | series             | Echo                                                                | 2024 |          NULL |    NULL | yes          |
+| tt18923754 | series             | Daredevil: Born Again                                               | 2025 |          NULL |    NULL | yes          |
+| tt13968252 | series             | Eyes of Wakanda                                                     | 2025 |          NULL |    NULL | yes          |
+| tt13623126 | series             | Ironheart                                                           | 2025 |          NULL |    NULL | yes          |
+| tt16027014 | series             | Marvel Zombies                                                      | 2025 |          NULL |    NULL | yes          |
+| tt16027074 | series             | Your Friendly Neighborhood Spider-Man                               | 2025 |          NULL |    NULL | yes          |
+| tt23112594 | series             | VisionQuest                                                         | 2026 |          NULL |    NULL | yes          |
+| tt21066182 | series             | Wonder Man                                                          | 2026 |          NULL |    NULL | yes          |
++------------+--------------------+---------------------------------------------------------------------+------+---------------+---------+--------------+

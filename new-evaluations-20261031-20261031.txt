@@ -1,0 +1,72 @@
+-- new-evaluations-20261031.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-10-31 18:28:35 +0100
+--
++----------------+---------------+--------------+
+| INSERTED_TODAY | SHOWCASE_ROWS | REFRESH_ROWS |
++----------------+---------------+--------------+
+|             60 |            36 |            3 |
++----------------+---------------+--------------+
++-------------------+-----------------------------------------------------------------------------------------+----------------------------+-------------+
+| ID_T2S_EVALUATION | QUESTION                                                                                | ID_T2S_EVALUATION_CATEGORY | IS_SHOWCASE |
++-------------------+-----------------------------------------------------------------------------------------+----------------------------+-------------+
+|              2560 | The Lord of the Rings films with the runtime of each                                    |                         47 |           1 |
+|              2561 | The James Bond films with the budget of each, in release order                          |                         22 |           1 |
+|              2562 | The Toy Story movies and how much each one earned at the box office                     |                         22 |           1 |
+|              2563 | The feature films directed by Christopher Nolan with their IMDb rating, by release date |                          4 |           1 |
+|              2564 | The Alien movies with the duration of each                                              |                         47 |           1 |
+|              2565 | Pixar feature films with their revenue, from oldest to newest                           |                          7 |           0 |
+|              2566 | Breaking Bad, The Wire, The Sopranos and Mad Men with the number of seasons of each     |                          6 |           1 |
+|              2567 | The Back to the Future trilogy with the IMDb rating of each film                        |                         47 |           1 |
+|              2568 | The Star Wars movies and the budget of each, in release order                           |                         22 |           1 |
+|              2569 | The films directed by Quentin Tarantino with their runtime                              |                          4 |           1 |
+|              2570 | Which 10 Pixar films made the most money?                                               |                         22 |           1 |
+|              2571 | The five longest films directed by Martin Scorsese                                      |                          4 |           1 |
+|              2572 | Which animated films have the biggest box office? Top ten                               |                         22 |           1 |
+|              2573 | Rank the Harry Potter films by IMDb rating                                              |                         47 |           1 |
+|              2574 | Which TV series have the most episodes? Top 10                                          |                          6 |           1 |
+|              2575 | Which actors appeared in the most James Bond films? Top 10                              |                         27 |           1 |
+|              2576 | Which directors have made the most feature films? Top 20                                |                          4 |           0 |
+|              2577 | Which countries have produced the most TV series? Top 10                                |                         36 |           0 |
+|              2578 | The 12 highest-rated Studio Ghibli films                                                |                          7 |           1 |
+|              2579 | Which James Bond films were the longest?                                                |                         47 |           1 |
+|              2580 | How many films did Alfred Hitchcock direct?                                             |                          4 |           0 |
+|              2581 | How many films are in the James Bond collection?                                        |                         47 |           0 |
+|              2582 | How many episodes does The Simpsons have?                                               |                          6 |           0 |
+|              2583 | How many French-language films were released in 1960?                                   |                         20 |           0 |
+|              2584 | How many actors have played James Bond?                                                 |                         15 |           0 |
+|              2585 | How many films have won the Academy Award for Best Picture?                             |                         11 |           0 |
+|              2586 | How many feature films has Pixar produced?                                              |                          7 |           0 |
+|              2587 | How many persons were born in France?                                                   |                         33 |           0 |
+|              2588 | How many seasons does Game of Thrones have?                                             |                          6 |           0 |
+|              2589 | How many documentaries were released in the 2010s?                                      |                         21 |           0 |
+|              2590 | Which is longer, Titanic (1997) or Avatar (2009)?                                       |                          2 |           1 |
+|              2591 | Compare the budgets of Avatar (2009) and Avengers: Endgame                              |                         22 |           1 |
+|              2592 | Compare the number of seasons of Friends (1994) and Seinfeld                            |                          6 |           1 |
+|              2593 | Which earned more at the box office, Barbie (2023) or Oppenheimer?                      |                         22 |           1 |
+|              2594 | Compare the IMDb ratings of The Godfather (1972) and The Godfather Part II              |                          2 |           1 |
+|              2595 | Who has directed more films, Woody Allen or Martin Scorsese?                            |                          4 |           1 |
+|              2596 | Compare the birth years of Alfred Hitchcock and Orson Welles                            |                         35 |           1 |
+|              2597 | Compare the runtimes of Seven Samurai and The Magnificent Seven (1960)                  |                          2 |           1 |
+|              2598 | Which has more episodes, The Simpsons or South Park?                                    |                          6 |           1 |
+|              2599 | Compare the budget and the revenue of Jurassic Park and Jurassic World                  |                         22 |           1 |
+|              2600 | In which order should I watch the Marvel Cinematic Universe films, by release date?     |                         47 |           0 |
+|              2601 | The Godfather trilogy in order                                                          |                         47 |           1 |
+|              2602 | List the Indiana Jones films from first to last                                         |                         47 |           1 |
+|              2603 | Sergio Leone's Dollars trilogy in order of release                                      |                         47 |           1 |
+|              2604 | The Three Colors trilogy by Krzysztof Kieslowski in order                               |                         47 |           1 |
+|              2605 | Which films did Stanley Kubrick direct, from his first to his last?                     |                          4 |           1 |
+|              2606 | The Matrix films in release order                                                       |                         47 |           1 |
+|              2607 | Richard Linklater's Before trilogy in order                                             |                         47 |           1 |
+|              2608 | The Toy Story films from the first to the latest                                        |                         47 |           1 |
+|              2609 | The Rocky films in release order                                                        |                         47 |           1 |
+|              2610 | How many films did Woody Allen direct per decade?                                       |                          4 |           0 |
+|              2611 | How many films were released each year since 2000?                                      |                         10 |           0 |
+|              2612 | How many horror films were released per decade?                                         |                         55 |           0 |
+|              2613 | How many TV series started each year since 2010?                                        |                         39 |           0 |
+|              2614 | What is the average runtime of films by decade?                                         |                          3 |           0 |
+|              2615 | How many films has Pixar released per year?                                             |                          7 |           0 |
+|              2616 | How many Japanese films were released per decade since 1950?                            |                          8 |           0 |
+|              2617 | What was the average film budget per year since 2000?                                   |                         22 |           0 |
+|              2618 | How many Criterion Collection films were released per decade?                           |                         45 |           0 |
+|              2619 | How many documentaries were released per year since 2015?                               |                         21 |           0 |
++-------------------+-----------------------------------------------------------------------------------------+----------------------------+-------------+
