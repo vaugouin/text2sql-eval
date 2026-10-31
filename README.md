@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.17.1 (source of truth: [VERSION](VERSION))
+**Version:** 2.17.2 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-10-31
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1081,6 +1081,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.17.2 | 2026-10-31 | **Phase 1 evaluations of the result representations** (TEXT2SQL-EVAL-003): `new-evaluations-20261031.sql` adds sixty questions, ten per answer form (value per item, ranking, count, comparison, sequence, trend), English with a French twin, each with a scored `query_result` assertion and an out-of-score `result_shape` assertion that names the 1.2.0 target, all `IS_SAMPLE`, thirty-six `IS_SHOWCASE`, three with an `ASSERTION_REFRESH_SQL`. Two read-only checks document findings of the Green pass: `check-mcu-collection.sql` (the MCU collection holds every Marvel film, Howard the Duck first) and `check-award-nomination-data.sql` (the Best Picture nomination query returned no rows). Bank refreshed from the 2026-10-30 export. No evaluator code change. |
 | 2.17.1 | 2026-10-31 | **README matched to the code**: header version synced with `VERSION`; `--complex-question-processing` (aliases `--complex-model-used`) documented with its real default (`true`) and payload field; cache-guard flags and the launcher's subset, Flex and cache-guard variables listed; phase 6 `LIMIT 10` noted; result-shape section renumbered §4.8 and its scoring sentence corrected (phase 20 aggregates the three scored columns); dead links (`T2S_EVALUATION-tables-with-data.sql`, `../maintenance/`) removed; source files table completed. No code change. |
 | 2.17.0 | 2026-10-29 | **Result-shape check without re-running (FASTAPI-TEXT2SQL-349)**: `check-result-shape.py` now recomputes the hint offline, from the stored `sql_query` and result rows, with the same deterministic module the API uses (`fastapi-text2sql/result_shape.py`), so a pre-349 campaign is checked with no re-execution and no token cost. Flags `--no-recompute` and `--fastapi-dir`; an export lacking the rows stays NOT-EMITTED. Also corrected the budget/revenue/profit assertion (id 2550) to `entity_rows / card-grid`: the first Green run showed the model answers it with a window aggregate over entity rows, not a bare stat strip. §4.8. |
 | 2.16.1 | 2026-10-25 | **Scheduled tasks switched off by a flag file**: the pre-flight of `text2sql-eval.sh` and of `load/run_load.py` reads `CRON_OFF`, which each task's `off.sh` now writes next to its launcher (on.sh deletes it), instead of the `mv` lines of the old renaming `off.sh`. A leftover `<name>-off.sh` still counts as off. |

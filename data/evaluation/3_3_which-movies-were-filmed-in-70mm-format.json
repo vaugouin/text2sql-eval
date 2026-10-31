@@ -11,7 +11,7 @@
     "result_shape": "result_kind == entity_rows; representation == card-grid"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_TECHNICAL ON T_WC_T2S_MOVIE.ID_MOVIE = T_WC_T2S_MOVIE_TECHNICAL.ID_MOVIE WHERE T_WC_T2S_MOVIE_TECHNICAL.ID_TECHNICAL = 54 ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-29T04:26:06",
+  "assertion_refresh_last": "2026-10-30T05:06:33",
   "comment": "Excluding documentaries in the valid set",
   "keywords": null,
   "keywords_auto": null,

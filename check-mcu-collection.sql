@@ -1,0 +1,72 @@
+-- The Marvel Cinematic Universe collection: what it holds today, and what the two candidate IMDb lists resolve to.
+--
+-- Why. Green (1.1.19, 2026-10-31) answered "The Marvel Cinematic Universe films in release order" with Howard the
+-- Duck (1986) first: the custom collection behind the name (T_WC_CUSTOM_LIST, TARGET_TABLE = 2, mechanism 1 of
+-- tmdb-movie-preprocess process 41) holds every Marvel Comics film, Fox, Sony and New World included, and its
+-- id list is pasted twice (109 urls, 73 distinct). Philippe proposes a shorter list of 100 ids, the MCU proper
+-- (films, series, specials, One-Shots, future titles). Eval E01 of new-evaluations-20261031.sql asserts Iron Man
+-- (1726) first and fails until the collection is fixed. This file reads only: part 1 the custom list row(s),
+-- part 2 the T2S collection(s), part 3 the first twelve films as served, part 4 the 32 ids the shorter list
+-- drops, part 5 the 59 ids it adds, each resolved to a TMDb movie or series, or to nothing.
+--
+-- Run on the VPS (SELECT only, voie 1):
+--   ssh vps-agent pull text2sql-eval
+--   ssh vps-agent run text2sql-eval/check-mcu-collection.sql
+
+-- Part 1. The custom list row(s) behind the MCU
+SELECT ID_CUSTOM_LIST, LIST_NAME, LIST_NAME_FR, TARGET_TABLE, SORT_BY, TMDB_TARGET_RECORD, WIKIDATA_PROPERTIES,
+       LENGTH(ID_IMDB_LIST) AS IMDB_LIST_LENGTH,
+       (LENGTH(ID_IMDB_LIST) - LENGTH(REPLACE(ID_IMDB_LIST, 'tt', ''))) / 2 AS IMDB_ID_COUNT,
+       DELETED, DAT_CREAT, TIM_UPDATED
+FROM T_WC_CUSTOM_LIST
+WHERE LIST_NAME LIKE '%Marvel%' OR LIST_NAME_FR LIKE '%Marvel%' OR ID_IMDB_LIST LIKE '%tt0371746%';
+
+-- Part 2. The T2S collection(s) named after Marvel
+SELECT ID_T2S_COLLECTION, ID_RECORD, COLLECTION_SOURCE, COLLECTION_TYPE, COLLECTION_NAME, MOVIE_COUNT, SERIE_COUNT
+FROM T_WC_T2S_COLLECTION
+WHERE COLLECTION_NAME LIKE '%Marvel%';
+
+-- Part 3. The first twelve films of each Marvel collection, as the API serves them (DISPLAY_ORDER), with their date
+SELECT c.ID_T2S_COLLECTION, c.COLLECTION_NAME, mc.DISPLAY_ORDER, m.ID_MOVIE, m.TITLE, m.DAT_RELEASE, m.ID_IMDB
+FROM T_WC_T2S_COLLECTION c
+JOIN T_WC_T2S_MOVIE_COLLECTION mc ON mc.ID_T2S_COLLECTION = c.ID_T2S_COLLECTION
+JOIN T_WC_TMDB_MOVIE m ON m.ID_MOVIE = mc.ID_MOVIE
+WHERE c.COLLECTION_NAME LIKE '%Marvel%' AND mc.DISPLAY_ORDER <= 12
+ORDER BY c.ID_T2S_COLLECTION, mc.DISPLAY_ORDER;
+
+-- Part 4. The 32 ids of the current list that the shorter list drops: which films are they?
+SELECT m.ID_IMDB, m.ID_MOVIE, m.TITLE, m.RELEASE_YEAR
+FROM T_WC_TMDB_MOVIE m
+WHERE m.ID_IMDB IN ('tt3315342', 'tt3385516', 'tt1431045', 'tt1502712', 'tt1877832', 'tt1872181', 'tt1430132', 'tt0948470',
+                    'tt1071875', 'tt1270798', 'tt0458525', 'tt0450314', 'tt0486576', 'tt0413300', 'tt0259324', 'tt0376994',
+                    'tt0120667', 'tt0357277', 'tt0359013', 'tt0316654', 'tt0330793', 'tt0286716', 'tt0290334', 'tt0287978',
+                    'tt0145487', 'tt0187738', 'tt0120903', 'tt0120611', 'tt0109770', 'tt0103923', 'tt0098141', 'tt0091225')
+ORDER BY m.RELEASE_YEAR, m.TITLE;
+
+-- Part 5. The 59 ids the shorter list adds: movie, series, or unknown to TMDb (mechanism 1 also needs ID_WIKIDATA)
+SELECT ids.ID_IMDB,
+       CASE WHEN m.ID_MOVIE IS NOT NULL THEN 'movie' WHEN s.ID_SERIE IS NOT NULL THEN 'series' ELSE 'not in TMDb tables' END AS KIND,
+       COALESCE(m.TITLE, s.TITLE) AS TITLE,
+       COALESCE(m.RELEASE_YEAR, s.FIRST_AIR_YEAR) AS YEAR,
+       m.IS_SHORT_FILM, m.RUNTIME,
+       CASE WHEN COALESCE(m.ID_WIKIDATA, s.ID_WIKIDATA, '') = '' THEN 'no' ELSE 'yes' END AS HAS_WIKIDATA
+FROM (
+  SELECT 'tt2364582' AS ID_IMDB UNION ALL SELECT 'tt3475734' UNION ALL SELECT 'tt4154858' UNION ALL SELECT 'tt3322312' UNION ALL
+  SELECT 'tt2357547' UNION ALL SELECT 'tt3322314' UNION ALL SELECT 'tt3322310' UNION ALL SELECT 'tt4230076' UNION ALL
+  SELECT 'tt5675620' UNION ALL SELECT 'tt1236246' UNION ALL SELECT 'tt5614844' UNION ALL SELECT 'tt10266874' UNION ALL
+  SELECT 'tt9140560' UNION ALL SELECT 'tt9208876' UNION ALL SELECT 'tt9140554' UNION ALL SELECT 'tt10168312' UNION ALL
+  SELECT 'tt10857164' UNION ALL SELECT 'tt10160804' UNION ALL SELECT 'tt10234724' UNION ALL SELECT 'tt10857160' UNION ALL
+  SELECT 'tt13157618' UNION ALL SELECT 'tt13623126' UNION ALL SELECT 'tt13623128' UNION ALL SELECT 'tt13968252' UNION ALL
+  SELECT 'tt13966962' UNION ALL SELECT 'tt5296048' UNION ALL SELECT 'tt6313900' UNION ALL SELECT 'tt2011118' UNION ALL
+  SELECT 'tt2011109' UNION ALL SELECT 'tt2247732' UNION ALL SELECT 'tt3067038' UNION ALL SELECT 'tt3438640' UNION ALL
+  SELECT 'tt6016776' UNION ALL SELECT 'tt6599818' UNION ALL SELECT 'tt8023090' UNION ALL SELECT 'tt13623148' UNION ALL
+  SELECT 'tt3591568' UNION ALL SELECT 'tt4128102' UNION ALL SELECT 'tt11295300' UNION ALL SELECT 'tt13650480' UNION ALL
+  SELECT 'tt14094206' UNION ALL SELECT 'tt10671440' UNION ALL SELECT 'tt16357306' UNION ALL SELECT 'tt15318872' UNION ALL
+  SELECT 'tt15571732' UNION ALL SELECT 'tt18923754' UNION ALL SELECT 'tt16027074' UNION ALL SELECT 'tt21066182' UNION ALL
+  SELECT 'tt19037048' UNION ALL SELECT 'tt16027014' UNION ALL SELECT 'tt23112594' UNION ALL SELECT 'tt15450042' UNION ALL
+  SELECT 'tt29347085' UNION ALL SELECT 'tt36042156' UNION ALL SELECT 'tt4501242' UNION ALL SELECT 'tt6243582' UNION ALL
+  SELECT 'tt37884905' UNION ALL SELECT 'tt43711959' UNION ALL SELECT 'tt48452696'
+) AS ids
+LEFT JOIN T_WC_TMDB_MOVIE m ON m.ID_IMDB = ids.ID_IMDB
+LEFT JOIN T_WC_TMDB_SERIE s ON s.ID_IMDB = ids.ID_IMDB
+ORDER BY KIND, YEAR, TITLE;

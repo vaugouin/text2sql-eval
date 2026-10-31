@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE WHERE T_WC_T2S_SERIE.NUMBER_OF_SEASONS = 1 AND T_WC_T2S_SERIE.DAT_LAST_AIR IS NOT NULL AND T_WC_T2S_SERIE.STATUS NOT IN (&#039;In Production&#039;, &#039;Planned&#039;, &#039;Post Production&#039;) ORDER BY T_WC_T2S_SERIE.IMDB_RATING_WEIGHTED DESC LIMIT 15",
-  "assertion_refresh_last": "2026-10-29T04:26:23",
+  "assertion_refresh_last": "2026-10-30T05:07:01",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
