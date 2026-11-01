@@ -1,0 +1,11 @@
+-- update-evaluations-20261101.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-01 15:33:01 +0100
+--
++-------------------+-------------------------------------------------+-----------------------------------------------+-----------------------------------------------------------+
+| ID_T2S_EVALUATION | QUESTION                                        | ASSERTIONS_QUERY_RESULT                       | ASSERTIONS_RESULT_SHAPE                                   |
++-------------------+-------------------------------------------------+-----------------------------------------------+-----------------------------------------------------------+
+|              2582 | How many episodes does The Simpsons have?       | COUNT(*) == 1 AND NUMBER_OF_EPISODES &gt; 700 | result_kind == entity_rows; representation == entity-page |
+|              2584 | How many actors have played James Bond?         | COUNT(*) == 1 AND CELL(0, 0) == 6             | result_kind == count; representation == number-card       |
+|              2588 | How many seasons does Game of Thrones have?     | COUNT(*) == 1 AND NUMBER_OF_SEASONS == 8      | result_kind == entity_rows; representation == entity-page |
+|              2614 | What is the average runtime of films by decade? | COUNT(*) &gt;= 10                             | representation == table; unit(any) == minutes             |
++-------------------+-------------------------------------------------+-----------------------------------------------+-----------------------------------------------------------+
