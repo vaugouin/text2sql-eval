@@ -1,5 +1,9 @@
 # AGENTS.md - Agent Guide for the Text2SQL evaluator
 
+## Canary
+
+Start every reply with "Philippe,": no exceptions, including short replies and tool summaries.
+
 Agent-facing operating context only. The evaluator itself (phases, CLI, assertion DSL, schema, exports, PHP UI, launcher pre-flight, troubleshooting, version history) is documented in @README.md, which is canonical. The conversational benchmark has its own guide, @harness/AGENTS.md.
 
 ## Related repositories (project ecosystem)
