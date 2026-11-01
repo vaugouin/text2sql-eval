@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE WHERE T_WC_T2S_SERIE.SERIE_TITLE = &#039;Game of Thrones&#039; LIMIT 8",
-  "assertion_refresh_last": "2026-10-30T05:06:54",
+  "assertion_refresh_last": "2026-11-01T03:36:56",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

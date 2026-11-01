@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_PERSON.ID_PERSON FROM T_WC_T2S_PERSON WHERE T_WC_T2S_PERSON.COUNTRY_OF_BIRTH = 'fr' ORDER BY T_WC_T2S_PERSON.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-30T05:06:54",
+  "assertion_refresh_last": "2026-11-01T03:36:56",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

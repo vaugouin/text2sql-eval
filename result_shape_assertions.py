@@ -23,6 +23,10 @@ Grammar. One clause per line (or separated by `;` or ` AND `), each `LHS OP RHS`
   `unit(*)` / `role(*)` names the single metric column instead, which is the robust form
   for a generated query whose aggregate alias the model chooses (`TOTAL_RUNTIME` is not
   guaranteed); it fails when the result has no metric column or more than one.
+  `unit(any)` / `role(any)` asserts over every column: `==` passes when at least one column
+  carries the value, `!=` when none does. It is the form for a grouped result where the
+  metric sits next to other numeric columns (a GROUP BY key such as DECADE is typed metric
+  too, so `*` cannot single the average out). `any` is a reserved word, not a column name.
 - OP is `==` or `!=`.
 - RHS is a bare token, compared case-insensitively; `null` / `none` means "no unit".
 - All clauses must hold for the assertion to pass. An empty assertion passes vacuously.
@@ -102,6 +106,15 @@ def _check_clause(clause, response):
         got = (response.get("result_kind") or "").lower()
     elif key == "representation":
         got = (response.get("representation") or "").lower()
+    elif key in ("unit", "role") and col == "ANY":
+        values = [
+            ((c.get(key) or None) or ("null" if key == "unit" else "")).lower()
+            for c in (response.get("result_columns") or [])
+        ]
+        want_norm = "null" if (key == "unit" and want in _NULLS) else want
+        hit = want_norm in values
+        passed = hit if op == "==" else (not hit)
+        return passed, f"{key}(any) {op} {want}  (columns {values!r})  {'PASS' if passed else 'FAIL'}"
     elif key in ("unit", "role"):
         found, raw = (_column_unit if key == "unit" else _column_role)(
             response.get("result_columns"), col

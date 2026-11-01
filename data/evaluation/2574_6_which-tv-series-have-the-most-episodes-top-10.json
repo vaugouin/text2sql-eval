@@ -1,0 +1,29 @@
+{
+  "evaluation_id": 2574,
+  "evaluation_category_id": 6,
+  "question_en": "Which TV series have the most episodes? Top 10",
+  "question_fr": "Quelles séries ont le plus d'épisodes ? Les 10 premières",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "ID_SERIE IN (94722, 15325, 1709, 16807, 987, 50821, 2527, 2912)",
+    "result_shape": "representation == ranked-bars; unit(NUMBER_OF_EPISODES) == count"
+  },
+  "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE ORDER BY T_WC_T2S_SERIE.NUMBER_OF_EPISODES DESC LIMIT 8",
+  "assertion_refresh_last": "2026-11-01T03:36:48",
+  "comment": null,
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-10-31",
+  "tim_updated": null,
+  "is_showcase": 1,
+  "deleted": 0,
+  "id_creator": 1,
+  "id_owner": 1,
+  "id_user_updated": null,
+  "resolution_mode": null
+}

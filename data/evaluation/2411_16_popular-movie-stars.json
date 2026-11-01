@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_PERSON IN (67047, 1247604, 18270, 22303, 1438183, 1081095, 1183234, 22066)",
+    "query_result": "ID_PERSON IN (67047, 1247604, 4580908, 18270, 22303, 1438183, 1081095, 1183234)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_PERSON.ID_PERSON FROM T_WC_T2S_PERSON ORDER BY T_WC_T2S_PERSON.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-10-30T05:07:13",
+  "assertion_refresh_last": "2026-11-01T03:37:04",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

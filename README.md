@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.17.3 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.0 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-10-31
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -566,9 +566,10 @@ A question whose export predates -349 (no `result_kind` in `api_output`) is **re
 | `representation == number-card` | the `representation` field (`entity-page` \| `card-grid` \| `number-card` \| `stat-strip` \| `ranked-bars` \| `table`) |
 | `unit(TOTAL_RUNTIME) == minutes` | the unit of a named column (`minutes` \| `usd` \| `years` \| `count` \| `ratio` \| `null`) |
 | `unit(*) == minutes` | the unit of the **single metric column**, the robust form when the aggregate alias is the model's choice; fails if there is not exactly one metric |
-| `role(GENRE_NAME) == label` | the role of a column (`entity_id` \| `label` \| `metric` \| `date` \| `other`) |
+| `unit(any) == minutes` | **at least one column** carries the unit (`!=`: none does); the form for a grouped result where the metric sits next to other numeric columns, since a `GROUP BY` key such as `DECADE` is typed `metric` too and `*` cannot single the average out. `any` is a reserved word |
+| `role(GENRE_NAME) == label` | the role of a column (`entity_id` \| `label` \| `metric` \| `date` \| `other`); `role(*)` and `role(any)` as for `unit` |
 
-All clauses must hold. An empty assertion passes vacuously. Populate the column with `result-shape-assertions.sql` (schema migration plus the first slice of assertions). Prefer `unit(*)` over a named column on a generated query, whose alias the bank does not control.
+All clauses must hold. An empty assertion passes vacuously. Populate the column with `result-shape-assertions.sql` (schema migration plus the first slice of assertions). Prefer `unit(*)`, or `unit(any)` on a grouped result, over a named column on a generated query, whose alias the bank does not control (2614 "average runtime by decade" was aliased `AVERAGE_RUNTIME_MINUTES`, `DUREE_MOYENNE_MINUTES` and `AVG_RUNTIME` by three arms of one campaign).
 
 ---
 
@@ -1081,6 +1082,8 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.0 | 2026-11-01 | **`unit(any)` / `role(any)` in the result-shape grammar** (`result_shape_assertions.py`, §4.8): `==` passes when at least one column carries the value, `!=` when none does; the form for a grouped result whose metric sits next to other numeric columns, where `*` fails. **Bank corrections after the 1.1.19 baseline** (TEXT2SQL-EVAL-003): `update-evaluations-20261101.sql` names the column in the `query_result` assertion of 2582 and 2588 (`NUMBER_OF_EPISODES > 700`, `NUMBER_OF_SEASONS == 8`): the API answers both with the series row, so `CELL(0, 0)` read `ID_SERIE`; their shape assertion becomes `entity_rows` / `entity-page` (an attribute of one entity, not a count); 2614 asserts `unit(any) == minutes` instead of a model-chosen alias. 2584 keeps its true value of 6 James Bond actors as a failing evaluation (FASTAPI-TEXT2SQL-359). Bank JSON refreshed by the sync of 2026-11-01. |
+| 2.17.4 | 2026-10-31 | `AGENTS.md`: Canary section. No code change. |
 | 2.17.3 | 2026-10-31 | **Run log kept on the host**: `text2sql-eval.sh` starts the campaign container through `f_runlogged` instead of `docker run -d --rm`, so its whole output stays in `shared_data/logs/text2sql-eval/<date>.log` and `latest.log` (30 days), ending with its exit status; `docker logs -f text2sql-eval` still follows it. No evaluator code change. |
 | 2.17.2 | 2026-10-31 | **Phase 1 evaluations of the result representations** (TEXT2SQL-EVAL-003): `new-evaluations-20261031.sql` adds sixty questions, ten per answer form (value per item, ranking, count, comparison, sequence, trend), English with a French twin, each with a scored `query_result` assertion and an out-of-score `result_shape` assertion that names the 1.2.0 target, all `IS_SAMPLE`, thirty-six `IS_SHOWCASE`, three with an `ASSERTION_REFRESH_SQL`. Two read-only checks document findings of the Green pass: `check-mcu-collection.sql` (the MCU collection holds every Marvel film, Howard the Duck first) and `check-award-nomination-data.sql` (the Best Picture nomination query returned no rows). Bank refreshed from the 2026-10-30 export. No evaluator code change. |
 | 2.17.1 | 2026-10-31 | **README matched to the code**: header version synced with `VERSION`; `--complex-question-processing` (aliases `--complex-model-used`) documented with its real default (`true`) and payload field; cache-guard flags and the launcher's subset, Flex and cache-guard variables listed; phase 6 `LIMIT 10` noted; result-shape section renumbered §4.8 and its scoring sentence corrected (phase 20 aggregates the three scored columns); dead links (`T2S_EVALUATION-tables-with-data.sql`, `../maintenance/`) removed; source files table completed. No code change. |
