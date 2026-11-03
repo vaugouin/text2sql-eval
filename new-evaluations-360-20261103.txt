@@ -1,0 +1,13 @@
+-- new-evaluations-360.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-03 10:50:00 +0100
+--
++-------------------+------------------------------------------------------------+-------------------------------------------+-------------------------+
+| ID_T2S_EVALUATION | QUESTION                                                   | QUESTION_FR                               | ASSERTIONS_QUERY_RESULT |
++-------------------+------------------------------------------------------------+-------------------------------------------+-------------------------+
+|              2620 | Movie Empire of Dreams: The Story of the Star Wars Trilogy | Film Star Wars : L'Empire des Rêves       | ID_MOVIE IN (76180)     |
+|              2621 | Movie Attack on Titan: Chronicle                           | Film L'Attaque des Titans - Chronicles    | ID_MOVIE IN (714194)    |
+|              2622 | Series Doctor Who (2005)                                   | Série Doctor Who (2005)                   | ID_SERIE IN (57243)     |
+|              2623 | Movie Casablanca (1942)                                    | Film Casablanca (1942)                    | ID_MOVIE IN (289)       |
+|              2624 | Movie Footloose (1984)                                     | Film Footloose (1984)                     | ID_MOVIE IN (1788)      |
+|              2625 | Movie 24 Hours to Kill (1965)                              | Film Cinquante millions pour Johns (1965) | ID_MOVIE IN (146794)    |
++-------------------+------------------------------------------------------------+-------------------------------------------+-------------------------+
