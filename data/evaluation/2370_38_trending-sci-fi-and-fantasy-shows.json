@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Serie_genre1&quot;]) AND matches($.Serie_genre1, /^Sci\\-Fi \\&amp; Fantasy$/i)",
     "sql_query": null,
-    "query_result": "ID_SERIE IN (48866, 33880, 1622, 61923, 64432, 67075, 36, 1411)",
+    "query_result": "ID_SERIE IN (18165, 1622, 61923, 48866, 64432, 33880, 36, 67075)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE JOIN T_WC_T2S_SERIE_GENRE ON T_WC_T2S_SERIE.ID_SERIE = T_WC_T2S_SERIE_GENRE.ID_SERIE WHERE T_WC_T2S_SERIE_GENRE.ID_GENRE = 10765 ORDER BY T_WC_T2S_SERIE.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-01T03:37:03",
+  "assertion_refresh_last": "2026-11-03T03:38:13",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT other.ID_MOVIE FROM T_WC_T2S_MOVIE AS source JOIN T_WC_T2S_MOVIE AS other ON other.RELEASE_YEAR = source.RELEASE_YEAR AND other.ID_MOVIE &lt;&gt; source.ID_MOVIE WHERE (source.MOVIE_TITLE = &#039;Pulp Fiction&#039; OR source.MOVIE_TITLE_FR = &#039;Pulp Fiction&#039; OR source.ORIGINAL_TITLE = &#039;Pulp Fiction&#039;) ORDER BY other.IMDB_RATING_WEIGHTED DESC LIMIT 15",
-  "assertion_refresh_last": "2026-11-01T03:36:59",
+  "assertion_refresh_last": "2026-11-03T03:38:10",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

@@ -21,8 +21,8 @@
 #
 # BLUE OR GREEN IS DECIDED BY THE VERSION
 # An even patch targets BLUE, an odd one GREEN, in main.py for the MCP and in
-# text2sql-eval.py:563 for this run. 1.1.19 is ODD, so this run targets GREEN, which is where
-# the 1.1.19 build already serves (verified 2026-09-14: Blue answers 1.1.18, Green 1.1.19).
+# text2sql-eval.py:563 for this run. 1.1.20 is EVEN, so the default run targets BLUE, which is
+# where the 1.1.20 build serves since 2026-11-02 (Green still answers 1.1.19).
 #
 # LANGUAGE
 # "*" runs English and French in the same pass, one row per evaluation and per language.
@@ -119,7 +119,7 @@ f_runlogged() {
 
 set -u
 
-API_VERSION=${API_VERSION:-1.1.19}
+API_VERSION=${API_VERSION:-1.1.20}
 # See the header: LANGUAGE is only trusted when it holds one of our three values.
 if [ -n "${EVAL_LANGUAGE:-}" ]; then
     :

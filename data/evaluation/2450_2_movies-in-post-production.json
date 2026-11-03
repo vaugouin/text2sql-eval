@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE WHERE T_WC_T2S_MOVIE.STATUS = 'Post Production' ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-01T03:37:11",
+  "assertion_refresh_last": "2026-11-03T03:38:17",
   "comment": "Post Production, a two-word canonical whose French alias is identical.",
   "keywords": null,
   "keywords_auto": null,

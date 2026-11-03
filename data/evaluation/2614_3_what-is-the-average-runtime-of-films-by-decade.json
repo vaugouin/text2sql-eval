@@ -8,7 +8,7 @@
     "entity_extraction": null,
     "sql_query": null,
     "query_result": "COUNT(*) &gt;= 10",
-    "result_shape": "representation == table; unit(AVERAGE_RUNTIME_MINUTES) == minutes"
+    "result_shape": "representation == table; unit(any) == minutes"
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,

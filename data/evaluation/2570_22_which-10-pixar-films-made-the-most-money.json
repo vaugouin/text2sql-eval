@@ -11,7 +11,7 @@
     "result_shape": "representation == ranked-bars; unit(REVENUE) == usd"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_COMPANY ON T_WC_T2S_MOVIE_COMPANY.ID_MOVIE = T_WC_T2S_MOVIE.ID_MOVIE JOIN T_WC_T2S_COMPANY ON T_WC_T2S_COMPANY.ID_COMPANY = T_WC_T2S_MOVIE_COMPANY.ID_COMPANY WHERE T_WC_T2S_COMPANY.COMPANY_NAME = 'Pixar' ORDER BY T_WC_T2S_MOVIE.REVENUE DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-01T03:36:44",
+  "assertion_refresh_last": "2026-11-03T03:38:00",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

@@ -1,7 +1,7 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.0 (source of truth: [VERSION](VERSION))
-**Last Updated:** 2026-10-31
+**Version:** 2.18.2 (source of truth: [VERSION](VERSION))
+**Last Updated:** 2026-11-03
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
 
@@ -1082,6 +1082,8 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.2 | 2026-11-03 | **Default `API_VERSION` moves to 1.1.20 (Blue)** in `text2sql-eval.sh`, the version kept in production after the rerun of TEXT2SQL-EVAL-003 (query_result 56/60 EN, 53/60 FR; shape 37/60 and 36/60). **`retire-executions-20261103.sql`** (voie 2): soft-deletes the 40 first-run 1.1.20 executions of groups B and D (2570-2579, 2590-2599, EN and FR) so the evaluator re-runs them on the same version after the prompt fixes of FASTAPI-TEXT2SQL-356 and -362; their exports are archived on the PC. Bank JSON refreshed by the sync of 2026-11-03 (131 files, the nightly `assertion_refresh_last` stamps). No evaluator code change. |
+| 2.18.1 | 2026-11-02 | `new-evaluations-360.sql`: six title lookups (EN and FR) for the lexical resolver of FASTAPI-TEXT2SQL-360, written before the change; inserted 2026-11-03 as 2620 to 2625 (result file committed). No evaluator code change. |
 | 2.18.0 | 2026-11-01 | **`unit(any)` / `role(any)` in the result-shape grammar** (`result_shape_assertions.py`, §4.8): `==` passes when at least one column carries the value, `!=` when none does; the form for a grouped result whose metric sits next to other numeric columns, where `*` fails. **Bank corrections after the 1.1.19 baseline** (TEXT2SQL-EVAL-003): `update-evaluations-20261101.sql` names the column in the `query_result` assertion of 2582 and 2588 (`NUMBER_OF_EPISODES > 700`, `NUMBER_OF_SEASONS == 8`): the API answers both with the series row, so `CELL(0, 0)` read `ID_SERIE`; their shape assertion becomes `entity_rows` / `entity-page` (an attribute of one entity, not a count); 2614 asserts `unit(any) == minutes` instead of a model-chosen alias. 2584 keeps its true value of 6 James Bond actors as a failing evaluation (FASTAPI-TEXT2SQL-359). Bank JSON refreshed by the sync of 2026-11-01. |
 | 2.17.4 | 2026-10-31 | `AGENTS.md`: Canary section. No code change. |
 | 2.17.3 | 2026-10-31 | **Run log kept on the host**: `text2sql-eval.sh` starts the campaign container through `f_runlogged` instead of `docker run -d --rm`, so its whole output stays in `shared_data/logs/text2sql-eval/<date>.log` and `latest.log` (30 days), ending with its exit status; `docker logs -f text2sql-eval` still follows it. No evaluator code change. |
