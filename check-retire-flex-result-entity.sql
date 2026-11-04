@@ -13,3 +13,12 @@ FROM T_WC_T2S_EVALUATION_EXECUTION
 WHERE API_VERSION = '001.001.020'
 GROUP BY LANG, DELETED, result_entity_tier
 ORDER BY LANG, DELETED, result_entity_tier;
+
+-- 2. Live 1.1.20 rows whose result_entity was retried at the Flex tier, then served at the
+--    standard tier after the retries (service_tier then reads 'default', not 'flex').
+SELECT LANG, COUNT(*) AS n, MIN(TIM_EXECUTION) AS oldest, MAX(TIM_EXECUTION) AS newest,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.result_entity_processing_time')), 1) AS mean_result_entity_s
+FROM T_WC_T2S_EVALUATION_EXECUTION
+WHERE DELETED = 0 AND API_VERSION = '001.001.020'
+  AND CAST(JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.flex_retries') AS UNSIGNED) > 0
+GROUP BY LANG;
