@@ -54,21 +54,32 @@ WHERE DELETED = 0 AND API_VERSION = '001.001.020'
 ORDER BY TOTAL_PROCESSING_TIME DESC
 LIMIT 20;
 
--- 4. Timing columns came back NULL on 1.1.20: what does the stored response hold?
-SELECT ID_T2S_EVALUATION AS id, ASSERTIONS_TOTAL_SCORE AS score, LENGTH(JSON_RESULT) AS json_len,
-       LEFT(JSON_KEYS(JSON_RESULT), 1500) AS top_keys
+-- 4. The timing columns are filled later in the run; on 1.1.20 read the stored response.
+SELECT COUNT(*) AS n,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.total_processing_time')), 1) AS total,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.entity_extraction_processing_time')), 1) AS extraction,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.embeddings_processing_time')), 2) AS embeddings,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.entity_resolution_planning_time')), 2) AS planning,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.text2sql_processing_time')), 1) AS text2sql,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.complex_question_processing_time')), 1) AS complex,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.query_execution_time')), 2) AS query,
+       ROUND(AVG(JSON_VALUE(JSON_RESULT, '$.result_entity_processing_time')), 1) AS result_entity,
+       SUM(JSON_VALUE(JSON_RESULT, '$.total_processing_time') > 60) AS over_60s,
+       SUM(JSON_RESULT LIKE '%"service_tier": "flex"%' OR JSON_RESULT LIKE '%"service_tier":"flex"%') AS rows_served_flex
 FROM T_WC_T2S_EVALUATION_EXECUTION
-WHERE DELETED = 0 AND API_VERSION = '001.001.020'
-ORDER BY TIM_EXECUTION DESC
-LIMIT 3;
+WHERE DELETED = 0 AND API_VERSION = '001.001.020';
 
-SELECT ID_T2S_EVALUATION AS id,
-       JSON_EXTRACT(JSON_RESULT, '$.total_processing_time') AS total,
-       JSON_EXTRACT(JSON_RESULT, '$.api_output.total_processing_time') AS api_total,
-       JSON_EXTRACT(JSON_RESULT, '$.api_output.text2sql_processing_time') AS api_t2s,
-       JSON_EXTRACT(JSON_RESULT, '$.api_output.entity_extraction_processing_time') AS api_extr,
-       JSON_EXTRACT(JSON_RESULT, '$.api_output.cached') AS cached
+-- 5. Same, 1.1.19 flex rows against 1.1.19 standard rows (the price/latency trade-off measured before).
+SELECT FLEX_PROCESSING AS flex, COUNT(*) AS n, ROUND(AVG(TOTAL_PROCESSING_TIME), 1) AS total,
+       ROUND(AVG(TEXT2SQL_PROCESSING_TIME), 1) AS text2sql, SUM(TOTAL_PROCESSING_TIME > 60) AS over_60s
+FROM T_WC_T2S_EVALUATION_EXECUTION
+WHERE DELETED = 0 AND API_VERSION = '001.001.019'
+GROUP BY FLEX_PROCESSING;
+
+-- 6. One slow 1.1.20 row: the LLM calls it made (task, model, tier, seconds when reported).
+SELECT ID_T2S_EVALUATION AS id, JSON_VALUE(JSON_RESULT, '$.total_processing_time') AS total,
+       LEFT(JSON_EXTRACT(JSON_RESULT, '$.llm_usage'), 2500) AS llm_usage
 FROM T_WC_T2S_EVALUATION_EXECUTION
 WHERE DELETED = 0 AND API_VERSION = '001.001.020'
-ORDER BY TIM_EXECUTION DESC
-LIMIT 10;
+ORDER BY CAST(JSON_VALUE(JSON_RESULT, '$.total_processing_time') AS DOUBLE) DESC
+LIMIT 1;
