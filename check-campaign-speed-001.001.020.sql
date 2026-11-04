@@ -53,3 +53,22 @@ FROM T_WC_T2S_EVALUATION_EXECUTION
 WHERE DELETED = 0 AND API_VERSION = '001.001.020'
 ORDER BY TOTAL_PROCESSING_TIME DESC
 LIMIT 20;
+
+-- 4. Timing columns came back NULL on 1.1.20: what does the stored response hold?
+SELECT ID_T2S_EVALUATION AS id, ASSERTIONS_TOTAL_SCORE AS score, LENGTH(JSON_RESULT) AS json_len,
+       LEFT(JSON_KEYS(JSON_RESULT), 1500) AS top_keys
+FROM T_WC_T2S_EVALUATION_EXECUTION
+WHERE DELETED = 0 AND API_VERSION = '001.001.020'
+ORDER BY TIM_EXECUTION DESC
+LIMIT 3;
+
+SELECT ID_T2S_EVALUATION AS id,
+       JSON_EXTRACT(JSON_RESULT, '$.total_processing_time') AS total,
+       JSON_EXTRACT(JSON_RESULT, '$.api_output.total_processing_time') AS api_total,
+       JSON_EXTRACT(JSON_RESULT, '$.api_output.text2sql_processing_time') AS api_t2s,
+       JSON_EXTRACT(JSON_RESULT, '$.api_output.entity_extraction_processing_time') AS api_extr,
+       JSON_EXTRACT(JSON_RESULT, '$.api_output.cached') AS cached
+FROM T_WC_T2S_EVALUATION_EXECUTION
+WHERE DELETED = 0 AND API_VERSION = '001.001.020'
+ORDER BY TIM_EXECUTION DESC
+LIMIT 10;
