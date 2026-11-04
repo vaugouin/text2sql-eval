@@ -213,7 +213,7 @@ ON_ALL=${ON_ALL:-$DOCKER_ROOT/on-all.sh}
 SCHEDULED_KEEP=${SCHEDULED_KEEP:-^(letsencrypt)$}
 # Measured, gpt-4o on all five tasks, v1.1.17-1.1.18 (AGENTS.md, "The six LLM tasks").
 COST_PER_1000_GPT4O=50.69
-SECONDS_PER_CALL=8   # 6.04 s mean end to end + TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS (2 s)
+SECONDS_PER_CALL=7   # 6.04 s mean end to end + evaluator overhead; TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS is 0 since 2.18.5
 
 case "$EVAL_LANGUAGE" in
     en|fr|'*') ;;

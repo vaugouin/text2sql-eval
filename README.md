@@ -162,7 +162,7 @@ API_PORT_GREEN=8001
 TEXT2SQL_API_KEY=<X-API-Key value>
 
 # Evaluator pacing / retry for LLM quota errors
-TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS=2
+TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS=0
 TEXT2SQL_EVAL_API_429_MAX_RETRIES=6
 TEXT2SQL_EVAL_API_429_FALLBACK_DELAY_SECONDS=30
 TEXT2SQL_EVAL_API_429_BUFFER_SECONDS=3
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.5 | 2026-11-04 | **No pause before each API call by default** (`TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS` 2 to 0): the questions run one after the other, and the 429 retries already pace the run when a provider throttles. The value in `.env` still wins. With it, `check-campaign-speed-001.001.020.sql` found the slow 1.1.20 campaign was the Flex tier on `result_entity` (20.6 s per question against 1.4 s), now kept at the standard tier by the API (fastapi-text2sql `5c4c99f`). |
 | 2.18.4 | 2026-11-04 | **`check-campaign-speed-001.001.020.sql`** (read-only, voie 1): mean time per pipeline stage for 1.1.19 and 1.1.20, flex counts, wall-clock gap between consecutive executions, and the twenty slowest 1.1.20 rows, to find why the 1.1.20 campaign runs slow. No evaluator code change. |
 | 2.18.3 | 2026-11-03 | **`retire-executions-001.001.020-all.sql`** (voie 2): soft-deletes every live 1.1.20 execution, so the full campaign replays the bank on 1.1.20 with the title lexicon of FASTAPI-TEXT2SQL-360 switched on, compared with 1.1.19 (ChromaDB embeddings). Exports of the retired rows archived on the PC (`evaluation_execution_archive/001.001.020_run1_20261103`, `_run2_20261103`). No evaluator code change. |
 | 2.18.2 | 2026-11-03 | **Default `API_VERSION` moves to 1.1.20 (Blue)** in `text2sql-eval.sh`, the version kept in production after the rerun of TEXT2SQL-EVAL-003 (query_result 56/60 EN, 53/60 FR; shape 37/60 and 36/60). **`retire-executions-20261103.sql`** (voie 2): soft-deletes the 40 first-run 1.1.20 executions of groups B and D (2570-2579, 2590-2599, EN and FR) so the evaluator re-runs them on the same version after the prompt fixes of FASTAPI-TEXT2SQL-356 and -362; their exports are archived on the PC. Bank JSON refreshed by the sync of 2026-11-03 (131 files, the nightly `assertion_refresh_last` stamps). No evaluator code change. |
