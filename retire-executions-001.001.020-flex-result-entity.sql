@@ -8,7 +8,9 @@
 -- result_entity at the standard tier since the restart of Blue that evening. The scores of
 -- these rows are sound (same model, only the tier differs); their processing times are not,
 -- and 1.1.20 is compared with 1.1.19 on time too. A row with no result_entity call has no
--- such key in its llm_usage and stays.
+-- such key in its llm_usage and stays. Second pass (same evening): also a row whose Flex
+-- retries ran out and whose call was then served at the standard tier (service_tier 'default',
+-- flex_retries > 0): one row, 171 s on result_entity. Rerunning the file is harmless.
 --
 -- WHEN. After the English campaign in progress has finished (the evaluator picks its questions
 -- at start). Then relaunch the English campaign: it replays only the rows retired here, since
@@ -24,7 +26,8 @@ SELECT LANG, COUNT(*) AS executions, MIN(TIM_EXECUTION) AS oldest, MAX(TIM_EXECU
 FROM T_WC_T2S_EVALUATION_EXECUTION
 WHERE DELETED = 0
   AND API_VERSION = '001.001.020'
-  AND JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.service_tier') LIKE '%flex%'
+  AND (JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.service_tier') LIKE '%flex%'
+       OR CAST(JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.flex_retries') AS UNSIGNED) > 0)
 GROUP BY LANG;
 
 -- 2. Retire them (soft delete).
@@ -32,7 +35,8 @@ UPDATE T_WC_T2S_EVALUATION_EXECUTION
 SET DELETED = 1
 WHERE DELETED = 0
   AND API_VERSION = '001.001.020'
-  AND JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.service_tier') LIKE '%flex%';
+  AND (JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.service_tier') LIKE '%flex%'
+       OR CAST(JSON_VALUE(JSON_RESULT, '$.llm_usage.result_entity.flex_retries') AS UNSIGNED) > 0);
 
 -- 3. Check: nothing left, and what stays live on 1.1.20.
 SELECT LANG,
