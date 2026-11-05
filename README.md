@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.20 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.21 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.21 | 2026-11-05 | Result of `new-evaluations-lexicon-robustness.sql` (voie 1): evaluations **2643 to 2652** inserted. No evaluator code change. |
 | 2.18.20 | 2026-11-05 | **`new-evaluations-lexicon-robustness.sql`** (voie 1): ten title lookups with their French twins on the tricky wordings of the title lexicon (alias tier, year guard counter-case, several fuzzy mentions in a list, short titles and series among homonyms, Se7en / Seven), plus two written to fail until FASTAPI-TEXT2SQL-366 (a sequel number, an episode number). Every wording probed on Blue 1.1.20 first. Result of `check-lexicon-robustness-ids.sql`. No evaluator code change. |
 | 2.18.19 | 2026-11-05 | `check-lexicon-robustness-ids.sql` (voie 1, read-only): ids, titles and title aliases behind the coming lexicon robustness evaluations (FASTAPI-TEXT2SQL-360, -363, -366). No evaluator code change. |
 | 2.18.18 | 2026-11-05 | **`retire-executions-365-20261105.sql`** (voie 2): soft-deletes the 1.1.20 executions of the 60 evaluations whose person name was accepted on a fuzzy main-name match, every question FASTAPI-TEXT2SQL-365 can change, so they re-run on the same version; section 0 prints the popularities the guard compares. Result of `check-exact-alias-over-fuzzy-name.sql` (61 pairs: 30 no alias, 27 same person, 4 another person). No evaluator code change. |

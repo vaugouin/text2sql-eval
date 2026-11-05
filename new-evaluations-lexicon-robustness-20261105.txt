@@ -1,0 +1,17 @@
+-- new-evaluations-lexicon-robustness.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 21:31:26 +0100
+--
++-------------------+-------------------------------------------------+----------------------------------------------------+---------------------------------------------------------+
+| ID_T2S_EVALUATION | QUESTION                                        | QUESTION_FR                                        | ASSERTIONS_QUERY_RESULT                                 |
++-------------------+-------------------------------------------------+----------------------------------------------------+---------------------------------------------------------+
+|              2643 | Movie Star Wars The Empire Strikes Back         | Film Star Wars L'Empire contre-attaque             | ID_MOVIE IN (1891)                                      |
+|              2644 | Movie The Godfahter (1972)                      | Film Le Parain (1972)                              | ID_MOVIE IN (238)                                       |
+|              2645 | Movies Pulp Fictoin, Schindlers List and Wall-E | Films Pulp Fictoin, La Liste de Schindlr et Wall-E | ID_MOVIE IN (680, 424, 10681)                           |
+|              2646 | Movie Up (2009)                                 | Film Up (2009)                                     | ID_MOVIE IN (14160)                                     |
+|              2647 | Movie It (2017)                                 | Film Ça (2017)                                     | ID_MOVIE IN (346364)                                    |
+|              2648 | Series The Office (2005)                        | Série The Office (2005)                            | ID_SERIE IN (2316)                                      |
+|              2649 | Series Shogun (2024)                            | Série Shogun (2024)                                | ID_SERIE IN (126308)                                    |
+|              2650 | Movie Seven (1995)                              | Film Seven (1995)                                  | ID_MOVIE IN (807)                                       |
+|              2651 | Movie The Visitors 2                            | Film Les Visiteurs 2                               | ID_MOVIE IN (10353) AND ID_MOVIE NOT IN (11687, 102699) |
+|              2652 | Movie Star Wars Episode 4                       | Film Star Wars épisode 4                           | ID_MOVIE IN (11)                                        |
++-------------------+-------------------------------------------------+----------------------------------------------------+---------------------------------------------------------+
