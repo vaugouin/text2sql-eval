@@ -1,0 +1,34 @@
+-- new-evaluations-360-companies-networks.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 22:33:55 +0100
+--
++------------+-------------------------+-------------+-------------+
+| ID_COMPANY | COMPANY_NAME            | MOVIE_COUNT | SERIE_COUNT |
++------------+-------------------------+-------------+-------------+
+|          4 | Paramount Pictures      |        2896 |           3 |
+|          5 | Columbia Pictures       |        2978 |           2 |
+|          9 | Gaumont                 |         647 |          18 |
+|         33 | Universal Pictures      |        2675 |           8 |
+|        174 | Warner Bros. Pictures   |        3102 |           2 |
+|        882 | TOHO                    |        1980 |          99 |
+|       1314 | Hammer Film Productions |         214 |           5 |
++------------+-------------------------+-------------+-------------+
++------------+--------------+-------------+
+| ID_NETWORK | NETWORK_NAME | SERIE_COUNT |
++------------+--------------+-------------+
+|         49 | HBO          |         362 |
+|        285 | Canal+       |         275 |
++------------+--------------+-------------+
++-------------------+----------------------------+--------------------------------------+-------------------------------------------+------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | QUESTION                             | QUESTION_FR                               | ASSERTIONS_QUERY_RESULT                  |
++-------------------+----------------------------+--------------------------------------+-------------------------------------------+------------------------------------------+
+|              2653 |                          7 | Production company Paramount         | Société de production Paramount           | COUNT(*) &gt; 0 AND ID_COMPANY IN (4)    |
+|              2654 |                          7 | Production company Columbia          | Société de production Columbia            | COUNT(*) &gt; 0 AND ID_COMPANY IN (5)    |
+|              2655 |                          7 | Production company Warner Bros       | Société de production Warner Bros         | COUNT(*) &gt; 0 AND ID_COMPANY IN (174)  |
+|              2656 |                          7 | Production company Universal         | Société de production Universal           | COUNT(*) &gt; 0 AND ID_COMPANY IN (33)   |
+|              2657 |                          7 | Production company Hammer            | Société de production Hammer              | COUNT(*) &gt; 0 AND ID_COMPANY IN (1314) |
+|              2658 |                          7 | Production company Gaumont           | Société de production Gaumont             | COUNT(*) &gt; 0 AND ID_COMPANY IN (9)    |
+|              2659 |                          7 | Production company Toho              | Société de production Toho                | COUNT(*) &gt; 0 AND ID_COMPANY IN (882)  |
+|              2660 |                          7 | Production company Paramout Pictures | Société de production Paramout Pictures   | COUNT(*) &gt; 0 AND ID_COMPANY IN (4)    |
+|              2661 |                          7 | Network HBO                          | Chaîne HBO                                | COUNT(*) &gt; 0 AND ID_NETWORK IN (49)   |
+|              2662 |                          7 | Network Canal+                       | Chaîne Canal+                             | COUNT(*) &gt; 0 AND ID_NETWORK IN (285)  |
++-------------------+----------------------------+--------------------------------------+-------------------------------------------+------------------------------------------+
