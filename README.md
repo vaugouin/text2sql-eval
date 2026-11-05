@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.16 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.17 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1082,9 +1082,12 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.17 | 2026-11-05 | `check-exact-alias-over-fuzzy-name.sql` corrected: the sought forms are normalized in Python before the query; the SQL regex on the CTE literals emptied some of them, which then matched the punctuation-only aliases whose `PERSON_NAME_NORM` is a single space (7 false DIFFERENT in the first result). No evaluator code change. |
 | 2.18.16 | 2026-11-05 | Result of `new-evaluations-355-homonyms.sql` (voie 1): evaluations **2630 to 2642** inserted (2630-2641 categories 60 and 62, sample and showcase; 2642 the bare-title control, category 29). The committed result is a later re-run of the file, whose NOT EXISTS guard inserted nothing: each id appears once in the pre-flight and once in the check. No evaluator code change. |
+| 2.18.17 | 2026-11-05 | `check-exact-alias-over-fuzzy-name.sql` corrected: the sought forms are normalized in Python before the query; the SQL regex on the CTE literals emptied some of them, which then matched the punctuation-only aliases whose `PERSON_NAME_NORM` is a single space (7 false DIFFERENT in the first result). No evaluator code change. |
 | 2.18.16 | 2026-11-05 | `check-exact-alias-over-fuzzy-name-diag.sql` (read-only): why seven unrelated names matched the same three alias owners in the 2.18.15 check; that check's result. No evaluator code change. |
 | 2.18.15 | 2026-11-05 | **`new-evaluations-355-homonyms.sql`** (voie 1, FASTAPI-TEXT2SQL-355): thirteen questions, EN and FR, written before the code. Twelve descriptions of a work whose title and year are shared by other rows (Taxi Driver 1976 both ways, Crash, Aladdin, Hercules, Arrival, Prometheus, Scream, the two Leo of 2023, the Arabic The Message, the series The Diplomat), each asserting `COUNT(*) == 1 AND ID_<TYPE> IN (<id>)`, since the defect returns the right work plus its namesakes; one control, the bare `Movie Taxi Driver (1976)`, which must keep both films. Baseline on Blue 1.1.20 without cache, 2026-11-05: 4/26 (the reverse Taxi Driver case passes on the original title, the control passes), the namesakes come back on every other call. No evaluator code change. |
+| 2.18.17 | 2026-11-05 | `check-exact-alias-over-fuzzy-name.sql` corrected: the sought forms are normalized in Python before the query; the SQL regex on the CTE literals emptied some of them, which then matched the punctuation-only aliases whose `PERSON_NAME_NORM` is a single space (7 false DIFFERENT in the first result). No evaluator code change. |
 | 2.18.16 | 2026-11-05 | `check-exact-alias-over-fuzzy-name-diag.sql` (read-only): why seven unrelated names matched the same three alias owners in the 2.18.15 check; that check's result. No evaluator code change. |
 | 2.18.15 | 2026-11-05 | **`check-exact-alias-over-fuzzy-name.sql`** (read-only): regression risk of letting an exact person alias win over a fuzzy main-name match, on the 61 fuzzy person hits of the 1.1.20 campaigns (EN and FR). No evaluator code change. |
 | 2.18.14 | 2026-11-05 | **`retire-executions-293-20261105.sql`** (voie 2): soft-deletes the 14 baseline executions on 1.1.20 of the person alias evaluations (2478-2480, 2626-2629, EN and FR), so the evaluator re-runs them on the same version once TMDB-MOVIE-PREPROCESS-070 and the exact-match tie-break of FASTAPI-TEXT2SQL-293 are live (Philippe keeps 1.1.20). Baseline in both languages: 2479, 2480, 2626, 2628 green, all through the complex model; 2478, 2627, 2629 red. Exports archived on the PC under `evaluation_execution_archive/001.001.020_baseline-293_20261105/`. No evaluator code change. |
