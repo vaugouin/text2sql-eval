@@ -121,14 +121,25 @@ def main():
               "(has the exporter run since the column was added?).")
         return 0
 
-    n_checked = n_pass = n_fail = n_notemitted = n_recalc = 0
-    failures = []
-    for path in sorted(glob.glob(os.path.join(args.exec_dir, "*.json"))):
+    # The export folder keeps every file ever written for the tuple: a question replayed after a
+    # retire has several, and a retired row's file stays on disk. Keep the latest execution row
+    # per question, or the counts double and a stale response is judged (seen on 1.1.20,
+    # 2026-11-05: 136 checks for 76 questions).
+    latest = {}
+    for path in glob.glob(os.path.join(args.exec_dir, "*.json")):
         try:
             d = json.load(open(path, encoding="utf-8"))
         except Exception:
             continue
         eid = d.get("evaluation_id")
+        row = d.get("execution_row_id") or 0
+        if eid not in latest or row > latest[eid][0]:
+            latest[eid] = (row, d)
+
+    n_checked = n_pass = n_fail = n_notemitted = n_recalc = 0
+    failures = []
+    for eid in sorted(latest, key=lambda e: (e is None, e)):
+        d = latest[eid][1]
         spec = assertions.get(eid)
         if not spec:
             continue

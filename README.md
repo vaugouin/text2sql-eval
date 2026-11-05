@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.8 | 2026-11-05 | **`check-result-shape.py`** keeps the latest execution row per question: the export folder also holds the files of retired rows and of replayed questions, which doubled the count on 1.1.20 (136 checks for 76 questions) and judged stale responses. |
 | 2.18.7 | 2026-11-04 | **`check-retire-flex-result-entity.sql`** (read-only, voie 1): 1.1.20 rows by state and by the tier of their `result_entity` call, to check the targeted retire. No evaluator code change. |
 | 2.18.6 | 2026-11-04 | **`retire-executions-001.001.020-flex-result-entity.sql`** (voie 2): soft-deletes the 1.1.20 rows whose `result_entity` call ran at the Flex tier (`llm_usage.result_entity.service_tier`), whose times are inflated by the Flex retries of that evening, so a second English pass replays them with coherent timings. Scores were sound. No evaluator code change. |
 | 2.18.5 | 2026-11-04 | **No pause before each API call by default** (`TEXT2SQL_EVAL_API_CALL_DELAY_SECONDS` 2 to 0): the questions run one after the other, and the 429 retries already pace the run when a provider throttles. The value in `.env` still wins. With it, `check-campaign-speed-001.001.020.sql` found the slow 1.1.20 campaign was the Flex tier on `result_entity` (20.6 s per question against 1.4 s), now kept at the standard tier by the API (fastapi-text2sql `5c4c99f`). |
