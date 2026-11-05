@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.10 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.11 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.11 | 2026-11-05 | **`harvest-person-alias-wikidata.sql`** (read-only, FASTAPI-TEXT2SQL-293 / TMDB-MOVIE-PREPROCESS-070): ids and exact alias strings for the person alias evaluations (names only Wikidata knows, exact-match tie-break on a shared alias). No evaluator code change. |
 | 2.18.10 | 2026-11-05 | **Archive** (rule of 2026-10-12, Philippe's OK of 2026-11-05): `retire-executions-20261103.sql` and `retire-executions-001.001.020-all.sql` move to `archive/` with their results of 2026-11-03 and 2026-11-04, both retire operations being played and replaced by the full campaign on 1.1.20; their own run comments repointed. The result of `update-evaluations-20261105.sql` (7 rows, played 2026-11-05 by vps-agent) is committed beside it. No evaluator code change. |
 | 2.18.9 | 2026-11-05 | **`update-evaluations-20261105.sql`** (voie 1, TEXT2SQL-EVAL-003, decisions of 2026-11-05 after the full campaign on 1.1.20): shape assertions `ranked-bars` on the five rankings that carry the ordered metric column since FASTAPI-TEXT2SQL-350/-351 (1125, 2214, 2513 with `unit(any)`; 2558, 2559 with `unit(*) == count`); the French question of 2513 repaired (it read "Liste les séries télévisées Анимация avec The Most saisons"); 2554 and 2556 require one row and a floor on the true value (`COUNT(*) == 1 AND CELL(0, 0) > 1000` minutes, `> 1000000000` dollars), so the entity rows with a window total or the collection row with a subquery total fail in score (FASTAPI-TEXT2SQL-364). No evaluator code change. |
 | 2.18.8 | 2026-11-05 | **`check-result-shape.py`** keeps the latest execution row per question: the export folder also holds the files of retired rows and of replayed questions, which doubled the count on 1.1.20 (136 checks for 76 questions) and judged stale responses. |
