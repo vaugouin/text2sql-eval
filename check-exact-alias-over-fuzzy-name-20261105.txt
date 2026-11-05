@@ -1,79 +1,80 @@
 -- check-exact-alias-over-fuzzy-name.sql
--- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 19:26:52 +0100
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 19:28:09 +0100
 --
 +---------------------+
 | NOW_                |
 +---------------------+
-| 2026-11-05 19:26:52 |
+| 2026-11-05 19:28:10 |
 +---------------------+
 +-----------+-------+
 | VERDICT   | PAIRS |
 +-----------+-------+
-| DIFFERENT |     7 |
-| NONE      |    54 |
+| DIFFERENT |     4 |
+| NONE      |    30 |
+| SAME      |    27 |
 +-----------+-------+
-+-------------------------+-------------------------+-------------------------------------+----------+----------------------------------------------------------------------------------------------+
-| SOUGHT                  | FUZZY_CANDIDATE         | EVALS                               | FUZZY_ID | ALIAS_OWNERS                                                                                 |
-+-------------------------+-------------------------+-------------------------------------+----------+----------------------------------------------------------------------------------------------+
-| david gauque            | David Gauquié           | en1108:1 fr1108:1                   |  1362749 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| Jeff Bridge             | Jeff Bridges            | fr305:1                             |     1229 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| Jeff bridge             | Jeff Bridges            | en305:1                             |     1229 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| RICARDO FREDA           | Riccardo Freda          | en2330:1 fr2330:1                   |    37197 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| sasha guitry            | Sacha Guitry            | en640:1                             |   148082 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| Sasha Guitry            | Sacha Guitry            | fr640:1                             |   148082 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| yasujiro ozu            | Yasujirō Ozu            | en593:1                             |    95501 | 1506746 ... (0.3, tmdb) | 1105179 Chino Moreno (0.1, tmdb) | 3242481 Shaun Lopez (0.0, tmdb) |
-| Andre Previn            | André Previn            | en829:1 fr829:1                     |     5805 | NULL                                                                                         |
-| Arnaud Depleschin       | Arnaud Desplechin       | en2227:1                            |    38883 | NULL                                                                                         |
-| Arnold schwarzeneger    | Arnold Schwarzenegger   | en1111:1                            |     1100 | NULL                                                                                         |
-| Catherine allegret      | Catherine Allégret      | en1074:1                            |    16926 | NULL                                                                                         |
-| Céline Song             | Celine Song             | fr1045:1                            |  2518227 | NULL                                                                                         |
-| Charles Chaplin         | Charles Champlin        | en2262:0                            |   552213 | NULL                                                                                         |
-| Chu Kong                | Chu Bong                | en2629:0 fr2629:0                   |  1409553 | NULL                                                                                         |
-| Dany Elfman             | Danny Elfman            | fr831:1                             |      531 | NULL                                                                                         |
-| dwayne jonson           | Dwayne Johnson          | en878:1 en879:0                     |    18918 | NULL                                                                                         |
-| Edward g Robinson       | Edward G. Robinson      | en905:1                             |    13566 | NULL                                                                                         |
-| elisabeth ii            | Elisabeth Quin          | en849:0                             |    78477 | NULL                                                                                         |
-| Francois Reichenbach    | François Reichenbach    | en1105:1 fr1105:1                   |  1146725 | NULL                                                                                         |
-| francoise Arnoul        | Françoise Arnoul        | en852:1                             |    36318 | NULL                                                                                         |
-| Frederic Chopin         | Frédéric Chopin         | en1121:0 en1122:1 en67:1            |    73598 | NULL                                                                                         |
-| Gerard Rinaldi          | Gérard Rinaldi          | en999:1 fr999:1                     |    24831 | NULL                                                                                         |
-| Hillary Swank           | Hilary Swank            | en2328:1 fr2328:1                   |      448 | NULL                                                                                         |
-| humphrey bogard         | Humphrey Bogart         | en871:1                             |     4110 | NULL                                                                                         |
-| J. K. Rowling           | J.K. Rowling            | en274:1 fr274:1                     |    10966 | NULL                                                                                         |
-| Jean Christophe grange  | Jean-Christophe Grangé  | en982:1                             |    35071 | NULL                                                                                         |
-| Jean Laurent Cochet     | Jean-Laurent Cochet     | fr691:1                             |    34582 | NULL                                                                                         |
-| Jean Laurent cochet     | Jean-Laurent Cochet     | en691:1                             |    34582 | NULL                                                                                         |
-| Jean Pierre Mocky       | Jean-Pierre Mocky       | fr992:1                             |    24397 | NULL                                                                                         |
-| Jean Pierre mocky       | Jean-Pierre Mocky       | en992:1                             |    24397 | NULL                                                                                         |
-| Jenny Aguter            | Jenny Agutter           | fr1110:1                            |    14464 | NULL                                                                                         |
-| Jenny aguter            | Jenny Agutter           | en1110:1                            |    14464 | NULL                                                                                         |
-| john frankheimer        | John Frankenheimer      | en1060:1 fr1060:1                   |    13776 | NULL                                                                                         |
-| john voigt              | Jon Voight              | en565:1                             |    10127 | NULL                                                                                         |
-| Johnathan Swift         | Jonathan Swift          | fr1016:1                            |   143464 | NULL                                                                                         |
-| Johnathan swift         | Jonathan Swift          | en1016:1                            |   143464 | NULL                                                                                         |
-| Jude Apatow             | Judd Apatow             | fr830:1                             |    41039 | NULL                                                                                         |
-| Jude appatow            | Judd Apatow             | en830:1                             |    41039 | NULL                                                                                         |
-| Katherine Hepburn       | Katharine Hepburn       | en2329:1 fr2329:1 fr506:1           |     6598 | NULL                                                                                         |
-| katherine hepburn       | Katharine Hepburn       | en506:1                             |     6598 | NULL                                                                                         |
-| Kléber mendoca filho    | Kleber Mendonça Filho   | en980:1                             |  1016214 | NULL                                                                                         |
-| Kléber mendonca filho   | Kleber Mendonça Filho   | en1097:1                            |  1016214 | NULL                                                                                         |
-| Kléber Mendonça Filho   | Kleber Mendonça Filho   | fr1097:1 fr980:1                    |  1016214 | NULL                                                                                         |
-| Krzysztof Kieslowski    | Krzysztof Kieślowski    | en2604:1 fr2604:1                   |     1126 | NULL                                                                                         |
-| lauren bacal            | Lauren Bacall           | en508:1                             |     7570 | NULL                                                                                         |
-| leonardo di caprio      | Leonardo DiCaprio       | en490:1 fr490:1                     |     6193 | NULL                                                                                         |
-| Leonardo di caprio      | Leonardo DiCaprio       | en524:1 en525:1 fr524:1 fr525:1     |     6193 | NULL                                                                                         |
-| louis de funes          | Louis de Funès          | en485:1 en510:1                     |    11187 | NULL                                                                                         |
-| marcello mastrioanni    | Marcello Mastroianni    | en514:1                             |     5676 | NULL                                                                                         |
-| marcello mastroiani     | Marcello Mastroianni    | en728:1 fr728:1                     |     5676 | NULL                                                                                         |
-| marco tullio giordano   | Marco Tullio Giordana   | en985:1 fr985:1                     |    70235 | NULL                                                                                         |
-| Marion Morrison         | Marq Morrison           | en2478:0 fr2478:0                   |  1326551 | NULL                                                                                         |
-| Martin Scorcese         | Martin Scorsese         | en2278:1 en64:1                     |     1032 | NULL                                                                                         |
-| Martin scorcese         | Martin Scorsese         | en731:0                             |     1032 | NULL                                                                                         |
-| martin scorcese         | Martin Scorsese         | en490:1 en539:1 fr490:1 fr539:1     |     1032 | NULL                                                                                         |
-| Michele pfeiffer        | Michelle Pfeiffer       | en1077:0                            |     1160 | NULL                                                                                         |
-| park Chan wook          | Park Chan-wook          | en2136:1                            |    10099 | NULL                                                                                         |
-| Paul gegauf             | Paul Gégauff            | en708:1 fr708:1                     |    19084 | NULL                                                                                         |
-| Suzanne schifman        | Suzanne Schiffman       | en853:1 fr853:1                     |     3583 | NULL                                                                                         |
-| Toshiro Mifune          | Toshirō Mifune          | en2140:1 en2141:1 fr2140:1 fr2141:1 |     7450 | NULL                                                                                         |
-| Vincent Barré           | Vincent Darré           | en863:0 fr863:0                     |   550108 | NULL                                                                                         |
-+-------------------------+-------------------------+-------------------------------------+----------+----------------------------------------------------------------------------------------------+
++-------------------------+-------------------------+-------------------------------------+----------+----------------------------------------------------------------+
+| SOUGHT                  | FUZZY_CANDIDATE         | EVALS                               | FUZZY_ID | ALIAS_OWNERS                                                   |
++-------------------------+-------------------------+-------------------------------------+----------+----------------------------------------------------------------+
+| Andre Previn            | André Previn            | en829:1 fr829:1                     |     5805 | 5805 André Previn (1.1, tmdb)                                  |
+| Catherine allegret      | Catherine Allégret      | en1074:1                            |    16926 | 16926 Catherine Allégret (2.1, tmdb)                           |
+| Céline Song             | Celine Song             | fr1045:1                            |  2518227 | 2518227 Celine Song (0.8, tmdb)                                |
+| Charles Chaplin         | Charles Champlin        | en2262:0                            |   552213 | 13848 Charlie Chaplin (2.7, tmdb)                              |
+| Chu Kong                | Chu Bong                | en2629:0 fr2629:0                   |  1409553 | 67047 Paul Chu Kong (92.5, tmdb) | 1025557 Chugong (0.2, tmdb) |
+| Edward g Robinson       | Edward G. Robinson      | en905:1                             |    13566 | 13566 Edward G. Robinson (1.7, tmdb)                           |
+| elisabeth ii            | Elisabeth Quin          | en849:0                             |    78477 | 558240 Elizabeth II of the United Kingdom (0.5, tmdb)          |
+| Francois Reichenbach    | François Reichenbach    | en1105:1 fr1105:1                   |  1146725 | 1146725 François Reichenbach (0.3, tmdb)                       |
+| francoise Arnoul        | Françoise Arnoul        | en852:1                             |    36318 | 36318 Françoise Arnoul (1.4, tmdb)                             |
+| Frederic Chopin         | Frédéric Chopin         | en1121:0 en1122:1 en67:1            |    73598 | 73598 Frédéric Chopin (0.2, tmdb)                              |
+| Gerard Rinaldi          | Gérard Rinaldi          | en999:1 fr999:1                     |    24831 | 24831 Gérard Rinaldi (0.2, tmdb)                               |
+| J. K. Rowling           | J.K. Rowling            | en274:1 fr274:1                     |    10966 | 10966 J.K. Rowling (5.2, tmdb)                                 |
+| Jean Christophe grange  | Jean-Christophe Grangé  | en982:1                             |    35071 | 35071 Jean-Christophe Grangé (0.1, tmdb)                       |
+| Jean Laurent cochet     | Jean-Laurent Cochet     | en691:1                             |    34582 | 34582 Jean-Laurent Cochet (0.3, tmdb)                          |
+| Jean Laurent Cochet     | Jean-Laurent Cochet     | fr691:1                             |    34582 | 34582 Jean-Laurent Cochet (0.3, tmdb)                          |
+| Jean Pierre Mocky       | Jean-Pierre Mocky       | fr992:1                             |    24397 | 24397 Jean-Pierre Mocky (0.6, tmdb)                            |
+| Jean Pierre mocky       | Jean-Pierre Mocky       | en992:1                             |    24397 | 24397 Jean-Pierre Mocky (0.6, tmdb)                            |
+| john voigt              | Jon Voight              | en565:1                             |    10127 | 29124 Wolfgang Zilzer (0.3, tmdb)                              |
+| Katherine Hepburn       | Katharine Hepburn       | en2329:1 fr2329:1 fr506:1           |     6598 | 6598 Katharine Hepburn (1.3, tmdb)                             |
+| katherine hepburn       | Katharine Hepburn       | en506:1                             |     6598 | 6598 Katharine Hepburn (1.3, tmdb)                             |
+| Kléber mendoca filho    | Kleber Mendonça Filho   | en980:1                             |  1016214 | 1016214 Kleber Mendonça Filho (1.0, tmdb)                      |
+| Kléber mendonca filho   | Kleber Mendonça Filho   | en1097:1                            |  1016214 | 1016214 Kleber Mendonça Filho (1.0, tmdb)                      |
+| Kléber Mendonça Filho   | Kleber Mendonça Filho   | fr1097:1 fr980:1                    |  1016214 | 1016214 Kleber Mendonça Filho (1.0, tmdb)                      |
+| Krzysztof Kieslowski    | Krzysztof Kieślowski    | en2604:1 fr2604:1                   |     1126 | 1126 Krzysztof Kieślowski (1.2, tmdb)                          |
+| Leonardo di caprio      | Leonardo DiCaprio       | en524:1 en525:1 fr524:1 fr525:1     |     6193 | 6193 Leonardo DiCaprio (8.6, tmdb)                             |
+| leonardo di caprio      | Leonardo DiCaprio       | en490:1 fr490:1                     |     6193 | 6193 Leonardo DiCaprio (8.6, tmdb)                             |
+| louis de funes          | Louis de Funès          | en485:1 en510:1                     |    11187 | 11187 Louis de Funès (2.5, tmdb)                               |
+| Michele pfeiffer        | Michelle Pfeiffer       | en1077:0                            |     1160 | 1160 Michelle Pfeiffer (4.0, tmdb)                             |
+| park Chan wook          | Park Chan-wook          | en2136:1                            |    10099 | 10099 Park Chan-wook (2.8, tmdb)                               |
+| Toshiro Mifune          | Toshirō Mifune          | en2140:1 en2141:1 fr2140:1 fr2141:1 |     7450 | 7450 Toshirō Mifune (2.8, tmdb)                                |
+| yasujiro ozu            | Yasujirō Ozu            | en593:1                             |    95501 | 95501 Yasujirō Ozu (1.2, tmdb)                                 |
+| Arnaud Depleschin       | Arnaud Desplechin       | en2227:1                            |    38883 | NULL                                                           |
+| Arnold schwarzeneger    | Arnold Schwarzenegger   | en1111:1                            |     1100 | NULL                                                           |
+| Dany Elfman             | Danny Elfman            | fr831:1                             |      531 | NULL                                                           |
+| david gauque            | David Gauquié           | en1108:1 fr1108:1                   |  1362749 | NULL                                                           |
+| dwayne jonson           | Dwayne Johnson          | en878:1 en879:0                     |    18918 | NULL                                                           |
+| Hillary Swank           | Hilary Swank            | en2328:1 fr2328:1                   |      448 | NULL                                                           |
+| humphrey bogard         | Humphrey Bogart         | en871:1                             |     4110 | NULL                                                           |
+| Jeff Bridge             | Jeff Bridges            | fr305:1                             |     1229 | NULL                                                           |
+| Jeff bridge             | Jeff Bridges            | en305:1                             |     1229 | NULL                                                           |
+| Jenny aguter            | Jenny Agutter           | en1110:1                            |    14464 | NULL                                                           |
+| Jenny Aguter            | Jenny Agutter           | fr1110:1                            |    14464 | NULL                                                           |
+| john frankheimer        | John Frankenheimer      | en1060:1 fr1060:1                   |    13776 | NULL                                                           |
+| Johnathan swift         | Jonathan Swift          | en1016:1                            |   143464 | NULL                                                           |
+| Johnathan Swift         | Jonathan Swift          | fr1016:1                            |   143464 | NULL                                                           |
+| Jude Apatow             | Judd Apatow             | fr830:1                             |    41039 | NULL                                                           |
+| Jude appatow            | Judd Apatow             | en830:1                             |    41039 | NULL                                                           |
+| lauren bacal            | Lauren Bacall           | en508:1                             |     7570 | NULL                                                           |
+| marcello mastrioanni    | Marcello Mastroianni    | en514:1                             |     5676 | NULL                                                           |
+| marcello mastroiani     | Marcello Mastroianni    | en728:1 fr728:1                     |     5676 | NULL                                                           |
+| marco tullio giordano   | Marco Tullio Giordana   | en985:1 fr985:1                     |    70235 | NULL                                                           |
+| Marion Morrison         | Marq Morrison           | en2478:0 fr2478:0                   |  1326551 | NULL                                                           |
+| martin scorcese         | Martin Scorsese         | en490:1 en539:1 fr490:1 fr539:1     |     1032 | NULL                                                           |
+| Martin scorcese         | Martin Scorsese         | en731:0                             |     1032 | NULL                                                           |
+| Martin Scorcese         | Martin Scorsese         | en2278:1 en64:1                     |     1032 | NULL                                                           |
+| Paul gegauf             | Paul Gégauff            | en708:1 fr708:1                     |    19084 | NULL                                                           |
+| RICARDO FREDA           | Riccardo Freda          | en2330:1 fr2330:1                   |    37197 | NULL                                                           |
+| sasha guitry            | Sacha Guitry            | en640:1                             |   148082 | NULL                                                           |
+| Sasha Guitry            | Sacha Guitry            | fr640:1                             |   148082 | NULL                                                           |
+| Suzanne schifman        | Suzanne Schiffman       | en853:1 fr853:1                     |     3583 | NULL                                                           |
+| Vincent Barré           | Vincent Darré           | en863:0 fr863:0                     |   550108 | NULL                                                           |
++-------------------------+-------------------------+-------------------------------------+----------+----------------------------------------------------------------+
