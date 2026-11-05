@@ -1,0 +1,17 @@
+-- new-evaluations-person-alias.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 18:15:59 +0100
+--
++-------------------+----------------------------+-----------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | QUESTION                    |
++-------------------+----------------------------+-----------------------------+
+|              2480 |                         30 | Arnol Swartzeneger          |
+|              2478 |                         30 | Who is Marion Morrison?     |
+|              2479 |                         30 | Who is Maurice Micklewhite? |
++-------------------+----------------------------+-----------------------------+
++-------------------+----------------------------+-----------------------------+-----------------------------------------+-----------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | QUESTION                    | ASSERTIONS_QUERY_RESULT                 | ASSERTION_REFRESH_SQL |
++-------------------+----------------------------+-----------------------------+-----------------------------------------+-----------------------+
+|              2478 |                         30 | Who is Marion Morrison?     | COUNT(*) &gt; 0 AND ID_PERSON IN (4165) |                       |
+|              2479 |                         30 | Who is Maurice Micklewhite? | COUNT(*) &gt; 0 AND ID_PERSON IN (3895) |                       |
+|              2480 |                         30 | Arnol Swartzeneger          | COUNT(*) &gt; 0 AND ID_PERSON IN (1100) |                       |
++-------------------+----------------------------+-----------------------------+-----------------------------------------+-----------------------+

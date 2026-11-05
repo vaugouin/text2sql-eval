@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.12 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.13 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.13 | 2026-11-05 | Results of the two person alias files: 2626 to 2629 inserted; `new-evaluations-person-alias.sql` found 2478 to 2480 already in the bank (its "NOT YET APPLIED" header is stale) and inserted nothing. No evaluator code change. |
 | 2.18.12 | 2026-11-05 | **`new-evaluations-person-alias-wikidata.sql`** (voie 1, FASTAPI-TEXT2SQL-293 / TMDB-MOVIE-PREPROCESS-070): four category-30 questions, EN and FR, asking for a person by a name only Wikidata knows (Patricia Annette Olson, Maud Holt Tree, Charles Curtis Watkins III) and by an exact alias two persons share (Chu Kong, the most popular must win); ids from `harvest-person-alias-wikidata-20261105.txt`. `new-evaluations-person-alias.sql` (written 2026-08-26) applied the same day. No evaluator code change. |
 | 2.18.11 | 2026-11-05 | **`harvest-person-alias-wikidata.sql`** (read-only, FASTAPI-TEXT2SQL-293 / TMDB-MOVIE-PREPROCESS-070): ids and exact alias strings for the person alias evaluations (names only Wikidata knows, exact-match tie-break on a shared alias). No evaluator code change. |
 | 2.18.10 | 2026-11-05 | **Archive** (rule of 2026-10-12, Philippe's OK of 2026-11-05): `retire-executions-20261103.sql` and `retire-executions-001.001.020-all.sql` move to `archive/` with their results of 2026-11-03 and 2026-11-04, both retire operations being played and replaced by the full campaign on 1.1.20; their own run comments repointed. The result of `update-evaluations-20261105.sql` (7 rows, played 2026-11-05 by vps-agent) is committed beside it. No evaluator code change. |

@@ -1,0 +1,11 @@
+-- new-evaluations-person-alias-wikidata.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 18:16:02 +0100
+--
++-------------------+----------------------------+------------------------------------+--------------------------------------------+-----------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | QUESTION                           | ASSERTIONS_QUERY_RESULT                    | ASSERTION_REFRESH_SQL |
++-------------------+----------------------------+------------------------------------+--------------------------------------------+-----------------------+
+|              2626 |                         30 | Who is Patricia Annette Olson?     | COUNT(*) &gt; 0 AND ID_PERSON IN (91256)   | NULL                  |
+|              2627 |                         30 | Who is Maud Holt Tree?             | COUNT(*) &gt; 0 AND ID_PERSON IN (1043449) | NULL                  |
+|              2628 |                         30 | Who is Charles Curtis Watkins III? | COUNT(*) &gt; 0 AND ID_PERSON IN (157942)  | NULL                  |
+|              2629 |                         30 | Who is Chu Kong?                   | COUNT(*) &gt; 0 AND ID_PERSON IN (67047)   | NULL                  |
++-------------------+----------------------------+------------------------------------+--------------------------------------------+-----------------------+
