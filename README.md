@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.18 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.19 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.19 | 2026-11-05 | `check-lexicon-robustness-ids.sql` (voie 1, read-only): ids, titles and title aliases behind the coming lexicon robustness evaluations (FASTAPI-TEXT2SQL-360, -363, -366). No evaluator code change. |
 | 2.18.18 | 2026-11-05 | **`retire-executions-365-20261105.sql`** (voie 2): soft-deletes the 1.1.20 executions of the 60 evaluations whose person name was accepted on a fuzzy main-name match, every question FASTAPI-TEXT2SQL-365 can change, so they re-run on the same version; section 0 prints the popularities the guard compares. Result of `check-exact-alias-over-fuzzy-name.sql` (61 pairs: 30 no alias, 27 same person, 4 another person). No evaluator code change. |
 | 2.18.17 | 2026-11-05 | `check-exact-alias-over-fuzzy-name.sql` corrected: the sought forms are normalized in Python before the query; the SQL regex on the CTE literals emptied some of them, which then matched the punctuation-only aliases whose `PERSON_NAME_NORM` is a single space (7 false DIFFERENT in the first result). No evaluator code change. |
 | 2.18.16 | 2026-11-05 | Result of `new-evaluations-355-homonyms.sql` (voie 1): evaluations **2630 to 2642** inserted (2630-2641 categories 60 and 62, sample and showcase; 2642 the bare-title control, category 29). The committed result is a later re-run of the file, whose NOT EXISTS guard inserted nothing: each id appears once in the pre-flight and once in the check. No evaluator code change. |
