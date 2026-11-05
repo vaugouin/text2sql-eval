@@ -1,0 +1,37 @@
+-- new-evaluations-355-homonyms.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-05 19:03:47 +0100
+--
++-------------------+----------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | QUESTION                                                                   |
++-------------------+----------------------------------------------------------------------------+
+|              2630 | "On every street in every city, there's a nobody who dreams of being a     |
+|              2631 | Which 1976 Turkish film directed by Şerif Gören, starring Kadir İnanır     |
+|              2632 | Which film that won the Best Picture Oscar weaves together the lives o     |
+|              2633 | In which 1992 animated film does Robin Williams voice a genie freed fr     |
+|              2634 | Which 1997 Disney animated film follows the son of Zeus proving himsel     |
+|              2635 | In which film does a linguist played by Amy Adams learn the language o     |
+|              2636 | Which Ridley Scott film sends a spaceship crew to find the creators of     |
+|              2637 | Which 1996 horror film features a masked killer who quizzes his victim     |
+|              2638 | Which 2023 Tamil action film by Lokesh Kanagaraj stars Vijay as a café     |
+|              2639 | In which 2023 animated musical does Adam Sandler voice a 74-year-old l     |
+|              2640 | Which 1976 Arabic-language film by Moustapha Akkad tells the birth of      |
+|              2641 | In which 2023 series does Keri Russell play a career diplomat suddenly     |
+|              2642 | Movie Taxi Driver (1976)                                                   |
++-------------------+----------------------------------------------------------------------------+
++-------------------+----------------------------+-----------+-------------+------------------------------------------------------+---------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_SAMPLE | IS_SHOWCASE | QUESTION                                             | ASSERTIONS_QUERY_RESULT                     |
++-------------------+----------------------------+-----------+-------------+------------------------------------------------------+---------------------------------------------+
+|              2630 |                         60 |         1 |           1 | "On every street in every city, there's a nobody w   | COUNT(*) == 1 AND ID_MOVIE IN (103)         |
+|              2631 |                         60 |         1 |           1 | Which 1976 Turkish film directed by Şerif Gören, s   | COUNT(*) == 1 AND ID_MOVIE IN (612176)      |
+|              2632 |                         60 |         1 |           1 | Which film that won the Best Picture Oscar weaves    | COUNT(*) == 1 AND ID_MOVIE IN (1640)        |
+|              2633 |                         60 |         1 |           1 | In which 1992 animated film does Robin Williams vo   | COUNT(*) == 1 AND ID_MOVIE IN (812)         |
+|              2634 |                         60 |         1 |           1 | Which 1997 Disney animated film follows the son of   | COUNT(*) == 1 AND ID_MOVIE IN (11970)       |
+|              2635 |                         60 |         1 |           1 | In which film does a linguist played by Amy Adams    | COUNT(*) == 1 AND ID_MOVIE IN (329865)      |
+|              2636 |                         60 |         1 |           1 | Which Ridley Scott film sends a spaceship crew to    | COUNT(*) == 1 AND ID_MOVIE IN (70981)       |
+|              2637 |                         60 |         1 |           1 | Which 1996 horror film features a masked killer wh   | COUNT(*) == 1 AND ID_MOVIE IN (4232)        |
+|              2638 |                         60 |         1 |           1 | Which 2023 Tamil action film by Lokesh Kanagaraj s   | COUNT(*) == 1 AND ID_MOVIE IN (949229)      |
+|              2639 |                         60 |         1 |           1 | In which 2023 animated musical does Adam Sandler v   | COUNT(*) == 1 AND ID_MOVIE IN (1075794)     |
+|              2640 |                         60 |         1 |           1 | Which 1976 Arabic-language film by Moustapha Akkad   | COUNT(*) == 1 AND ID_MOVIE IN (881210)      |
+|              2641 |                         62 |         1 |           1 | In which 2023 series does Keri Russell play a care   | COUNT(*) == 1 AND ID_SERIE IN (203857)      |
+|              2642 |                         29 |         0 |           0 | Movie Taxi Driver (1976)                             | COUNT(*) == 2 AND ID_MOVIE IN (103, 612176) |
++-------------------+----------------------------+-----------+-------------+------------------------------------------------------+---------------------------------------------+
