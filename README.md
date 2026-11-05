@@ -1,7 +1,7 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.3 (source of truth: [VERSION](VERSION))
-**Last Updated:** 2026-11-03
+**Version:** 2.18.9 (source of truth: [VERSION](VERSION))
+**Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
 
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.9 | 2026-11-05 | **`update-evaluations-20261105.sql`** (voie 1, TEXT2SQL-EVAL-003, decisions of 2026-11-05 after the full campaign on 1.1.20): shape assertions `ranked-bars` on the five rankings that carry the ordered metric column since FASTAPI-TEXT2SQL-350/-351 (1125, 2214, 2513 with `unit(any)`; 2558, 2559 with `unit(*) == count`); the French question of 2513 repaired (it read "Liste les séries télévisées Анимация avec The Most saisons"); 2554 and 2556 require one row and a floor on the true value (`COUNT(*) == 1 AND CELL(0, 0) > 1000` minutes, `> 1000000000` dollars), so the entity rows with a window total or the collection row with a subquery total fail in score (FASTAPI-TEXT2SQL-364). No evaluator code change. |
 | 2.18.8 | 2026-11-05 | **`check-result-shape.py`** keeps the latest execution row per question: the export folder also holds the files of retired rows and of replayed questions, which doubled the count on 1.1.20 (136 checks for 76 questions) and judged stale responses. |
 | 2.18.7 | 2026-11-04 | **`check-retire-flex-result-entity.sql`** (read-only, voie 1): 1.1.20 rows by state and by the tier of their `result_entity` call, to check the targeted retire. No evaluator code change. |
 | 2.18.6 | 2026-11-04 | **`retire-executions-001.001.020-flex-result-entity.sql`** (voie 2): soft-deletes the 1.1.20 rows whose `result_entity` call ran at the Flex tier (`llm_usage.result_entity.service_tier`), whose times are inflated by the Flex retries of that evening, so a second English pass replays them with coherent timings. Scores were sound. No evaluator code change. |
