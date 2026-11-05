@@ -13,7 +13,7 @@
 --
 -- HOW (voie 2: T_WC_T2S_EVALUATION_EXECUTION is not one of the agent-writable tables):
 --   cd ~/docker/text2sql-eval && git pull --ff-only
---   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/retire-executions-20261103.sql
+--   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/archive/retire-executions-20261103.sql
 -- Expected: section 1 shows 20 rows per language, section 2 updates 40 rows, section 3 shows 0.
 -- Then the rerun, one language at a time:
 --   API_VERSION=1.1.20 EVAL_LANGUAGE=en EVAL_IDS=$(seq -s, 2570 2579),$(seq -s, 2590 2599) ./text2sql-eval.sh

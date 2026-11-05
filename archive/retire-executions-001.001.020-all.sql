@@ -12,7 +12,7 @@
 --
 -- HOW (voie 2: T_WC_T2S_EVALUATION_EXECUTION is not one of the agent-writable tables):
 --   cd ~/docker/text2sql-eval && git pull --ff-only
---   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/retire-executions-001.001.020-all.sql
+--   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/archive/retire-executions-001.001.020-all.sql
 -- Expected: section 1 lists the live rows (about 60 + 12 per language), section 2 updates them
 -- all, section 3 shows nothing.
 
