@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.22 (source of truth: [VERSION](VERSION))
+**Version:** 2.18.23 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-05
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.23 | 2026-11-05 | **`new-evaluations-360-companies-networks.sql`** (voie 1): ten company and network lookups with their French twins, written before the move of companies and networks from ChromaDB to the RapidFuzz lexicon (FASTAPI-TEXT2SQL-360, second wave): legal tail left out (Paramount, Columbia, Warner Bros, Universal, Hammer), exact homonyms with few credits (Paramount+, Columbia), same-name entities (Gaumont, HBO, Canal+), capitals (TOHO), a typo. Result of `update-evaluations-1119-charles-chaplin.sql`. No evaluator code change. |
 | 2.18.22 | 2026-11-05 | **`update-evaluations-1119-charles-chaplin.sql`** (voie 1): evaluation 1119 "Charles Chaplin", typed 2025-12-30 but never run (no category, no assertion), gets category 30 and `ID_PERSON IN (13848)`, the live case of FASTAPI-TEXT2SQL-365 (exact alias of Charlie Chaplin against a fuzzy hit on Charles Champlin). No evaluator code change. |
 | 2.18.21 | 2026-11-05 | Result of `new-evaluations-lexicon-robustness.sql` (voie 1): evaluations **2643 to 2652** inserted. No evaluator code change. |
 | 2.18.20 | 2026-11-05 | **`new-evaluations-lexicon-robustness.sql`** (voie 1): ten title lookups with their French twins on the tricky wordings of the title lexicon (alias tier, year guard counter-case, several fuzzy mentions in a list, short titles and series among homonyms, Se7en / Seven), plus two written to fail until FASTAPI-TEXT2SQL-366 (a sequel number, an episode number). Every wording probed on Blue 1.1.20 first. Result of `check-lexicon-robustness-ids.sql`. No evaluator code change. |
