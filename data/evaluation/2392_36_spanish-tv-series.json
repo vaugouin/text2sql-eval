@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE WHERE T_WC_T2S_SERIE.ORIGINAL_LANGUAGE = 'es' ORDER BY T_WC_T2S_SERIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-03T03:38:08",
+  "assertion_refresh_last": "2026-11-07T03:45:57",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

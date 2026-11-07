@@ -1,0 +1,9 @@
+-- retire-executions-360names-20261106.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-06 17:07:37 +0100
+--
++------+------------+-------------+
+| LANG | executions | evaluations |
++------+------------+-------------+
+| en   |        114 |         114 |
+| fr   |        114 |         114 |
++------+------------+-------------+

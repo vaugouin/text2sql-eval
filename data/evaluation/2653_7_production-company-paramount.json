@@ -1,0 +1,29 @@
+{
+  "evaluation_id": 2653,
+  "evaluation_category_id": 7,
+  "question_en": "Production company Paramount",
+  "question_fr": "Société de production Paramount",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) &gt; 0 AND ID_COMPANY IN (4)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Paramount Pictures (TMDb company 4, 2,899 movie and series credits). Legal tail dropped, and an exact homonym trap: the company Paramount+ (314668, 3 credits) folds to the same key once the plus sign goes. Ranking by credits must pick 4 (FASTAPI-TEXT2SQL-360, second wave).",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 0,
+  "display_order": null,
+  "dat_creat": "2026-11-05",
+  "tim_updated": "2026-11-05T22:33:55",
+  "is_showcase": null,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null
+}

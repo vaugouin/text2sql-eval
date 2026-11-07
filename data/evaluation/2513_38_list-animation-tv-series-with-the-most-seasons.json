@@ -2,16 +2,16 @@
   "evaluation_id": 2513,
   "evaluation_category_id": 38,
   "question_en": "List animation tv series with the most seasons",
-  "question_fr": "Liste les séries télévisées Анимация avec The Most saisons",
+  "question_fr": "Liste les séries télévisées d'animation avec le plus de saisons",
   "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_SERIE IN (251483, 87471, 116865, 13819, 217772, 456, 56389, 4231, 2190, 57480, 34860, 5811, 57911, 307991, 2153)",
-    "result_shape": null
+    "query_result": "ID_SERIE IN (251483, 87471, 116865, 13819, 217772, 56389, 456, 4231, 2190, 34860, 57480, 5811, 57911, 307991, 2153)",
+    "result_shape": "result_kind == entity_rows; representation == ranked-bars; unit(any) == count"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE JOIN T_WC_T2S_SERIE_GENRE ON T_WC_T2S_SERIE.ID_SERIE = T_WC_T2S_SERIE_GENRE.ID_SERIE WHERE T_WC_T2S_SERIE_GENRE.ID_GENRE = 16 ORDER BY T_WC_T2S_SERIE.NUMBER_OF_SEASONS DESC LIMIT 15",
-  "assertion_refresh_last": "2026-11-03T03:38:10",
+  "assertion_refresh_last": "2026-11-07T03:45:59",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

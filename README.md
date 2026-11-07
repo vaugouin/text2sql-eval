@@ -1,7 +1,7 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.25 (source of truth: [VERSION](VERSION))
-**Last Updated:** 2026-11-05
+**Version:** 2.18.26 (source of truth: [VERSION](VERSION))
+**Last Updated:** 2026-11-07
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
 
@@ -1082,6 +1082,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.18.26 | 2026-11-07 | **Bank refresh and two one-off files, no evaluator code change.** `data/evaluation/` refreshed by the sync of 2026-11-07 (173 files: the assertions of `update-evaluations-20261105.sql`, the evaluations 1119 and 2626 to 2662 of the other session, the samples flags); result of `retire-executions-360names-20261106.sql` committed. **`new-evaluations-20261107.sql`** (voie 1): "How many minutes of Star Wars films are there in total?" with its French twin, the sibling of 2554 and 2556 for FASTAPI-TEXT2SQL-364 (`COUNT(*) == 1 AND CELL(0, 0) > 1000`, `number-card`, minutes; Blue answers 1675 minutes in both languages). **`retire-executions-2591-20261107.sql`** (voie 2): soft-deletes the two 1.1.20 rows of 2591 so the French comparison of FASTAPI-TEXT2SQL-362 is re-run on the same version with the prompt fix `ec56c9d`; the file ends with the targeted campaign command (`EVAL_IDS=2591,<new>`). `check-result-shape.py` of 2026-11-07 on the two 1.1.20 exports: 81 asserted, 59 PASS and 22 FAIL per language, the five rankings of -350 and -351 pass, the 22 misses are 1.2.0 targets. |
 | 2.18.25 | 2026-11-06 | **`retire-executions-360names-20261106.sql`** (voie 2): soft-deletes the 1.1.20 executions of the 114 evaluations that mention a company, a network or a collection, to re-run them on the same version with the second wave of FASTAPI-TEXT2SQL-360 (API `9485a1f`). Baseline exports archived locally under `001.001.020_baseline-360names_20261106`. No evaluator code change. |
 | 2.18.24 | 2026-11-05 | Result of `new-evaluations-360-companies-networks.sql` (voie 1): evaluations **2653 to 2662** inserted. No evaluator code change. |
 | 2.18.23 | 2026-11-05 | **`new-evaluations-360-companies-networks.sql`** (voie 1): ten company and network lookups with their French twins, written before the move of companies and networks from ChromaDB to the RapidFuzz lexicon (FASTAPI-TEXT2SQL-360, second wave): legal tail left out (Paramount, Columbia, Warner Bros, Universal, Hammer), exact homonyms with few credits (Paramount+, Columbia), same-name entities (Gaumont, HBO, Canal+), capitals (TOHO), a typo. Result of `update-evaluations-1119-charles-chaplin.sql`. No evaluator code change. |

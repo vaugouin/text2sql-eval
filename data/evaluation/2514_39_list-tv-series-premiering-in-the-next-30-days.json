@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_SERIE IN (304893, 314271, 336392, 339375, 252886, 258989, 279246, 312006, 338684, 340246, 270431, 337872, 302118, 303044, 306179)",
+    "query_result": "ID_SERIE IN (306936, 307427, 339235, 340833, 303533, 338904, 340370, 296903, 328440, 340067, 340081, 340088, 291507, 336243, 337947)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_SERIE.ID_SERIE FROM T_WC_T2S_SERIE WHERE T_WC_T2S_SERIE.DAT_FIRST_AIR BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) ORDER BY T_WC_T2S_SERIE.DAT_FIRST_AIR ASC LIMIT 15",
-  "assertion_refresh_last": "2026-11-03T03:38:10",
+  "assertion_refresh_last": "2026-11-07T03:45:59",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

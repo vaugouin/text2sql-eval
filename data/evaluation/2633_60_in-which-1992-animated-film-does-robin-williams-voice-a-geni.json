@@ -1,0 +1,29 @@
+{
+  "evaluation_id": 2633,
+  "evaluation_category_id": 60,
+  "question_en": "In which 1992 animated film does Robin Williams voice a genie freed from a lamp by a street thief?",
+  "question_fr": "Dans quel film d'animation de 1992 Robin Williams prête-t-il sa voix à un génie libéré de sa lampe par un voleur des rues ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) == 1 AND ID_MOVIE IN (812)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Aladdin (Musker and Clements, TMDb 812), three films share title and year (343693, 357528). FASTAPI-TEXT2SQL-355.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-05",
+  "tim_updated": "2026-11-05T19:03:30",
+  "is_showcase": 1,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null
+}

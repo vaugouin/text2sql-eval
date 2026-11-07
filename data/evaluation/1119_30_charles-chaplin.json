@@ -1,0 +1,29 @@
+{
+  "evaluation_id": 1119,
+  "evaluation_category_id": 30,
+  "question_en": "Charles Chaplin",
+  "question_fr": "Charles Chaplin",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) &gt; 0 AND ID_PERSON IN (13848)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Exact TMDb alias of Charlie Chaplin (13848) and a fuzzy hit on the main name of Charles Champlin (552213). Before FASTAPI-TEXT2SQL-365 the fuzzy hit ended the search and Champlin came back; since, the exact alias of the more popular person wins. Twin of 1120 (Charlie Chaplin) and 2262 (Japanese).",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 0,
+  "display_order": null,
+  "dat_creat": "2025-12-30",
+  "tim_updated": "2026-11-05T22:01:09",
+  "is_showcase": null,
+  "deleted": 0,
+  "id_creator": 1,
+  "id_owner": 1,
+  "id_user_updated": 1,
+  "resolution_mode": "standard"
+}
