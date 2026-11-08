@@ -22,6 +22,16 @@ offline from the stored `sql_query` and `result` rows, with the same determinist
 the API uses, so an old campaign is checked without any re-run or token cost (pass
 --no-recompute to disable). Only an export that also lacks the rows stays NOT-EMITTED; that
 one genuinely needs re-execution against the live API.
+
+`answer` clauses (FASTAPI-TEXT2SQL-368: no database id in the banner sentence) are tallied on
+their own line, like the intent clauses, so adding them to the bank does not move the shape
+figures. They are read from `api_output` even on an export whose shape is recomputed or
+missing.
+
+The same clause also runs as a bank-wide invariant (Philippe, 2026-11-08), on EVERY execution of
+the folder, asserted or not: no database identifier in the answer to a question that typed none
+(`rsa.ANSWER_INVARIANT_SPEC`, `rsa.question_types_id`). It is reported on its own line and needs
+nothing in the bank; a question that types an id is skipped.
 """
 import argparse
 import glob
@@ -100,6 +110,18 @@ def load_assertions(bank_dir):
     return out
 
 
+def load_questions(bank_dir):
+    """Map evaluation_id -> (QUESTION, QUESTION_FR), for the bank-wide answer invariant."""
+    out = {}
+    for path in glob.glob(os.path.join(bank_dir, "*.json")):
+        try:
+            d = json.load(open(path, encoding="utf-8"))
+        except Exception:
+            continue
+        out[d.get("evaluation_id")] = (d.get("question_en") or "", d.get("question_fr") or "")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(description="Out-of-score result-shape check (FASTAPI-TEXT2SQL-349).")
     ap.add_argument("exec_dir", help="One campaign's evaluation_execution tuple folder.")
@@ -116,10 +138,10 @@ def main():
         print(f"not a directory: {args.exec_dir}", file=sys.stderr)
         return 2
     assertions = load_assertions(args.bank)
+    questions = load_questions(args.bank)
     if not assertions:
-        print(f"No ASSERTIONS_RESULT_SHAPE found in {args.bank}. Nothing to check "
-              "(has the exporter run since the column was added?).")
-        return 0
+        print(f"No ASSERTIONS_RESULT_SHAPE found in {args.bank} "
+              "(has the exporter run since the column was added?); answer invariant only.")
 
     # The export folder keeps every file ever written for the tuple: a question replayed after a
     # retire has several, and a retired row's file stays on disk. Keep the latest execution row
@@ -138,29 +160,67 @@ def main():
 
     n_checked = n_pass = n_fail = n_notemitted = n_recalc = 0
     n_intent_q = n_intent_pending = n_intent_pass = n_intent_fail = 0
+    n_answer_q = n_answer_pass = n_answer_fail = 0
     failures = []
+    answer_failures = []
+    n_inv = n_inv_pass = n_inv_skip = n_inv_unknown = 0
+    inv_failures = []
     for eid in sorted(latest, key=lambda e: (e is None, e)):
         d = latest[eid][1]
-        spec = assertions.get(eid)
-        if not spec:
-            continue
         api = d.get("api_output") or {}
         if isinstance(api, str):
             try:
                 api = json.loads(api)
             except Exception:
                 api = {}
+        lang = d.get("language") or d.get("lang") or "?"
+        # Bank-wide invariant (FASTAPI-TEXT2SQL-368, Philippe 2026-11-08): no database identifier
+        # in the answer to a question that typed none. Every execution, asserted or not.
+        if eid not in questions:
+            n_inv_unknown += 1
+        else:
+            ok, message = rsa.check_answer_invariant(api, *questions[eid])
+            if ok is None:
+                n_inv_skip += 1
+            else:
+                n_inv += 1
+                if ok:
+                    n_inv_pass += 1
+                else:
+                    inv_failures.append((eid, lang, message))
+        spec = assertions.get(eid)
+        if not spec:
+            continue
         recomputed = False
+        shape_missing = False
         if "result_kind" not in api and "representation" not in api:
             resp = recompute_hint(result_shape, api)
             if resp is None:
-                n_notemitted += 1
-                continue
-            recomputed = True
+                # No shape on disk; the answer clauses can still be judged on their own.
+                resp, shape_missing = {}, True
+            else:
+                recomputed = True
+            resp["answer"] = api.get("answer")
         else:
             resp = api
         passed, details = rsa.check_response(spec, resp)
-        lang = d.get("language") or d.get("lang") or "?"
+        # Answer clauses (FASTAPI-TEXT2SQL-368) are judged apart and stay out of the shape
+        # figures: a question asserted on its answer alone does not enter `checked`.
+        answer_details = [x for x in details if x["message"].startswith("answer ")]
+        if answer_details:
+            n_answer_q += 1
+            if all(x["passed"] for x in answer_details):
+                n_answer_pass += 1
+            else:
+                n_answer_fail += 1
+                answer_failures.append((eid, lang, [x["message"] for x in answer_details if x["passed"] is False]))
+        details = [x for x in details if not x["message"].startswith("answer ")]
+        if not details:
+            continue  # answer clauses only: no shape to judge
+        if shape_missing:
+            n_notemitted += 1
+            continue
+        passed = all(x["passed"] for x in details if x["passed"] is not None)
         # Intent clauses (FASTAPI-TEXT2SQL-353) are tallied apart: before -353 the API emits no
         # intent, the clause is NOT EMITTED and must not move the shape figures.
         intent_details = [x for x in details if x["message"].startswith("intent.")]
@@ -192,13 +252,28 @@ def main():
     if n_intent_q:
         print(f"Questions with an intent.task clause: {n_intent_q}   PASS {n_intent_pass}   "
               f"FAIL {n_intent_fail}   not emitted (API before FASTAPI-TEXT2SQL-353) {n_intent_pending}")
+    if n_answer_q:
+        print(f"Questions with an answer clause: {n_answer_q}   PASS {n_answer_pass}   FAIL {n_answer_fail}")
+    print(f"Answer invariant (no database id in the answer, FASTAPI-TEXT2SQL-368): {n_inv} checked   "
+          f"PASS {n_inv_pass}   FAIL {len(inv_failures)}   skipped (id typed in the question) {n_inv_skip}"
+          + (f"   not in the bank {n_inv_unknown}" if n_inv_unknown else ""))
     if failures:
         print("\n=== FAIL ===")
         for eid, lang, recomputed, msgs in failures:
             print(f"  {eid} [{lang}]{' (recomputed)' if recomputed else ''}")
             for m in msgs:
                 print(f"     {m}")
-    return 1 if (args.strict and n_fail) else 0
+    if answer_failures:
+        print("\n=== ANSWER FAIL ===")
+        for eid, lang, msgs in answer_failures:
+            print(f"  {eid} [{lang}]")
+            for m in msgs:
+                print(f"     {m}")
+    if inv_failures:
+        print("\n=== ANSWER INVARIANT FAIL ===")
+        for eid, lang, message in inv_failures:
+            print(f"  {eid} [{lang}]  {message}")
+    return 1 if (args.strict and (n_fail or n_answer_fail or inv_failures)) else 0
 
 
 if __name__ == "__main__":

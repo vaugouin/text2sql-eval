@@ -43,6 +43,27 @@ clause NOT EMITTED: it neither passes nor fails, it is reported apart, and the o
 of the assertion decide alone. The baseline of an intent-labelled bank on 1.1.20 is
 therefore "all not emitted", and the shape figures stay comparable.
 
+`answer !~ <regex>` asserts on the sentence the API writes above the result (`answer`), the
+banner a client shows first (FASTAPI-TEXT2SQL-368). `!~` passes when the regex does NOT match,
+`=~` when it does; matching is case-insensitive, `re.search` anywhere in the sentence, and an
+`answer` clause takes only these two operators (the other keys take only `==` / `!=`). The
+regex may not contain `;` or ` AND ` (they split clauses), and is written without backslashes
+so it survives a MariaDB string literal (`[0-9]`, never a backslash class). The first use: no
+IMDb id and no generic "matching identifier" / "identifiant" line in the answer to a description
+the user typed, since the id came from the database
+(`answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant`). Not the bare word "identifier":
+in French it is also the verb ("pour identifier les films", 2457; "ne permettent pas
+d'identifier les compositeurs", 2512), which would fail a sound answer. The clause is always
+emitted (every API version returns `answer`); an absent or empty answer is matched as "".
+
+**Bank-wide invariant** (Philippe, 2026-11-08). The same clause, `ANSWER_INVARIANT_SPEC`, holds
+for every question of the bank whose text types no identifier (`question_types_id`): a film, a
+series or a person searched by name or description must be answered by its name, never by
+"the person nm…". `check-result-shape.py` applies it to every execution, without anything
+written in the bank, so a new question is covered on arrival. A question that types an id
+("Who is nm0000151?", "Serie with TMDb ID 2473") may hear it back and is skipped. On the
+1.1.15 to 1.1.20 exports the invariant fails only on the -368 re-entries (2630 to 2641, 1.1.20).
+
 The grammar is deliberately tiny and additive: a new facet is a new LHS keyword and one
 branch in `_check_clause`, with no change to the campaign scorer.
 """
@@ -50,11 +71,35 @@ import html
 import re
 
 _CLAUSE_RE = re.compile(
-    r"^\s*(result_kind|representation|unit|role|intent\.task)\s*(?:\(\s*([A-Za-z_][A-Za-z0-9_]*|\*)\s*\))?\s*(==|!=)\s*(.+?)\s*$",
+    r"^\s*(result_kind|representation|unit|role|intent\.task|answer)\s*(?:\(\s*([A-Za-z_][A-Za-z0-9_]*|\*)\s*\))?\s*(==|!=|=~|!~)\s*(.+?)\s*$",
     re.IGNORECASE,
 )
 _NULLS = {"null", "none", ""}
 INTENT_TASKS = ("list", "value", "rank", "count", "compare", "sequence", "trend")
+
+# Bank-wide invariant: no database identifier in the answer to a question that typed none.
+ANSWER_INVARIANT_SPEC = "answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant"
+# A question "types an id" when it carries an IMDb/TMDb/Wikidata identifier or names one.
+_TYPED_ID_RE = re.compile(
+    r"\b(?:tt|nm|co|ch|ev|ls)[0-9]{6,}\b"          # IMDb ids
+    r"|\b[QP][0-9]+\b"                              # Wikidata items and properties
+    r"|\bids?\b|identif"                            # "ID", "identifier", "identifiant"
+    r"|\b(?:tmdb|imdb|wikidata)(?:\s+(?:movie|film|series|serie|show|person|item|entry))?\s+#?[0-9]{2,}",  # "TMDb movie 27205", not "TMDb rated films of 1994"
+    re.IGNORECASE,
+)
+
+
+def question_types_id(*questions):
+    """True when any form of the question (EN, FR) carries or names an identifier."""
+    return any(q and _TYPED_ID_RE.search(q) for q in questions)
+
+
+def check_answer_invariant(response, *questions):
+    """Return (passed, message) for the bank-wide answer invariant, or (None, reason) when skipped."""
+    if question_types_id(*questions):
+        return None, "skipped: the question types an identifier"
+    ok, details = check_response(ANSWER_INVARIANT_SPEC, response)
+    return ok, details[0]["message"]
 
 
 def parse(spec_text):
@@ -79,6 +124,19 @@ def parse(spec_text):
         key, col, op, rhs = m.group(1).lower(), m.group(2), m.group(3), m.group(4).strip().lower()
         if key in ("unit", "role") and not col:
             raise ValueError(f"{key} clause needs a column, e.g. {key}(RUNTIME) == …: {raw!r}")
+        if key == "answer":
+            if col:
+                raise ValueError(f"answer takes no column: {raw!r}")
+            if op not in ("=~", "!~"):
+                raise ValueError(f"answer takes =~ or !~ and a regex: {raw!r}")
+            try:
+                re.compile(m.group(4).strip())
+            except re.error as e:
+                raise ValueError(f"answer regex does not compile ({e}): {raw!r}")
+            clauses.append({"key": key, "col": None, "op": op, "value": m.group(4).strip()})
+            continue
+        if op in ("=~", "!~"):
+            raise ValueError(f"{key} takes == or !=, =~ / !~ are for answer: {raw!r}")
         if key in ("result_kind", "representation", "intent.task") and col:
             raise ValueError(f"{key} takes no column: {raw!r}")
         if key == "intent.task" and rhs not in INTENT_TASKS:
@@ -119,6 +177,12 @@ def _check_clause(clause, response):
 
     `passed` is None for an intent clause on a response that carries no intent (not emitted)."""
     key, col, op, want = clause["key"], clause["col"], clause["op"], clause["value"]
+    if key == "answer":
+        text = response.get("answer") or ""
+        hit = re.search(want, str(text), re.IGNORECASE)
+        passed = (hit is None) if op == "!~" else (hit is not None)
+        seen = f"matched {hit.group(0)!r}" if hit else "no match"
+        return passed, f"answer {op} {want}  ({seen} in {str(text)[:120]!r})  {'PASS' if passed else 'FAIL'}"
     if key == "intent.task":
         intent = response.get("intent")
         task = intent.get("task") if isinstance(intent, dict) else None
