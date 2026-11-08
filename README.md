@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.20.5 (source of truth: [VERSION](VERSION))
+**Version:** 2.20.6 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-08
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1086,6 +1086,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.20.6 | 2026-11-08 | Results committed: `new-evaluations-355-series-persons.sql` (evaluations **2679 to 2704** inserted: series 2679 to 2690, control 2691; persons 2692 to 2703, control 2704) and `retire-executions-368-20261108.sql` (the targeted re-run then closed FASTAPI-TEXT2SQL-368: answer clause 13/13 and answer invariant 0 FAIL in EN and FR). No evaluator code change. |
 | 2.20.5 | 2026-11-08 | **`new-evaluations-355-series-persons.sql`** (voie 1, tag `355-EXT`), written before any code at Philippe's request: the FASTAPI-TEXT2SQL-355 homonym evaluations extended from movies to series and persons, same volume (twelve descriptions plus a control each, EN with FR twins). Series (category 62): eleven descriptions and the reverse Heartland (TNT, 289 votes against 23 K), control `Serie Heartland (2007)`. Persons (category 61): twelve descriptions, three where the namesake is more popular (Alan Parker, Michael Gordon, David Grossman) and the reverse Michael Jackson (the television executive), control `Person John Hughes born in 1950`. The -355 code covers `Movie|Serie` rewrites only; the person side is expected red. Result of `check-355-homonyms-series-persons.sql` committed (283 series groups, 93 person groups). No evaluator code change. |
 | 2.20.4 | 2026-11-08 | **`check-355-homonyms-series-persons.sql`** (read-only, voie 1): census of series sharing title and first air year, and of persons sharing name and birth year, to extend the FASTAPI-TEXT2SQL-355 evaluations beyond movies (Philippe, 2026-11-08: eleven movie descriptions, one series, no person). No evaluator code change. |
 | 2.20.3 | 2026-11-08 | FASTAPI-TEXT2SQL-369 closed (closing campaign 10/10): `new-evaluations-369-partial-title-person.sql` with its result and `retire-executions-369-20261108.sql` moved to `archive/`. Result of `new-evaluations-371-co-constraint-series-persons.sql` committed (2669 to 2678). No evaluator code change. |

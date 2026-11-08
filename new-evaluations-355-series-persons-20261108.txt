@@ -1,0 +1,43 @@
+-- new-evaluations-355-series-persons.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 17:42:56 +0100
+--
++----------------------------+-----------+---------------------------------+
+| ID_T2S_EVALUATION_CATEGORY | ID_PARENT | DESCRIPTION                     |
++----------------------------+-----------+---------------------------------+
+|                          6 |         1 | TV Series - Basic queries       |
+|                         16 |         1 | Persons - Basic queries         |
+|                         59 |         1 | Persons - Complex Queries       |
+|                         60 |         1 | Movies - Descriptive Queries    |
+|                         61 |         1 | Persons - Descriptive Queries   |
+|                         62 |         1 | TV Series - Descriptive Queries |
++----------------------------+-----------+---------------------------------+
++-------------------+----------------------------+-----------+-------------+----------------------------------------------------+-------------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_SAMPLE | IS_SHOWCASE | QUESTION                                           | ASSERTIONS_QUERY_RESULT                         |
++-------------------+----------------------------+-----------+-------------+----------------------------------------------------+-------------------------------------------------+
+|              2679 |                         62 |         1 |           1 | In which 2011 ABC series do fairy-tale characters  | COUNT(*) == 1 AND ID_SERIE IN (39272)           |
+|              2680 |                         62 |         1 |           1 | In which 2011 series does Emily VanCamp return to  | COUNT(*) == 1 AND ID_SERIE IN (39358)           |
+|              2681 |                         62 |         1 |           1 | Which 2020 Netflix series adapted from Harlan Cobe | COUNT(*) == 1 AND ID_SERIE IN (96608)           |
+|              2682 |                         62 |         1 |           1 | In which 2012 Canadian series does Rachel Nichols  | COUNT(*) == 1 AND ID_SERIE IN (43020)           |
+|              2683 |                         62 |         1 |           1 | In which 2007 NBC series does Damian Lewis play a  | COUNT(*) == 1 AND ID_SERIE IN (3797)            |
+|              2684 |                         62 |         1 |           1 | Which 2021 horror anthology series follows a Black | COUNT(*) == 1 AND ID_SERIE IN (120462)          |
+|              2685 |                         62 |         1 |           1 | Which 2021 anime series follows a popular high-sch | COUNT(*) == 1 AND ID_SERIE IN (110070)          |
+|              2686 |                         62 |         1 |           1 | Which 2017 CW reboot follows the feud between Fall | COUNT(*) == 1 AND ID_SERIE IN (72002)           |
+|              2687 |                         62 |         1 |           1 | In which 2019 Netflix series does a Canadian teena | COUNT(*) == 1 AND ID_SERIE IN (83478)           |
+|              2688 |                         62 |         1 |           1 | Which 2007 Canadian family drama follows Amy Flemi | COUNT(*) == 1 AND ID_SERIE IN (14929)           |
+|              2689 |                         62 |         1 |           1 | Which 2007 TNT medical drama stars Treat Williams  | COUNT(*) == 1 AND ID_SERIE IN (2756)            |
+|              2690 |                         62 |         1 |           1 | In which 2025 German Netflix series does a family  | COUNT(*) == 1 AND ID_SERIE IN (248982)          |
+|              2691 |                          6 |         0 |           0 | Serie Heartland (2007)                             | COUNT(*) == 2 AND ID_SERIE IN (14929, 2756)     |
+|              2692 |                         61 |         1 |           1 | Who is the singer nicknamed the King of Pop, who m | COUNT(*) == 1 AND ID_PERSON IN (82702)          |
+|              2693 |                         61 |         1 |           1 | Which British television executive ran Channel 4 a | COUNT(*) == 1 AND ID_PERSON IN (1997098)        |
+|              2694 |                         61 |         1 |           1 | Which British director, who began in advertising,  | COUNT(*) == 1 AND ID_PERSON IN (9168)           |
+|              2695 |                         61 |         1 |           1 | Which English actor plays Ron Weasley's father in  | COUNT(*) == 1 AND ID_PERSON IN (20999)          |
+|              2696 |                         61 |         1 |           1 | Which Disney animation director co-directed the fi | COUNT(*) == 1 AND ID_PERSON IN (70238)          |
+|              2697 |                         61 |         1 |           1 | Which English actor played the South African villa | COUNT(*) == 1 AND ID_PERSON IN (14344)          |
+|              2698 |                         61 |         1 |           1 | Which American director, blacklisted in the 1950s, | COUNT(*) == 1 AND ID_PERSON IN (123401)         |
+|              2699 |                         61 |         1 |           1 | Which American screenwriter was nominated for an O | COUNT(*) == 1 AND ID_PERSON IN (1538366)        |
+|              2700 |                         61 |         1 |           1 | Which Indian director made a Bollywood heist film  | COUNT(*) == 1 AND ID_PERSON IN (1770592)        |
+|              2701 |                         61 |         1 |           1 | Which Israeli novelist won the International Booke | COUNT(*) == 1 AND ID_PERSON IN (2107858)        |
+|              2702 |                         61 |         1 |           1 | Which Canadian actor and director made a film abou | COUNT(*) == 1 AND ID_PERSON IN (1144092)        |
+|              2703 |                         61 |         1 |           1 | Which American writer-director of 1980s teen comed | COUNT(*) == 1 AND ID_PERSON IN (11505)          |
+|              2704 |                         16 |         0 |           0 | Person John Hughes born in 1950                    | COUNT(*) == 2 AND ID_PERSON IN (11505, 1599220) |
++-------------------+----------------------------+-----------+-------------+----------------------------------------------------+-------------------------------------------------+
