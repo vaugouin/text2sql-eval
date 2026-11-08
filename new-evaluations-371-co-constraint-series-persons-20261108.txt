@@ -1,0 +1,17 @@
+-- new-evaluations-371-co-constraint-series-persons.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 17:22:20 +0100
+--
++-------------------+--------------------------------------+------------------------------------------------+----------------------------+-----------+-------------+--------------------------------------------------+
+| ID_T2S_EVALUATION | QUESTION                             | QUESTION_FR                                    | ID_T2S_EVALUATION_CATEGORY | IS_SAMPLE | IS_SHOWCASE | ASSERTIONS_QUERY_RESULT                          |
++-------------------+--------------------------------------+------------------------------------------------+----------------------------+-----------+-------------+--------------------------------------------------+
+|              2669 | Series Breaking with Bryan Cranston  | Série Breaking avec Bryan Cranston             |                         31 |         1 |           1 | ID_SERIE IN (1396)                               |
+|              2670 | Series Thrones with Emilia Clarke    | Série Thrones avec Emilia Clarke               |                         31 |         1 |           1 | ID_SERIE IN (1399)                               |
+|              2671 | Series Wire with Dominic West        | Série Wire avec Dominic West                   |                         31 |         1 |           1 | ID_SERIE IN (1438)                               |
+|              2672 | Series Bureau with Mathieu Kassovitz | Série Bureau avec Mathieu Kassovitz            |                         31 |         1 |           1 | ID_SERIE IN (62476) AND ID_SERIE NOT IN (4215)   |
+|              2673 | Series Lupin with Omar Sy            | Série Lupin avec Omar Sy                       |                         31 |         1 |           1 | ID_SERIE IN (96677) AND ID_SERIE NOT IN (224763) |
+|              2674 | Movie Notting Hill with Grant        | Film Coup de foudre à Notting Hill avec Grant  |                         30 |         1 |           1 | ID_MOVIE IN (509)                                |
+|              2675 | Movie Taxi Driver with Foster        | Film Taxi Driver avec Foster                   |                         30 |         1 |           1 | ID_MOVIE IN (103)                                |
+|              2676 | Movie Gladiator with Phoenix         | Film Gladiator avec Phoenix                    |                         30 |         1 |           1 | ID_MOVIE IN (98)                                 |
+|              2677 | Movie The Visitors with Clavier      | Film Les Visiteurs avec Clavier                |                         30 |         1 |           1 | ID_MOVIE IN (11687)                              |
+|              2678 | Movie Pulp Fiction with Jackson      | Film Pulp Fiction avec Jackson                 |                         30 |         1 |           1 | ID_MOVIE IN (680)                                |
++-------------------+--------------------------------------+------------------------------------------------+----------------------------+-----------+-------------+--------------------------------------------------+

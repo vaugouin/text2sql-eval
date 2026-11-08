@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.20.2 (source of truth: [VERSION](VERSION))
+**Version:** 2.20.3 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-08
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1086,6 +1086,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.20.3 | 2026-11-08 | FASTAPI-TEXT2SQL-369 closed (closing campaign 10/10): `new-evaluations-369-partial-title-person.sql` with its result and `retire-executions-369-20261108.sql` moved to `archive/`. Result of `new-evaluations-371-co-constraint-series-persons.sql` committed (2669 to 2678). No evaluator code change. |
 | 2.20.2 | 2026-11-08 | **`new-evaluations-371-co-constraint-series-persons.sql`** (voie 1): ten pairs for the co-constrained rescue beyond movie titles. Five series (category 31: Breaking + Bryan Cranston, Thrones + Emilia Clarke, Wire + Dominic West, Bureau + Mathieu Kassovitz against the exact homonym *Le Bureau*, control Lupin + Omar Sy) cover the series path of FASTAPI-TEXT2SQL-369, never evaluated; five reverse cases (category 30: a full title plus a bare surname, Grant, Foster, Phoenix, Clavier, Jackson) are the person branch of FASTAPI-TEXT2SQL-371. Ids measured in fastapi-text2sql `doc/sql/check-371-series-persons-20261108.txt`. No evaluator code change. |
 | 2.20.1 | 2026-11-08 | **`retire-executions-368-20261108.sql`** (voie 2): soft-deletes the 1.1.20 rows of 2630 to 2642 so FASTAPI-TEXT2SQL-368 is closed by a re-run on the same version with `d692ad3`; expected answer clause 13 PASS per language and answer invariant 0 FAIL. Result of `update-evaluations-368-answer-identifier.sql` committed (13 rows). No evaluator code change. |
 | 2.20.0 | 2026-11-08 | **`answer` clause in the result-shape grammar, and a bank-wide answer invariant** (`result_shape_assertions.py`, §4.8), to close FASTAPI-TEXT2SQL-368 by an evaluation. `answer !~ <regex>` / `answer =~ <regex>` asserts on the sentence the API writes above the result, out of score, tallied apart by `check-result-shape.py` (which reads `answer` from `api_output` even when it recomputes or lacks the shape), so the shape figures do not move (1.1.20: 82 checked, 60 PASS, 22 FAIL per language, unchanged). The invariant `answer !~ (tt\|nm)[0-9]{7}\|matching identifier\|identifiant` runs on every execution whose question types no identifier (Philippe's choice of 2026-11-08: a property of the API, not of one question, so new questions are covered on arrival). On the 1.1.20 exports of 2026-11-06, before `d692ad3`: 993 checked per language, FAIL 11 in EN and 12 in FR, all on the -355 re-entries 2630 to 2641, 25 skipped; no other question of 1.1.15 to 1.1.20 ever leaked an id it was not given. New `test-result-shape-answer.py`. **`update-evaluations-368-answer-identifier.sql`** (voie 1) also writes the clause on 2630 to 2642, the explicit trace of the ticket. |

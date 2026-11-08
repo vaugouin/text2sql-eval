@@ -34,7 +34,7 @@
 --   ssh vps-agent pull text2sql-eval
 --   ssh vps-agent run -e text2sql-eval/new-evaluations-371-co-constraint-series-persons.sql
 --
--- CONVENTIONS (as new-evaluations-369-partial-title-person.sql): auto-increment id; each INSERT
+-- CONVENTIONS (as archive/new-evaluations-369-partial-title-person.sql): auto-increment id; each INSERT
 -- is guarded by NOT EXISTS on the English QUESTION; DELETED = 0; DAT_CREAT = CURDATE(); owner 1.
 
 INSERT INTO T_WC_T2S_EVALUATION

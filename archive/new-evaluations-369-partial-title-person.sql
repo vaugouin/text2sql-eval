@@ -25,7 +25,7 @@
 --
 -- ROUTING: INSERTs on T_WC_T2S_EVALUATION only, no DDL: voie 1.
 --   ssh vps-agent pull text2sql-eval
---   ssh vps-agent run -e text2sql-eval/new-evaluations-369-partial-title-person.sql
+--   ssh vps-agent run -e text2sql-eval/archive/new-evaluations-369-partial-title-person.sql
 -- Commit and push before running. The SELECT at the end gives the new ids for EVAL_IDS.
 --
 -- CONVENTIONS (as new-evaluations-20261107.sql): auto-increment id; each INSERT is guarded by
