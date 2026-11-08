@@ -1,0 +1,25 @@
+-- update-evaluations-368-answer-identifier.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 16:09:49 +0100
+--
++--------------+
+| ROWS_CHANGED |
++--------------+
+|           13 |
++--------------+
++-------------------+----------------------------+----------------------------------------------------------------------------+---------------------------------------------+-----------------------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | QUESTION                                                                   | ASSERTIONS_QUERY_RESULT                     | ASSERTIONS_RESULT_SHAPE                                   |
++-------------------+----------------------------+----------------------------------------------------------------------------+---------------------------------------------+-----------------------------------------------------------+
+|              2630 |                         60 | "On every street in every city, there's a nobody who dreams of being a     | COUNT(*) == 1 AND ID_MOVIE IN (103)         | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2631 |                         60 | Which 1976 Turkish film directed by Şerif Gören, starring Kadir İnanır     | COUNT(*) == 1 AND ID_MOVIE IN (612176)      | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2632 |                         60 | Which film that won the Best Picture Oscar weaves together the lives o     | COUNT(*) == 1 AND ID_MOVIE IN (1640)        | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2633 |                         60 | In which 1992 animated film does Robin Williams voice a genie freed fr     | COUNT(*) == 1 AND ID_MOVIE IN (812)         | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2634 |                         60 | Which 1997 Disney animated film follows the son of Zeus proving himsel     | COUNT(*) == 1 AND ID_MOVIE IN (11970)       | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2635 |                         60 | In which film does a linguist played by Amy Adams learn the language o     | COUNT(*) == 1 AND ID_MOVIE IN (329865)      | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2636 |                         60 | Which Ridley Scott film sends a spaceship crew to find the creators of     | COUNT(*) == 1 AND ID_MOVIE IN (70981)       | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2637 |                         60 | Which 1996 horror film features a masked killer who quizzes his victim     | COUNT(*) == 1 AND ID_MOVIE IN (4232)        | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2638 |                         60 | Which 2023 Tamil action film by Lokesh Kanagaraj stars Vijay as a café     | COUNT(*) == 1 AND ID_MOVIE IN (949229)      | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2639 |                         60 | In which 2023 animated musical does Adam Sandler voice a 74-year-old l     | COUNT(*) == 1 AND ID_MOVIE IN (1075794)     | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2640 |                         60 | Which 1976 Arabic-language film by Moustapha Akkad tells the birth of      | COUNT(*) == 1 AND ID_MOVIE IN (881210)      | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2641 |                         62 | In which 2023 series does Keri Russell play a career diplomat suddenly     | COUNT(*) == 1 AND ID_SERIE IN (203857)      | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
+|              2642 |                         29 | Movie Taxi Driver (1976)                                                   | COUNT(*) == 2 AND ID_MOVIE IN (103, 612176) | answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant |
++-------------------+----------------------------+----------------------------------------------------------------------------+---------------------------------------------+-----------------------------------------------------------+
