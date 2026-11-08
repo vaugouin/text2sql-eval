@@ -1,0 +1,225 @@
+-- check-355-homonyms-series-persons.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 17:38:06 +0100
+--
++------------------------------+
+| SECTION                      |
++------------------------------+
+| serie title + first air year |
++------------------------------+
++-------------------+----------------+
+| GROUPS_TITLE_YEAR | ROWS_IN_GROUPS |
++-------------------+----------------+
+|               283 |            581 |
++-------------------+----------------+
++------------------+----------------+----------+------------+------------------+------------+------------+
+| SERIE_TITLE      | FIRST_AIR_YEAR | ID_SERIE | ID_IMDB    | ORIGINAL_TITLE   | IMDB_VOTES | POPULARITY |
++------------------+----------------+----------+------------+------------------+------------+------------+
+| Once Upon a Time |           2011 |    39272 | tt1843230  | Once Upon a Time |     250069 |       77.0 |
+| Once Upon A Time |           2011 |   287570 | tt34958371 | Once Upon A Time |         18 |        0.0 |
+| Revenge          |           2011 |    39358 | tt1837642  | Revenge          |     130586 |       47.4 |
+| Revenge          |           2011 |   130552 | tt4417430  | Месть            |       NULL |        1.2 |
+| The Diplomat     |           2023 |   203857 | tt17491088 | The Diplomat     |     108160 |       64.1 |
+| The Diplomat     |           2023 |   203762 | tt17001504 | The Diplomat     |       3398 |        6.1 |
+| The Stranger     |           2020 |    96608 | tt9698480  | The Stranger     |      71538 |       13.0 |
+| The Stranger     |           2020 |    99282 | tt10681780 | The Stranger     |       2674 |        2.5 |
+| Continuum        |           2012 |    43020 | tt1954347  | Continuum        |      67283 |       33.4 |
+| Continuum        |           2012 |    56045 | tt2309131  | Continuum        |        614 |        3.0 |
+| Life             |           2007 |     3797 | tt0874936  | Life             |      37174 |       21.3 |
+| Life             |           2007 |     9670 | tt1063015  | ライフ           |        191 |        3.6 |
+| Them             |           2021 |   120462 | tt9064858  | Them             |      33875 |       20.4 |
+| Them             |           2021 |   129709 | tt14739092 | آنها             |        343 |        0.5 |
+| Horimiya         |           2021 |   110070 | tt13103134 | ホリミヤ         |      28046 |       18.9 |
+| Horimiya         |           2021 |   113980 | tt13521004 | ホリミヤ         |        219 |        2.2 |
+| Dynasty          |           2017 |    72002 | tt6128300  | Dynasty          |      27585 |       38.4 |
+| Dynasty          |           2017 |    73267 | tt7458658  | Los Morales      |         41 |        3.3 |
+| Daybreak         |           2019 |    83478 | tt8755226  | Daybreak         |      26813 |       17.2 |
+| Daybreak         |           2019 |   110690 | tt12358072 | 天空渐渐亮       |       NULL |        1.5 |
+| Heartland        |           2007 |    14929 | tt1094229  | Heartland        |      22964 |       67.2 |
+| Heartland        |           2007 |     2756 | tt0839847  | Heartland        |        289 |        4.0 |
+| Cassandra        |           2025 |   248982 | tt29135600 | Cassandra        |      21634 |        6.3 |
+| Cassandra        |           2025 |   288042 | tt36399906 | Cassandra        |       NULL |        1.6 |
++------------------+----------------+----------+------------+------------------+------------+------------+
++--------------------------+
+| SECTION                  |
++--------------------------+
+| person name + birth year |
++--------------------------+
++------------------+----------------+
+| GROUPS_NAME_YEAR | ROWS_IN_GROUPS |
++------------------+----------------+
+|               93 |            187 |
++------------------+----------------+
++--------------------------+------------+-----------+------------+----------------------+------------------+------------+
+| PERSON_NAME              | BIRTH_YEAR | ID_PERSON | ID_IMDB    | KNOWN_FOR_DEPARTMENT | COUNTRY_OF_BIRTH | POPULARITY |
++--------------------------+------------+-----------+------------+----------------------+------------------+------------+
+| John Sweeney             |       1958 |   1449159 | nm0842135  | Art                  | US               |       4.82 |
+| John Sweeney             |       1958 |   1150525 | nm1707228  | Acting               | JE               |       0.03 |
+| Michael Jackson          |       1958 |     82702 | nm0001391  | Acting               | US               |       4.40 |
+| Michael Jackson          |       1958 |   1997098 | nm1577843  | Production           | GB               |       0.12 |
+| Vanessa Williams         |       1963 |     27011 | nm0001853  | Acting               | US               |       2.83 |
+| Vanessa Williams         |       1963 |    543193 | nm0004539  | Acting               | US               |       1.16 |
+| Wang Jinsong             |       1968 |   1675909 | nm0910948  | Acting               | CN               |       2.78 |
+| Wang Jinsong             |       1968 |   1467673 | nm0702619  | Acting               | CN               |       1.47 |
+| Alok                     |       1991 |   2098781 | nm3464882  | Acting               | BR               |       2.57 |
+| ALOK                     |       1991 |   1718961 | nm8268549  | Acting               | US               |       0.12 |
+| Ian Roberts              |       1965 |   1224391 | nm1345123  | Acting               | GB               |       2.31 |
+| Ian Roberts              |       1965 |     13101 | nm0731168  | Acting               | US               |       1.10 |
+| Matt Johnson             |       1985 |   1144092 | nm4798740  | Acting               | CA               |       2.29 |
+| Matt Johnson             |       1985 |     66824 | nm0425780  | Writing              |                  |       0.32 |
+| Kim Hee-jung             |       1970 |    118667 | nm3343883  | Acting               | KR               |       2.29 |
+| Kim Hee-jung             |       1970 |   1478252 | nm3587010  | Directing            | KR               |       1.04 |
+| Alan Parker              |       1944 |   1714546 | nm0662029  | Sound                |                  |       2.05 |
+| Alan Parker              |       1944 |      9168 | nm0000570  | Directing            | GB               |       1.41 |
+| Tim Williams             |       1966 |   1472871 | nm1558480  | Sound                | GB               |       2.03 |
+| Tim Williams             |       1966 |    141778 | nm0931807  | Acting               | US               |       0.80 |
+| Stuart Wilson            |       1946 |     14344 | nm0934179  | Acting               | GB               |       1.97 |
+| Stuart Wilson            |       1946 |   1568519 | nm0934184  | Sound                |                  |       0.78 |
+| John Hughes              |       1950 |     11505 | nm0000455  | Directing            | US               |       1.92 |
+| John Hughes              |       1950 |   1599220 | nm0400696  | Acting               |                  |       0.01 |
+| HOSHI                    |       1996 |   1897260 | nm10990749 | Acting               | KR               |       1.86 |
+| Hoshi                    |       1996 |   3529834 | nm9547749  | Acting               | FR               |       0.07 |
+| David Bradley            |       1953 |     94330 | nm0103196  | Acting               | US               |       1.85 |
+| David Bradley            |       1953 |   1357431 | nm0103193  | Acting               | GB               |       1.69 |
+| Huang Yi                 |       1979 |    589340 | nm0399062  | Acting               | CN               |       1.78 |
+| Huang Yi                 |       1979 |   2675092 | nm11662521 | Directing            | CN               |       0.84 |
+| Danny Smith              |       1973 |     99354 | nm0807834  | Acting               | US               |       1.72 |
+| Danny Smith              |       1973 |   2203608 | nm0807831  | Acting               | CA               |       0.32 |
+| Melissa Newman           |       1961 |   4077250 | nm1206111  | Acting               | US               |       1.66 |
+| Melissa Newman           |       1961 |    121487 | nm0628179  | Acting               | US               |       1.36 |
+| Kiyoe Yoshioka           |       1984 |   4891784 | nm6014440  | Sound                | JP               |       1.57 |
+| Kiyoe Yoshioka           |       1984 |   1941669 | nm4195735  | Sound                | JP               |       0.79 |
+| Michael Gordon           |       1909 |   1196027 | nm0330458  | Editing              | GB               |       1.54 |
+| Michael Gordon           |       1909 |    123401 | nm0330456  | Directing            | US               |       0.61 |
+| Ruben Simonov            |       1953 |   1185406 | nm0800661  | Acting               |                  |       1.53 |
+| Ruben Simonov            |       1953 |   1287468 | nm1075465  | Acting               |                  |       0.17 |
+| Mark Williams            |       1959 |     20999 | nm0931247  | Acting               | GB               |       1.50 |
+| Mark Williams            |       1959 |    206574 | nm0931251  | Production           | US               |       1.09 |
+| Takuya Sato              |       1984 |   1253431 | nm6003863  | Acting               | JP               |       1.49 |
+| Takuya Sato              |       1984 |    110467 | nm0766272  | Directing            | JP               |       0.93 |
+| Chris Williams           |       1967 |     70238 | nm0930261  | Directing            | US               |       1.42 |
+| Chris Williams           |       1967 |   1214427 | nm0930282  | Acting               | US               |       0.70 |
+| Chen Hao                 |       1979 |   2368848 | nm9705929  | Acting               | CN               |       1.41 |
+| Chen Hao                 |       1979 |    134028 | nm1705644  | Acting               | CN               |       1.26 |
+| Chen Hao                 |       1979 |   1274127 | nm10424193 | Acting               |                  |       0.13 |
+| Michael Donovan          |       1953 |    175854 | nm0233036  | Acting               | CA               |       1.39 |
+| Michael Donovan          |       1953 |     35032 | nm0233035  | Production           | CA               |       0.35 |
+| Bill Foster              |       1932 |    152330 | nm0287695  | Directing            |                  |       1.35 |
+| Bill Foster              |       1932 |   1239021 | nm0287699  | Acting               |                  |       0.18 |
+| Tomoko Nakajima          |       1971 |    553925 | nm0620066  | Acting               | JP               |       1.29 |
+| Tomoko Nakajima          |       1971 |   2559474 | nm1592636  | Acting               | JP               |       0.72 |
+| Kim Gyu-ri               |       1979 |   1246931 | nm0453612  | Acting               | KR               |       1.15 |
+| Kim Gyu-ri               |       1979 |    123019 | nm0453589  | Acting               | KR               |       0.34 |
+| Lynne Adams              |       1946 |    197795 | nm0011164  | Acting               | CA               |       1.15 |
+| Lynne Adams              |       1946 |   1458543 | nm0011165  | Acting               |                  |       0.02 |
+| Michael Tucker           |       1945 |    107148 | nm0875953  | Directing            | US               |       1.07 |
+| Michael Tucker           |       1945 |     56695 | nm0875951  | Acting               | US               |       0.58 |
+| Mutsumi Sasaki           |       1961 |   1898086 | nm3602913  | Acting               | JP               |       0.97 |
+| Mutsumi Sasaki           |       1961 |   2093483 | nm2129473  | Visual Effects       | JP               |       0.36 |
+| Sanjay Gupta             |       1969 |   1770592 | nm0348495  | Directing            | IN               |       0.94 |
+| Sanjay Gupta             |       1969 |   1230057 | nm1918973  | Acting               | US               |       0.27 |
+| Joseph McCarthy          |       1908 |   1349488 | nm0565169  | Sound                |                  |       0.94 |
+| Joseph McCarthy          |       1908 |   1386798 | nm0565191  | Acting               | US               |       0.06 |
+| Darin Scott              |       1979 |   1006775 | nm1576079  | Acting               | US               |       0.90 |
+| Darin Scott              |       1979 |     57777 | nm0779011  | Directing            |                  |       0.41 |
+| Evgeniy Vasilev          |       1927 |   5484931 | nm0890587  | Acting               | RU               |       0.88 |
+| Evgeniy Vasilev          |       1927 |    273981 | nm0890586  | Directing            | RU               |       0.59 |
+| Bill Johnson             |       1951 |    422214 | nm0424601  | Acting               | US               |       0.85 |
+| Bill Johnson             |       1951 |   1072080 | nm4887737  | Acting               |                  |       0.04 |
+| Robert Anderson          |       1917 |     46610 | nm0027355  | Writing              | US               |       0.82 |
+| Robert Anderson          |       1917 |    194392 | nm0027350  | Directing            | US               |       0.04 |
+| Camila Alves             |       1982 |   1238508 | nm3529629  | Acting               | BR               |       0.81 |
+| Camila Alves             |       1982 |    132568 | nm3399968  | Acting               |                  |       0.01 |
+| Vladimir Laptev          |       1946 |    237799 | nm0487848  | Directing            |                  |       0.79 |
+| Vladimir Laptev          |       1946 |   1405435 | nm1792888  | Acting               |                  |       0.06 |
+| David Grossman           |       1954 |     43954 | nm0343622  | Directing            | US               |       0.78 |
+| David Grossman           |       1954 |   2107858 | nm0343624  | Writing              | IL               |       0.24 |
+| Bob Nelson               |       1958 |   1538366 | nm1504572  | Writing              | US               |       0.77 |
+| Bob Nelson               |       1958 |    104414 | nm0625186  | Acting               | US               |       0.10 |
+| Tony Craig               |       1958 |   1225403 | nm0186037  | Acting               | TT               |       0.76 |
+| Tony Craig               |       1958 |    185072 | nm0186038  | Directing            |                  |       0.26 |
+| Jorge Fernández          |       1972 |   1455971 | nm1019624  | Acting               | ES               |       0.70 |
+| Jorge Fernández          |       1972 |    941782 | nm0273561  | Art                  |                  |       0.05 |
+| Patrick Campbell         |       1913 |     51765 | nm0132769  | Acting               | US               |       0.69 |
+| Patrick Campbell         |       1913 |    159201 | nm0132767  | Writing              | IE               |       0.08 |
+| Paul J. Smith            |       1906 |    932741 | nm0006761  | Visual Effects       | US               |       0.67 |
+| Paul J. Smith            |       1906 |      2107 | nm1345229  | Sound                | US               |       0.57 |
+| Yuki Hayashi             |       1984 |   1251424 | nm3413669  | Acting               | JP               |       0.66 |
+| Yuki Hayashi             |       1984 |   2797511 | nm5248675  | Visual Effects       | JP               |       0.10 |
+| Robert M. Young          |       1924 |     86293 | nm0950001  | Directing            | US               |       0.65 |
+| Robert M. Young          |       1924 |   1052231 | nm1255905  | Writing              | GB               |       0.12 |
+| Ernesto Chao             |       1943 |   1347783 | nm0152041  | Acting               | ES               |       0.62 |
+| Ernesto Chao             |       1943 |    141969 | nm2398980  | Production           | ES               |       0.58 |
+| Brian Duffy              |       1953 |    949852 | nm0240501  | Crew                 |                  |       0.61 |
+| Brian Duffy              |       1953 |   1169468 | nm1070769  | Acting               | US               |       0.05 |
+| Brian Regan              |       1957 |     83995 | nm1766173  | Acting               | US               |       0.61 |
+| Brian Regan              |       1957 |   1577591 | nm0716390  | Acting               | GB               |       0.00 |
+| David Friedman           |       1973 |   1217482 | nm0295191  | Acting               | US               |       0.60 |
+| David Friedman           |       1973 |   1078101 | nm0295195  | Sound                |                  |       0.11 |
+| Robert Carson            |       1909 |     30522 | nm0308604  | Writing              |                  |       0.58 |
+| Robert Carson            |       1909 |    121209 | nm0141311  | Acting               | US               |       0.22 |
+| Margarita Dyachenkova    |       2003 |   2887356 | nm12131197 | Acting               | RU               |       0.57 |
+| Margarita Dyachenkova    |       2003 |   2007634 | nm9437688  | Acting               | RU               |       0.22 |
+| Jan Johansen             |       1966 |   1597716 | nm1484926  | Acting               | SE               |       0.57 |
+| Jan Johansen             |       1966 |    121515 | nm0423802  | Acting               | DK               |       0.03 |
+| Miguel Ángel Rodríguez   |       1960 |   1031901 | nm0736032  | Acting               | MX               |       0.56 |
+| Miguel Ángel Rodríguez   |       1960 |   1378723 | nm1321778  | Acting               | AR               |       0.09 |
+| Sandy                    |       1986 |   2112010 | nm8842905  | Crew                 |                  |       0.52 |
+| Sandy                    |       1986 |   1309191 | nm7126662  | Acting               | EG               |       0.04 |
+| Paul Davies              |       1946 |   2305998 | nm0203886  | Editing              |                  |       0.48 |
+| Paul Davies              |       1946 |   2611938 | nm1581040  | Acting               | GB               |       0.00 |
+| Walter Scheuer           |       1927 |   1511783 | nm4104325  | Acting               | AT               |       0.46 |
+| Walter Scheuer           |       1927 |   1257935 | nm0771200  | Production           | AT               |       0.03 |
+| Kevin Collins            |       1972 |   1427716 | nm1962593  | Directing            | US               |       0.46 |
+| Kevin Collins            |       1972 |    590283 | nm1944404  | Acting               | US               |       0.08 |
+| Charles Farrell          |       1900 |     82558 | nm0268191  | Acting               | IE               |       0.46 |
++--------------------------+------------+-----------+------------+----------------------+------------------+------------+
++----------------------------------------------------------+
+| SECTION                                                  |
++----------------------------------------------------------+
+| person name shared, famous one, other birth year unknown |
++----------------------------------------------------------+
++------------------+------------+-----------+------------+----------------------+------------+
+| PERSON_NAME      | BIRTH_YEAR | ID_PERSON | ID_IMDB    | KNOWN_FOR_DEPARTMENT | POPULARITY |
++------------------+------------+-----------+------------+----------------------+------------+
+| Michael Wright   |       1956 |      2248 | nm0942646  | Acting               |      25.41 |
+| Michael Wright   |       NULL |    122741 | nm0942647  | Directing            |       0.52 |
+| Tom Hardy        |       1977 |      2524 | nm0362766  | Acting               |      11.33 |
+| Tom Hardy        |       NULL |   1413704 | nm1987321  | Directing            |       0.04 |
+| Kapil Sharma     |       1981 |   1513214 | nm6151574  | Acting               |      10.87 |
+| Kapil Sharma     |       NULL |   1158467 | nm1536866  | Acting               |       0.01 |
+| Jack Martin      |       1998 |   2461534 | nm10811866 | Acting               |      10.69 |
+| Jack Martin      |       NULL |   1707748 | nm4948943  | Acting               |       0.38 |
+| Yusuf Khan       |       1929 |   2247798 | nm0451345  | Acting               |       8.29 |
+| Yusuf Khan       |       NULL |   1172571 | nm1177989  | Directing            |       0.01 |
+| Matt Peters      |       1979 |   1448945 | nm1835614  | Acting               |       7.30 |
+| Matt Peters      |       NULL |   1637776 | nm1602528  | Directing            |       0.93 |
+| Mark Wilson      |       1929 |   1464887 | nm0933820  | Acting               |       7.13 |
+| Mark Wilson      |       NULL |     45443 | nm0933817  | Acting               |       0.18 |
+| Sophie Turner    |       1996 |   1001657 | nm3849842  | Acting               |       6.99 |
+| Sophie Turner    |       NULL |   1515523 | nm3627168  | Acting               |       0.01 |
+| Gopi Krishna     |       1935 |   2686583 | nm0471438  | Crew                 |       6.88 |
+| Gopi Krishna     |       NULL |   1420969 | nm5043480  | Editing              |       0.02 |
+| Patrick Godfrey  |       1933 |      3568 | nm0324009  | Acting               |       6.64 |
+| Patrick Godfrey  |       NULL |   1603629 | nm0324010  | Sound                |       0.00 |
+| John Miller      |       1941 |   2153022 | nm3834054  | Acting               |       6.59 |
+| John Miller      |       NULL |   3099068 | nm0588633  | Sound                |       0.18 |
+| John Miller      |       NULL |   1613610 | nm1193356  | Directing            |       0.02 |
+| Nick Davis       |       1965 |   1637633 | nm0205223  | Directing            |       5.98 |
+| Nick Davis       |       NULL |    256928 | nm0002428  | Visual Effects       |       0.15 |
+| Lisa Howard      |       1963 |   1790303 | nm0397465  | Acting               |       5.98 |
+| Lisa Howard      |       1926 |    131269 | nm0397467  | Acting               |       0.65 |
+| Lisa Howard      |       NULL |     44238 | nm6772939  | Acting               |       0.21 |
+| Sasha Alexander  |       1973 |     64154 | nm0018734  | Acting               |       5.62 |
+| Sasha Alexander  |       NULL |   1416724 | nm0018733  | Directing            |       0.00 |
+| Mahesh Babu      |       NULL |   1343197 | nm4841923  | Directing            |       5.52 |
+| Mahesh Babu      |       1975 |    116924 | nm1121870  | Acting               |       1.97 |
+| Michael Andrews  |       1967 |      1589 | nm0028787  | Sound                |       5.41 |
+| Michael Andrews  |       NULL |   2116994 | nm4115136  | Writing              |       0.33 |
+| Michael Andrews  |       NULL |   1546437 | nm0028788  | Editing              |       0.15 |
+| Michael Andrews  |       NULL |   2252931 | nm1015913  | Acting               |       0.01 |
+| Richard Harris   |       1930 |       194 | nm0001321  | Acting               |       5.31 |
+| Richard Harris   |       1934 |     99061 | nm0365234  | Writing              |       0.18 |
+| Richard Harris   |       NULL |   3278021 | nm4277431  | Acting               |       0.02 |
+| Masaya Takahashi |       1930 |     43672 | nm0847157  | Acting               |       5.20 |
+| Masaya Takahashi |       NULL |   2688922 | nm3060588  | Directing            |       1.89 |
++------------------+------------+-----------+------------+----------------------+------------+
