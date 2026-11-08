@@ -1,0 +1,9 @@
+-- retire-executions-2591-20261107.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 07:05:46 +0100
+--
++------+------------+-------------+
+| LANG | executions | evaluations |
++------+------------+-------------+
+| en   |          1 |           1 |
+| fr   |          1 |           1 |
++------+------------+-------------+

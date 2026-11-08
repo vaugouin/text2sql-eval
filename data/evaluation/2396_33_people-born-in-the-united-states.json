@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT T_WC_T2S_PERSON.ID_PERSON FROM T_WC_T2S_PERSON WHERE T_WC_T2S_PERSON.COUNTRY_OF_BIRTH = &#039;us&#039; ORDER BY T_WC_T2S_PERSON.POPULARITY DESC LIMIT 15",
-  "assertion_refresh_last": "2026-11-07T03:45:57",
+  "assertion_refresh_last": "2026-11-08T05:51:08",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

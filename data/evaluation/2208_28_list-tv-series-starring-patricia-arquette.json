@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT s.ID_SERIE FROM T_WC_T2S_SERIE s JOIN T_WC_T2S_PERSON_SERIE ps ON ps.ID_SERIE = s.ID_SERIE JOIN T_WC_T2S_PERSON p ON ps.ID_PERSON = p.ID_PERSON WHERE p.PERSON_NAME = &#039;Patricia Arquette&#039; AND ps.CREDIT_TYPE = &#039;cast&#039; ORDER BY s.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-07T03:45:48",
+  "assertion_refresh_last": "2026-11-08T05:50:42",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

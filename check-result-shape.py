@@ -137,6 +137,7 @@ def main():
             latest[eid] = (row, d)
 
     n_checked = n_pass = n_fail = n_notemitted = n_recalc = 0
+    n_intent_q = n_intent_pending = n_intent_pass = n_intent_fail = 0
     failures = []
     for eid in sorted(latest, key=lambda e: (e is None, e)):
         d = latest[eid][1]
@@ -158,16 +159,29 @@ def main():
             recomputed = True
         else:
             resp = api
+        passed, details = rsa.check_response(spec, resp)
+        lang = d.get("language") or d.get("lang") or "?"
+        # Intent clauses (FASTAPI-TEXT2SQL-353) are tallied apart: before -353 the API emits no
+        # intent, the clause is NOT EMITTED and must not move the shape figures.
+        intent_details = [x for x in details if x["message"].startswith("intent.")]
+        if intent_details:
+            n_intent_q += 1
+            if any(x["passed"] is None for x in intent_details):
+                n_intent_pending += 1
+            elif all(x["passed"] for x in intent_details):
+                n_intent_pass += 1
+            else:
+                n_intent_fail += 1
+        if not rsa.judged(details):
+            continue  # only intent clauses, none emitted: nothing to judge yet
         n_checked += 1
         if recomputed:
             n_recalc += 1
-        passed, details = rsa.check_response(spec, resp)
-        lang = d.get("language") or d.get("lang") or "?"
         if passed:
             n_pass += 1
         else:
             n_fail += 1
-            msgs = [x["message"] for x in details if not x["passed"]]
+            msgs = [x["message"] for x in details if x["passed"] is False]
             failures.append((eid, lang, recomputed, msgs))
 
     print(f"Campaign: {os.path.basename(args.exec_dir.rstrip(os.sep))}")
@@ -175,6 +189,9 @@ def main():
     print(f"  checked: {n_checked}   PASS {n_pass}   FAIL {n_fail}"
           + (f"   (of which {n_recalc} recomputed offline, no re-run)" if n_recalc else ""))
     print(f"  not emitted and not recomputable (no rows on disk): {n_notemitted}")
+    if n_intent_q:
+        print(f"Questions with an intent.task clause: {n_intent_q}   PASS {n_intent_pass}   "
+              f"FAIL {n_intent_fail}   not emitted (API before FASTAPI-TEXT2SQL-353) {n_intent_pending}")
     if failures:
         print("\n=== FAIL ===")
         for eid, lang, recomputed, msgs in failures:

@@ -1,7 +1,7 @@
 # Text2SQL Evaluator
 
-**Version:** 2.18.26 (source of truth: [VERSION](VERSION))
-**Last Updated:** 2026-11-07
+**Version:** 2.19.0 (source of truth: [VERSION](VERSION))
+**Last Updated:** 2026-11-08
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
 
@@ -568,8 +568,9 @@ A question whose export predates -349 (no `result_kind` in `api_output`) is **re
 | `unit(*) == minutes` | the unit of the **single metric column**, the robust form when the aggregate alias is the model's choice; fails if there is not exactly one metric |
 | `unit(any) == minutes` | **at least one column** carries the unit (`!=`: none does); the form for a grouped result where the metric sits next to other numeric columns, since a `GROUP BY` key such as `DECADE` is typed `metric` too and `*` cannot single the average out. `any` is a reserved word |
 | `role(GENRE_NAME) == label` | the role of a column (`entity_id` \| `label` \| `metric` \| `date` \| `other`); `role(*)` and `role(any)` as for `unit` |
+| `intent.task == compare` | the task read by the API's intent classifier (FASTAPI-TEXT2SQL-353): `list` \| `value` \| `rank` \| `count` \| `compare` \| `sequence` \| `trend`, any other value a parse error. On a response without `intent` (API before -353) the clause is NOT EMITTED, reported on its own line by `check-result-shape.py` and left out of the shape verdict |
 
-All clauses must hold. An empty assertion passes vacuously. Populate the column with `result-shape-assertions.sql` (schema migration plus the first slice of assertions). Prefer `unit(*)`, or `unit(any)` on a grouped result, over a named column on a generated query, whose alias the bank does not control (2614 "average runtime by decade" was aliased `AVERAGE_RUNTIME_MINUTES`, `DUREE_MOYENNE_MINUTES` and `AVG_RUNTIME` by three arms of one campaign).
+All clauses must hold. An empty assertion passes vacuously. Populate the column with `archive/result-shape-assertions.sql` (schema migration plus the first slice of assertions). Prefer `unit(*)`, or `unit(any)` on a grouped result, over a named column on a generated query, whose alias the bank does not control (2614 "average runtime by decade" was aliased `AVERAGE_RUNTIME_MINUTES`, `DUREE_MOYENNE_MINUTES` and `AVG_RUNTIME` by three arms of one campaign).
 
 ---
 
@@ -740,6 +741,7 @@ ASSERTIONS_ENTITY_EXTRACTION: PASS
 | [VERSION](VERSION) | Evaluator version (MAJOR.MINOR.PATCH), printed on the confirmation screen and on the evaluator's first line |
 | [check-result-shape.py](check-result-shape.py) | Out-of-score checker of `ASSERTIONS_RESULT_SHAPE` against a campaign's execution exports, see [§4.8](#48-assertions_result_shape-the-rendering-hint-assertion-out-of-score) |
 | [result_shape_assertions.py](result_shape_assertions.py) | Parser and checker of the result-shape assertion grammar, used by `check-result-shape.py` |
+| [test-result-shape-intent.py](test-result-shape-intent.py) | Standalone check of the `intent.task` clause (parse refusals, not-emitted case, match and mismatch) |
 | [test-cell-condition.py](test-cell-condition.py) | Small standalone check of `CELL(...)` assertions on a hand-built DataFrame |
 | [harness/](harness/) + [harness-eval.sh](harness-eval.sh) | Conversational benchmark of the voice-agent, shipped in the same image; see [harness/README.md](harness/README.md) |
 | [load/](load/) | Locust load bench and its launcher, see [§14](#14-load-bench-locust) |
@@ -1082,6 +1084,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.19.0 | 2026-11-08 | **`intent.task` clause in the result-shape grammar** (`result_shape_assertions.py`, §4.8), phase 1 of the result-representations epic: asserts the task the API's intent classifier reads (FASTAPI-TEXT2SQL-353), closed vocabulary validated by Philippe (`list`, `value`, `rank`, `count`, `compare`, `sequence`, `trend`), anything else a parse error. On a response without `intent` (any API before -353) the clause is NOT EMITTED: it neither passes nor fails, and `check-result-shape.py` tallies intent clauses on their own line, so the shape figures do not move (1.1.20: 82 checked, 60 PASS, 22 FAIL per language, unchanged). New `test-result-shape-intent.py`. **`update-evaluations-intent-task.sql`** (voie 1, labels validated by Philippe) labels the 82 shape-asserted questions, `list` for the plain list 3 and the id lookups 79 and 80. **Archive** (rule of 2026-10-12, Philippe's OK of 2026-11-08): 27 root files whose operation is closed move to `archive/` (the -349, -355 and -365 batches and checks, GPT-6-007, the 1.1.20 Flex retire and its check, the campaign-speed, export-only-ids, award-nomination and MCU checks, the 1.1.15 analysis); the live mentions in README §4.8, `new-evaluations-20261029.sql` and `new-evaluations-20261031.sql` are repointed. Results of the targeted campaign `EVAL_IDS=2591,2663` (`retire-executions-2591-20261107-20261108.txt`, `new-evaluations-20261107-20261107.txt`): 2663 passes in EN and FR, 2591 fails in both (FASTAPI-TEXT2SQL-362 stays open). |
 | 2.18.26 | 2026-11-07 | **Bank refresh and two one-off files, no evaluator code change.** `data/evaluation/` refreshed by the sync of 2026-11-07 (173 files: the assertions of `update-evaluations-20261105.sql`, the evaluations 1119 and 2626 to 2662 of the other session, the samples flags); result of `retire-executions-360names-20261106.sql` committed. **`new-evaluations-20261107.sql`** (voie 1): "How many minutes of Star Wars films are there in total?" with its French twin, the sibling of 2554 and 2556 for FASTAPI-TEXT2SQL-364 (`COUNT(*) == 1 AND CELL(0, 0) > 1000`, `number-card`, minutes; Blue answers 1675 minutes in both languages). **`retire-executions-2591-20261107.sql`** (voie 2): soft-deletes the two 1.1.20 rows of 2591 so the French comparison of FASTAPI-TEXT2SQL-362 is re-run on the same version with the prompt fix `ec56c9d`; the file ends with the targeted campaign command (`EVAL_IDS=2591,<new>`). `check-result-shape.py` of 2026-11-07 on the two 1.1.20 exports: 81 asserted, 59 PASS and 22 FAIL per language, the five rankings of -350 and -351 pass, the 22 misses are 1.2.0 targets. |
 | 2.18.25 | 2026-11-06 | **`retire-executions-360names-20261106.sql`** (voie 2): soft-deletes the 1.1.20 executions of the 114 evaluations that mention a company, a network or a collection, to re-run them on the same version with the second wave of FASTAPI-TEXT2SQL-360 (API `9485a1f`). Baseline exports archived locally under `001.001.020_baseline-360names_20261106`. No evaluator code change. |
 | 2.18.24 | 2026-11-05 | Result of `new-evaluations-360-companies-networks.sql` (voie 1): evaluations **2653 to 2662** inserted. No evaluator code change. |

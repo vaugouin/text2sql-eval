@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_PERSON IN (1532, 887, 5657, 5667, 5293, 1332415, 4785, 36422, 112, 1776, 5950, 17881, 5659, 52842, 10297, 11090, 71555, 1461, 8690, 3388, 155532, 138, 17039, 61955, 12094, 1769, 1032, 64948, 39012, 11115, 6588, 1243, 230436, 45138, 1248, 5664, 1284, 15762, 4971, 5671, 5779, 193, 5301, 168874, 5656, 124748, 368, 56209, 1303037, 5658)",
+    "query_result": "ID_PERSON IN (1532, 887, 5667, 5657, 5293, 4785, 36422, 1332415, 112, 1776, 17881, 1461, 5301, 10297, 11090, 52842, 8690, 5950, 71555, 5659, 1245, 5664, 61955, 155532, 64948, 4971, 3388, 5671, 138, 5779, 1769, 15762, 1032, 45138, 5656, 5658, 230436, 1243, 1248, 12052, 39012, 1284, 56209, 168874, 193, 35159, 124748, 1303037, 208519, 368)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_PERSON.ID_PERSON, COUNT(DISTINCT pm_other.ID_MOVIE) AS SHARED_MOVIE_COUNT FROM T_WC_T2S_PERSON p_named JOIN T_WC_T2S_PERSON_MOVIE pm_named ON pm_named.ID_PERSON = p_named.ID_PERSON JOIN T_WC_T2S_PERSON_MOVIE pm_other ON pm_other.ID_MOVIE = pm_named.ID_MOVIE JOIN T_WC_T2S_PERSON ON T_WC_T2S_PERSON.ID_PERSON = pm_other.ID_PERSON JOIN T_WC_T2S_MOVIE ON T_WC_T2S_MOVIE.ID_MOVIE = pm_named.ID_MOVIE WHERE p_named.PERSON_NAME = &#039;Wes Anderson&#039; AND pm_named.CREDIT_TYPE = &#039;cast&#039; AND pm_other.CREDIT_TYPE = &#039;cast&#039; AND pm_other.ID_PERSON &lt;&gt; p_named.ID_PERSON AND (T_WC_T2S_MOVIE.IS_DOCUMENTARY = 1 OR pm_named.CAST_CHARACTER NOT IN (&#039;Self&#039;, &#039;Himself&#039;, &#039;Herself&#039;, &#039;(archive footage)&#039;, &#039;Self (archive footage)&#039;, &#039;Self (archive footage) (uncredited)&#039;, &#039;Self (uncredited)&#039;)) AND (T_WC_T2S_MOVIE.IS_DOCUMENTARY = 1 OR pm_other.CAST_CHARACTER NOT IN (&#039;Self&#039;, &#039;Himself&#039;, &#039;Herself&#039;, &#039;(archive footage)&#039;, &#039;Self (archive footage)&#039;, &#039;Self (archive footage) (uncredited)&#039;, &#039;Self (uncredited)&#039;)) GROUP BY T_WC_T2S_PERSON.ID_PERSON, T_WC_T2S_PERSON.PERSON_NAME, T_WC_T2S_PERSON.POPULARITY, T_WC_T2S_PERSON.KNOWN_FOR_DEPARTMENT, T_WC_T2S_PERSON.BIRTH_YEAR, T_WC_T2S_PERSON.DEATH_YEAR, T_WC_T2S_PERSON.PROFILE_PATH ORDER BY SHARED_MOVIE_COUNT DESC LIMIT 50;",
-  "assertion_refresh_last": "2026-11-07T03:45:59",
+  "assertion_refresh_last": "2026-11-08T05:51:14",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,

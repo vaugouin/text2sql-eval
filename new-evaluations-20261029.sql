@@ -16,7 +16,7 @@
 -- Commit and push before running. Then refresh the bank to the PC (phase 31 export + sync) so
 -- the JSON exports carry these questions and their assertions.
 --
--- CONVENTIONS (mirrors result-shape-assertions.sql Section B)
+-- CONVENTIONS (mirrors archive/result-shape-assertions.sql Section B)
 --   - Auto-increment id, NEVER a hand-picked one (the 2540 collision of EVALUATIONS-025).
 --   - Each INSERT guarded by NOT EXISTS on the English QUESTION (derived table to dodge MariaDB
 --     1093), so a second pass inserts nothing.

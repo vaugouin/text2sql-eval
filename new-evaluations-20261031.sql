@@ -524,7 +524,7 @@ FROM DUAL WHERE NOT EXISTS (
   SELECT 1 FROM (SELECT ID_T2S_EVALUATION FROM T_WC_T2S_EVALUATION
     WHERE QUESTION = 'What was the average film budget per year since 2000?') AS guard);
 
--- F09 : replaces the Best Picture nominees per year, which returned no rows: the SQL tested NOMINATION_NAME = 'Best Picture Oscar' literally (check-award-nomination-data.sql tells whether the data or the name is missing)
+-- F09 : replaces the Best Picture nominees per year, which returned no rows: the SQL tested NOMINATION_NAME = 'Best Picture Oscar' literally (archive/check-award-nomination-data.sql tells whether the data or the name is missing)
 INSERT INTO T_WC_T2S_EVALUATION
   (QUESTION, QUESTION_FR, ID_T2S_EVALUATION_CATEGORY, IS_EVAL, IS_SAMPLE, IS_SHOWCASE, DELETED, DAT_CREAT, ID_CREATOR, ID_OWNER, ASSERTIONS_QUERY_RESULT, ASSERTIONS_RESULT_SHAPE)
 SELECT 'How many Criterion Collection films were released per decade?', 'Combien de films de la collection Criterion sont sortis par décennie ?', 45, 1, 1, 0, 0, CURDATE(), 1, 1, 'COUNT(*) &gt;= 10', 'representation == table'

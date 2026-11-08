@@ -31,6 +31,18 @@ Grammar. One clause per line (or separated by `;` or ` AND `), each `LHS OP RHS`
 - RHS is a bare token, compared case-insensitively; `null` / `none` means "no unit".
 - All clauses must hold for the assertion to pass. An empty assertion passes vacuously.
 
+`intent.task == compare` asserts on the task the API's intent classifier read in the
+question (FASTAPI-TEXT2SQL-353, phase 1 of the result-representations epic). The value is
+one of a closed vocabulary validated by Philippe on 2026-11-08: `list` (a plain list of works
+or persons, or the page of one entity), `value` (one figure or one
+attribute), `rank` (a list ordered by a measure), `count` (how many), `compare` (two or more
+named works side by side), `sequence` (an order in time or in a series), `trend` (a measure
+over time). A value outside the vocabulary is a parse error, so a typo in the bank cannot
+pass silently. A response without an `intent` object (any API before -353) leaves the
+clause NOT EMITTED: it neither passes nor fails, it is reported apart, and the other clauses
+of the assertion decide alone. The baseline of an intent-labelled bank on 1.1.20 is
+therefore "all not emitted", and the shape figures stay comparable.
+
 The grammar is deliberately tiny and additive: a new facet is a new LHS keyword and one
 branch in `_check_clause`, with no change to the campaign scorer.
 """
@@ -38,10 +50,11 @@ import html
 import re
 
 _CLAUSE_RE = re.compile(
-    r"^\s*(result_kind|representation|unit|role)\s*(?:\(\s*([A-Za-z_][A-Za-z0-9_]*|\*)\s*\))?\s*(==|!=)\s*(.+?)\s*$",
+    r"^\s*(result_kind|representation|unit|role|intent\.task)\s*(?:\(\s*([A-Za-z_][A-Za-z0-9_]*|\*)\s*\))?\s*(==|!=)\s*(.+?)\s*$",
     re.IGNORECASE,
 )
 _NULLS = {"null", "none", ""}
+INTENT_TASKS = ("list", "value", "rank", "count", "compare", "sequence", "trend")
 
 
 def parse(spec_text):
@@ -66,8 +79,10 @@ def parse(spec_text):
         key, col, op, rhs = m.group(1).lower(), m.group(2), m.group(3), m.group(4).strip().lower()
         if key in ("unit", "role") and not col:
             raise ValueError(f"{key} clause needs a column, e.g. {key}(RUNTIME) == …: {raw!r}")
-        if key in ("result_kind", "representation") and col:
+        if key in ("result_kind", "representation", "intent.task") and col:
             raise ValueError(f"{key} takes no column: {raw!r}")
+        if key == "intent.task" and rhs not in INTENT_TASKS:
+            raise ValueError(f"intent.task must be one of {', '.join(INTENT_TASKS)}: {raw!r}")
         clauses.append({"key": key, "col": (col.upper() if col else None), "op": op, "value": rhs})
     return clauses
 
@@ -100,8 +115,19 @@ def _column_role(columns, name):
 
 
 def _check_clause(clause, response):
-    """Return (passed, message) for one clause against a response dict."""
+    """Return (passed, message) for one clause against a response dict.
+
+    `passed` is None for an intent clause on a response that carries no intent (not emitted)."""
     key, col, op, want = clause["key"], clause["col"], clause["op"], clause["value"]
+    if key == "intent.task":
+        intent = response.get("intent")
+        task = intent.get("task") if isinstance(intent, dict) else None
+        if not task:
+            return None, f"intent.task {op} {want}  (no intent in the response: API before FASTAPI-TEXT2SQL-353)  NOT EMITTED"
+        got = str(task).lower()
+        equal = (got == want)
+        passed = equal if op == "==" else (not equal)
+        return passed, f"intent.task {op} {want}  (got {got!r})  {'PASS' if passed else 'FAIL'}"
     if key == "result_kind":
         got = (response.get("result_kind") or "").lower()
     elif key == "representation":
@@ -143,7 +169,10 @@ def check_response(spec_text, response):
 
     Returns:
         (overall_pass, details) where details is a list of per-clause dicts
-        {passed, message}. An empty assertion is a vacuous pass with no details.
+        {passed, message}. An empty assertion is a vacuous pass with no details. A clause
+        whose `passed` is None was not emitted by the API (intent before -353): it does not
+        enter `overall_pass`, so an assertion made of such clauses alone passes vacuously;
+        callers tell that case apart with `not_emitted(details)`.
     """
     clauses = parse(spec_text)
     if not clauses:
@@ -153,5 +182,16 @@ def check_response(spec_text, response):
     for clause in clauses:
         passed, message = _check_clause(clause, response)
         details.append({"passed": passed, "message": message})
-        overall = overall and passed
+        if passed is not None:
+            overall = overall and passed
     return overall, details
+
+
+def not_emitted(details):
+    """Number of clauses the API did not emit (intent clauses on a pre-353 response)."""
+    return sum(1 for x in details if x["passed"] is None)
+
+
+def judged(details):
+    """Number of clauses actually judged (passed or failed)."""
+    return sum(1 for x in details if x["passed"] is not None)
