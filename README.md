@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.20.3 (source of truth: [VERSION](VERSION))
+**Version:** 2.20.4 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-08
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1086,6 +1086,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.20.4 | 2026-11-08 | **`check-355-homonyms-series-persons.sql`** (read-only, voie 1): census of series sharing title and first air year, and of persons sharing name and birth year, to extend the FASTAPI-TEXT2SQL-355 evaluations beyond movies (Philippe, 2026-11-08: eleven movie descriptions, one series, no person). No evaluator code change. |
 | 2.20.3 | 2026-11-08 | FASTAPI-TEXT2SQL-369 closed (closing campaign 10/10): `new-evaluations-369-partial-title-person.sql` with its result and `retire-executions-369-20261108.sql` moved to `archive/`. Result of `new-evaluations-371-co-constraint-series-persons.sql` committed (2669 to 2678). No evaluator code change. |
 | 2.20.2 | 2026-11-08 | **`new-evaluations-371-co-constraint-series-persons.sql`** (voie 1): ten pairs for the co-constrained rescue beyond movie titles. Five series (category 31: Breaking + Bryan Cranston, Thrones + Emilia Clarke, Wire + Dominic West, Bureau + Mathieu Kassovitz against the exact homonym *Le Bureau*, control Lupin + Omar Sy) cover the series path of FASTAPI-TEXT2SQL-369, never evaluated; five reverse cases (category 30: a full title plus a bare surname, Grant, Foster, Phoenix, Clavier, Jackson) are the person branch of FASTAPI-TEXT2SQL-371. Ids measured in fastapi-text2sql `doc/sql/check-371-series-persons-20261108.txt`. No evaluator code change. |
 | 2.20.1 | 2026-11-08 | **`retire-executions-368-20261108.sql`** (voie 2): soft-deletes the 1.1.20 rows of 2630 to 2642 so FASTAPI-TEXT2SQL-368 is closed by a re-run on the same version with `d692ad3`; expected answer clause 13 PASS per language and answer invariant 0 FAIL. Result of `update-evaluations-368-answer-identifier.sql` committed (13 rows). No evaluator code change. |
