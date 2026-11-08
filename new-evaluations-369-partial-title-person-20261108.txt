@@ -1,0 +1,12 @@
+-- new-evaluations-369-partial-title-person.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 14:32:01 +0100
+--
++-------------------+----------------------------------+---------------------------------+----------------------------+-----------+-------------+------------------------------------------------------------------+
+| ID_T2S_EVALUATION | QUESTION                         | QUESTION_FR                     | ID_T2S_EVALUATION_CATEGORY | IS_SAMPLE | IS_SHOWCASE | ASSERTIONS_QUERY_RESULT                                          |
++-------------------+----------------------------------+---------------------------------+----------------------------+-----------+-------------+------------------------------------------------------------------+
+|              2664 | Movie Raid with Dany Boon        | Film Raid avec Dany Boon        |                         29 |         1 |           1 | ID_MOVIE IN (382597) AND ID_MOVIE NOT IN (503838, 20375)         |
+|              2665 | Movie Ch'tis with Dany Boon      | Film Ch'tis avec Dany Boon      |                         29 |         1 |           1 | ID_MOVIE IN (8265)                                               |
+|              2666 | Movie Asterix with Dany Boon     | Film Astérix avec Dany Boon     |                         29 |         1 |           1 | ID_MOVIE IN (99770) AND ID_MOVIE NOT IN (9564, 2899, 2395)       |
+|              2667 | Movie Rings with Viggo Mortensen | Film Rings avec Viggo Mortensen |                         29 |         1 |           1 | ID_MOVIE IN (120, 121, 122) AND ID_MOVIE NOT IN (14564, 91908)   |
+|              2668 | Movie Taxi with Samy Naceri      | Film Taxi avec Samy Naceri      |                         29 |         1 |           1 | ID_MOVIE IN (2330) AND ID_MOVIE NOT IN (2332, 2334, 2335, 11045) |
++-------------------+----------------------------------+---------------------------------+----------------------------+-----------+-------------+------------------------------------------------------------------+
