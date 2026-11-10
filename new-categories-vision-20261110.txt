@@ -1,0 +1,16 @@
+-- new-categories-vision.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 10:27:37 +0100
+--
++----------------------------+-----------+---------------+---------------------------------------+------------------------------------------+
+| ID_T2S_EVALUATION_CATEGORY | ID_PARENT | DISPLAY_ORDER | DESCRIPTION                           | DESCRIPTION_FR                           |
++----------------------------+-----------+---------------+---------------------------------------+------------------------------------------+
+|                         63 |         1 |            70 | Vision - Image Input                  | Vision - Questions à partir d'une image  |
+|                         64 |        63 |            71 | Vision - Posters and Printed Media    | Vision - Affiches et imprimés            |
+|                         65 |        63 |            72 | Vision - Film and Series Frames       | Vision - Images de films et de séries    |
+|                         66 |        63 |            73 | Vision - Screen Photos                | Vision - Photos d'écran                  |
+|                         67 |        63 |            74 | Vision - Physical Media               | Vision - Supports physiques              |
+|                         68 |        63 |            75 | Vision - Source Books and Adaptations | Vision - Livres sources et adaptations   |
+|                         69 |        63 |            76 | Vision - Faces                        | Vision - Visages                         |
+|                         70 |        63 |            77 | Vision - Iconic Objects               | Vision - Objets iconiques                |
+|                         71 |        63 |            78 | Vision - Unidentifiable               | Vision - Images non identifiables        |
++----------------------------+-----------+---------------+---------------------------------------+------------------------------------------+
