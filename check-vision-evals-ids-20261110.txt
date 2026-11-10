@@ -1,0 +1,112 @@
+-- check-vision-evals-ids.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 16:32:52 +0100
+--
++------------------------------------+
+| SECTION                            |
++------------------------------------+
+| 1. Ids: title and year in the base |
++------------------------------------+
++----------+---------+--------+-----------+----------------------------------------------------------------------+----------------------------------------------------------------------+--------------+------------+
+| PREFIX   | VERDICT | KIND   | ID_ENTITY | NAME_IN_BASE                                                         | ORIGINAL_TITLE                                                       | YEAR_IN_BASE | ID_IMDB    |
++----------+---------+--------+-----------+----------------------------------------------------------------------+----------------------------------------------------------------------+--------------+------------+
+| 10bef682 | no      | person |     34262 | Bertrand Blier                                                       | NULL                                                                 |         1939 | nm0088397  |
+| 13bae4cb | no      | person |     12446 | Peter Sellers                                                        | NULL                                                                 |         1925 | nm0000634  |
+| 1ed72afa | no      | movie  |   1365884 | Call My Agent! The Movie                                             | Dix Pour Cent ! Le Film                                              |         2026 | tt38267923 |
+| 1eef3576 | no      | movie  |   1242419 | Roofman                                                              | Roofman                                                              |         2025 | tt4627382  |
+| 377fc61d | no      | movie  |   1300968 | The Hunger Games: Sunrise on the Reaping                             | The Hunger Games: Sunrise on the Reaping                             |         2026 | tt32558705 |
+| 4bc5f6e8 | no      | movie  |   1301421 | The Sheep Detectives                                                 | The Sheep Detectives                                                 |         2026 | tt32565993 |
+| 5f5a7c08 | no      | person |      3084 | Marlon Brando                                                        | NULL                                                                 |         1924 | nm0000008  |
+| 60758b12 | no      | movie  |    663260 | Black Box                                                            | Boîte noire                                                          |         2021 | tt10341034 |
+| 6289abf4 | no      | person |     34262 | Bertrand Blier                                                       | NULL                                                                 |         1939 | nm0088397  |
+| 64a873b7 | no      | movie  |   1364904 | A Useful Ghost                                                       | ผีใช้ได้ค่ะ                                                          |         2025 | tt22530226 |
+| 7cc442c8 | no      | movie  |       678 | Out of the Past                                                      | Out of the Past                                                      |         1947 | tt0039689  |
+| ab027b80 | no      | movie  |     31556 | He Walked by Night                                                   | He Walked by Night                                                   |         1949 | tt0040427  |
+| ce74de44 | no      | movie  |      3423 | The Things of Life                                                   | Les Choses de la vie                                                 |         1970 | tt0064165  |
+| d381639a | no      | movie  |     80557 | Family Diary                                                         | Cronaca familiare                                                    |         1962 | tt0056966  |
+| e0a75eeb | no      | movie  |     20482 | The Naked City                                                       | The Naked City                                                       |         1948 | tt0040636  |
+| e5cb8b3e | no      | person |   1151445 | David Moreau                                                         | NULL                                                                 |         NULL | nm4941555  |
+| 0d4f4a2c | yes     | movie  |    402431 | Wicked                                                               | Wicked                                                               |         2024 | tt1262426  |
+| 16f58b78 | yes     | movie  |        62 | 2001: A Space Odyssey                                                | 2001: A Space Odyssey                                                |         1968 | tt0062622  |
+| 195e1dec | yes     | movie  |   1273804 | Concerto for Abigail                                                 | Concerto for Abigail                                                 |         2024 | tt10279460 |
+| 1b611c1a | yes     | movie  |    496243 | Parasite                                                             | 기생충                                                               |         2019 | tt6751668  |
+| 1d96ebab | yes     | movie  |   1027014 | Entergalactic                                                        | Entergalactic                                                        |         2022 | tt10687116 |
+| 201e6aeb | yes     | serie  |    171802 | Blade Runner 2099                                                    | Blade Runner 2099                                                    |         2026 | tt18224594 |
+| 234701f2 | yes     | serie  |      4459 | The Muppet Show                                                      | The Muppet Show                                                      |         1976 | tt0074028  |
+| 2d7746f7 | yes     | movie  |       364 | Batman Returns                                                       | Batman Returns                                                       |         1992 | tt0103776  |
+| 2dbef58c | yes     | movie  |      3423 | The Things of Life                                                   | Les Choses de la vie                                                 |         1970 | tt0064165  |
+| 300dcc55 | yes     | serie  |     93405 | Squid Game                                                           | 오징어 게임                                                          |         2021 | tt10919420 |
+| 437a4772 | yes     | movie  |    235093 | Killing Kennedy                                                      | Killing Kennedy                                                      |         2013 | tt2815030  |
+| 4b4bfe23 | yes     | movie  |       475 | Bonnie and Clyde                                                     | Bonnie and Clyde                                                     |         1967 | tt0061418  |
+| 4c779e99 | yes     | movie  |       910 | The Big Sleep                                                        | The Big Sleep                                                        |         1946 | tt0038355  |
+| 4d1976df | yes     | person |     24379 | Bernard Blier                                                        | NULL                                                                 |         1916 | nm0088396  |
+| 4ed5e16e | yes     | movie  |       115 | The Big Lebowski                                                     | The Big Lebowski                                                     |         1998 | tt0118715  |
+| 50d22f89 | yes     | movie  |        78 | Blade Runner                                                         | Blade Runner                                                         |         1982 | tt0083658  |
+| 5c220693 | yes     | movie  |       346 | Seven Samurai                                                        | 七人の侍                                                             |         1954 | tt0047478  |
+| 6863a331 | yes     | movie  |   1241803 | Les Misérables                                                       | Les Misérables                                                       |         2026 | tt35518109 |
+| 6acf94ac | yes     | movie  |       121 | The Lord of the Rings: The Two Towers                                | The Lord of the Rings: The Two Towers                                |         2002 | tt0167261  |
+| 6e369882 | yes     | movie  |     35412 | On the Beach                                                         | On the Beach                                                         |         1959 | tt0053137  |
+| 6e8c2f37 | yes     | movie  |    646097 | Rebel Ridge                                                          | Rebel Ridge                                                          |         2024 | tt11301886 |
+| 82693168 | yes     | movie  |    947493 | Iron Boy                                                             | Le Corset                                                            |         2026 | tt36639956 |
+| 8d0a0f69 | yes     | movie  |       103 | Taxi Driver                                                          | Taxi Driver                                                          |         1976 | tt0075314  |
+| 91d93589 | yes     | person |       224 | David Cronenberg                                                     | NULL                                                                 |         1943 | nm0000343  |
+| 9768dc3a | yes     | movie  |     19236 | Santa Sangre                                                         | Santa Sangre                                                         |         1989 | tt0098253  |
+| 9ac54bd1 | yes     | movie  |    937085 | Do Not Expect Too Much from the End of the World                     | Nu Aștepta Prea Mult de la Sfârșitul Lumii                           |         2023 | tt18162096 |
+| 9e492ee9 | yes     | movie  |      3170 | Bambi                                                                | Bambi                                                                |         1942 | tt0034492  |
+| a10bb0d9 | yes     | movie  |    419430 | Get Out                                                              | Get Out                                                              |         2017 | tt5052448  |
+| a423bbc0 | yes     | movie  |       694 | The Shining                                                          | The Shining                                                          |         1980 | tt0081505  |
+| a6af9535 | yes     | movie  |   1058424 | Hope                                                                 | 호프                                                                 |         2026 | tt27369017 |
+| a9052094 | yes     | movie  |      1251 | Letters from Iwo Jima                                                | Letters from Iwo Jima                                                |         2006 | tt0498380  |
+| b21b152e | yes     | movie  |    152113 | Planet Ocean                                                         | Planète Océan                                                        |         2012 | tt2240784  |
+| be5facad | yes     | serie  |      1399 | Game of Thrones                                                      | Game of Thrones                                                      |         2011 | tt0944947  |
+| bf1b5aae | yes     | movie  |       525 | The Blues Brothers                                                   | The Blues Brothers                                                   |         1980 | tt0080455  |
+| c428b328 | yes     | movie  |      6978 | Big Trouble in Little China                                          | Big Trouble in Little China                                          |         1986 | tt0090728  |
+| cd54d3e5 | yes     | movie  |       935 | Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb | Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb |         1964 | tt0057012  |
+| ce41d4d7 | yes     | person |     35736 | Karan Johar                                                          | NULL                                                                 |         1972 | nm0424103  |
+| ce4d1d98 | yes     | movie  |     17684 | Chouchou                                                             | Chouchou                                                             |         2003 | tt0328955  |
+| cf152fc0 | yes     | movie  |    663260 | Black Box                                                            | Boîte noire                                                          |         2021 | tt10341034 |
+| d2004e0b | yes     | person |     34262 | Bertrand Blier                                                       | NULL                                                                 |         1939 | nm0088397  |
+| d2ebb6f9 | yes     | person |    505710 | Zendaya                                                              | NULL                                                                 |         1996 | nm3918035  |
+| d9c6adc2 | yes     | movie  |    936075 | Michael                                                              | Michael                                                              |         2026 | tt11378946 |
+| d9e5e945 | yes     | movie  |        80 | Before Sunset                                                        | Before Sunset                                                        |         2004 | tt0381681  |
+| f511379d | yes     | person |      7467 | David Fincher                                                        | NULL                                                                 |         1962 | nm0000399  |
++----------+---------+--------+-----------+----------------------------------------------------------------------+----------------------------------------------------------------------+--------------+------------+
++-----------------------------------------------------------------+
+| SECTION                                                         |
++-----------------------------------------------------------------+
+| 2. Titles without id: candidates by title (and year when known) |
++-----------------------------------------------------------------+
++----------+-------+----------------------------+-----------+-----------+----------------------------+--------------+
+| PREFIX   | KIND  | TITLE                      | YEAR_HINT | ID_ENTITY | NAME_IN_BASE               | YEAR_IN_BASE |
++----------+-------+----------------------------+-----------+-----------+----------------------------+--------------+
+| 224a0ff9 | movie | The Rivals of Amziah King  |      2025 |   1124142 | The Rivals of Amziah King  |         2026 |
+| 3668b0d3 | movie | Maestro                    |      2023 |    523607 | Maestro                    |         2023 |
+| bbf1b76c | movie | Brazil                     |      1985 |        68 | Brazil                     |         1985 |
+| d5faa930 | movie | Monty Python Live (Mostly) |      2014 |    282268 | Monty Python Live (Mostly) |         2014 |
++----------+-------+----------------------------+-----------+-----------+----------------------------+--------------+
++-------------------------------------------------------------------------------+
+| SECTION                                                                       |
++-------------------------------------------------------------------------------+
+| 3. Rows with neither id nor entity kind (books, collections, locations, none) |
++-------------------------------------------------------------------------------+
++----------+---------+------+---------------------------------------------------------------------------+
+| PREFIX   | VERDICT | KIND | TITLE                                                                     |
++----------+---------+------+---------------------------------------------------------------------------+
+| 04be4ac5 | yes     |      | The Lord of the Rings                                                     |
+| 14109632 | yes     |      | Neuromancer, a novel by William Gibson                                    |
+| 189fb61c | yes     |      | Hamlet, a play by William Shakespeare                                     |
+| 1d3a1a3f | yes     |      | Frankenstein, a novel by Mary Shelley                                     |
+| 305b256c | yes     |      | Heart of Darkness, a novella by Joseph Conrad                             |
+| 306fb954 | yes     |      | The Muppets                                                               |
+| 43f4f2a9 | yes     |      | For Whom the Bell Tolls                                                   |
+| 51a3c78e | yes     |      | The Hobbit and The Lord of the Rings, books by J. R. R. Tolkien           |
+| 63c9bb56 | yes     |      | Ask the Dust, a novel by John Fante                                       |
+| 8abebb36 | yes     |      | White Fang                                                                |
+| 94224540 | yes     |      | Pont de Bir-Hakeim                                                        |
+| 9c9ca883 | yes     |      | The Phantom of the Opera, a novel by Gaston Leroux                        |
+| a7acb88a | yes     |      | Dracula, a novel by Bram Stoker                                           |
+| aad9b026 | yes     |      | The Complete Robot, a short-story collection by Isaac Asimov              |
+| ae3d0423 | yes     |      | The Complete Works of Shakespeare, collected works by William Shakespeare |
+| c1ab91fb | yes     |      | Nineteen Eighty-Four                                                      |
+| e07d0e20 | yes     |      | Jane Eyre, a novel by Charlotte Brontë                                    |
+| fee3c16c | yes     |      | Spider-Man                                                                |
++----------+---------+------+---------------------------------------------------------------------------+
