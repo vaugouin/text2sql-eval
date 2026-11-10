@@ -27,7 +27,7 @@
 -- No backslash anywhere (MariaDB would eat it).
 --
 -- HOW TO RUN (voie 1): ssh vps-agent pull text2sql-eval
---                      ssh vps-agent run -e text2sql-eval/new-evaluations-355-series-persons.sql
+--                      ssh vps-agent run -e text2sql-eval/archive/new-evaluations-355-series-persons.sql
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 

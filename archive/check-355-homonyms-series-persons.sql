@@ -9,7 +9,7 @@
 --
 -- Read-only, voie 1:
 --   ssh vps-agent pull text2sql-eval
---   ssh vps-agent run text2sql-eval/check-355-homonyms-series-persons.sql
+--   ssh vps-agent run text2sql-eval/archive/check-355-homonyms-series-persons.sql
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 

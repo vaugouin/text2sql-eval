@@ -29,7 +29,7 @@
 --
 -- ROUTING: UPDATE on T_WC_T2S_EVALUATION only: voie 1.
 --   ssh vps-agent pull text2sql-eval
---   ssh vps-agent run -e text2sql-eval/update-evaluations-368-answer-identifier.sql
+--   ssh vps-agent run -e text2sql-eval/archive/update-evaluations-368-answer-identifier.sql
 -- Guarded: only a row with no result-shape assertion is written, so a re-run does nothing.
 -- Expected: 13 rows changed, then the SELECT shows the thirteen assertions.
 

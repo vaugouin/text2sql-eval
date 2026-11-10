@@ -11,7 +11,7 @@
 --
 -- HOW (voie 2: T_WC_T2S_EVALUATION_EXECUTION is not one of the agent-writable tables):
 --   cd ~/docker/text2sql-eval && git pull --ff-only
---   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/retire-executions-368-20261108.sql
+--   ~/docker/tools/runsqlvaugouindb.sh ~/docker/text2sql-eval/archive/retire-executions-368-20261108.sql
 -- Expected: section 1 shows 13 evaluations per language, section 3 shows nothing.
 --
 -- THEN, the targeted campaign (both halves, rule of 2026-09-26):
