@@ -1,0 +1,51 @@
+-- Ids for the control evaluation of FASTAPI-TEXT2SQL-374 (French award name resolved to another
+-- award: "Oscar de la meilleure actrice" became "Ophir de la meilleure actrice"). Read-only,
+-- voie 1. Written 2026-11-10, before new-evaluations-374-award-exact-name.sql.
+--   ssh vps-agent pull text2sql-eval
+--   ssh vps-agent run text2sql-eval/check-374-ids.sql
+
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+SELECT '1. The two awards' AS SECTION;
+SELECT ID_AWARD, AWARD_NAME, AWARD_NAME_FR, PERSON_COUNT, ID_AWARD_PARENT
+FROM T_WC_T2S_AWARD WHERE ID_AWARD IN (269, 15014);
+
+SELECT '2. Winners of each: win rows, distinct persons' AS SECTION;
+SELECT pa.ID_AWARD, COUNT(*) AS WIN_ROWS, COUNT(DISTINCT pa.ID_PERSON) AS PERSONS
+FROM T_WC_T2S_PERSON_AWARD pa
+WHERE pa.ID_AWARD IN (269, 15014) AND COALESCE(pa.DELETED, 0) = 0
+GROUP BY pa.ID_AWARD;
+
+SELECT '3. Winners of both (none expected)' AS SECTION;
+SELECT p.ID_PERSON, p.PERSON_NAME
+FROM T_WC_T2S_PERSON p
+WHERE p.ID_PERSON IN (SELECT ID_PERSON FROM T_WC_T2S_PERSON_AWARD WHERE ID_AWARD = 269 AND COALESCE(DELETED, 0) = 0)
+  AND p.ID_PERSON IN (SELECT ID_PERSON FROM T_WC_T2S_PERSON_AWARD WHERE ID_AWARD = 15014 AND COALESCE(DELETED, 0) = 0);
+
+SELECT '4. Ophir Award for Best Actress: every winner, the most popular first' AS SECTION;
+SELECT p.ID_PERSON, p.PERSON_NAME, ROUND(p.POPULARITY, 2) AS POP,
+       GROUP_CONCAT(DISTINCT pa.AWARD_YEAR ORDER BY pa.AWARD_YEAR SEPARATOR ', ') AS YEARS
+FROM T_WC_T2S_PERSON_AWARD pa
+JOIN T_WC_T2S_PERSON p ON p.ID_PERSON = pa.ID_PERSON
+WHERE pa.ID_AWARD = 15014 AND COALESCE(pa.DELETED, 0) = 0
+GROUP BY p.ID_PERSON, p.PERSON_NAME, p.POPULARITY
+ORDER BY p.POPULARITY DESC;
+
+SELECT '5. Academy Award for Best Actress: Katharine Hepburn and the ten most popular winners' AS SECTION;
+SELECT p.ID_PERSON, p.PERSON_NAME, ROUND(p.POPULARITY, 2) AS POP, COUNT(*) AS WINS
+FROM T_WC_T2S_PERSON_AWARD pa
+JOIN T_WC_T2S_PERSON p ON p.ID_PERSON = pa.ID_PERSON
+WHERE pa.ID_AWARD = 269 AND COALESCE(pa.DELETED, 0) = 0
+GROUP BY p.ID_PERSON, p.PERSON_NAME, p.POPULARITY
+ORDER BY (p.ID_PERSON = 6598) DESC, p.POPULARITY DESC
+LIMIT 11;
+
+SELECT '6. The question is not in the bank yet (no row expected)' AS SECTION;
+SELECT ID_T2S_EVALUATION, QUESTION, QUESTION_FR
+FROM T_WC_T2S_EVALUATION
+WHERE QUESTION = 'Who won the Academy Award for Best Actress?'
+   OR QUESTION_FR = 'Qui a remporté l''Oscar de la meilleure actrice ?';
+
+SELECT '7. Category 49' AS SECTION;
+SELECT ID_T2S_EVALUATION_CATEGORY, CATEGORY_NAME FROM T_WC_T2S_EVALUATION_CATEGORY
+WHERE ID_T2S_EVALUATION_CATEGORY = 49;
