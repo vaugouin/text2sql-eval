@@ -2,7 +2,8 @@
 -- T_WC_T2S_EVALUATION and T_WC_T2S_EVALUATION_EXECUTION: image-input evaluations (FASTAPI-TEXT2SQL-277)
 -- ============================================================================
 --
--- NOT YET APPLIED. Written 2026-11-10. Run it BEFORE new-evaluations-vision.sql, which writes
+-- APPLIED 2026-11-10 by Philippe (result: migrate-evaluation-vision-20261110.txt, 1697 bank rows and
+-- 18805 executions, all NULL). Written 2026-11-10. Run it BEFORE new-evaluations-vision.sql, which writes
 -- the three new evaluation columns and stops on "Unknown column" without them. The current
 -- evaluator neither reads nor writes any of these columns, so it keeps working after this
 -- migration exactly as before.

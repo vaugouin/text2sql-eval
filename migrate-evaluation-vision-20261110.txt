@@ -1,0 +1,34 @@
+-- migrate-evaluation-vision.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 17:00:47 +0100
+--
++-----------------------------------+
+| SECTION                           |
++-----------------------------------+
+| 0. Before: vision columns present |
++-----------------------------------+
++----------------------------------+
+| SECTION                          |
++----------------------------------+
+| 1. After: vision columns present |
++----------------------------------+
++-------------------------------+----------------------------------------+--------------+
+| TABLE_NAME                    | COLUMN_NAME                            | COLUMN_TYPE  |
++-------------------------------+----------------------------------------+--------------+
+| T_WC_T2S_EVALUATION           | INPUT_KIND                             | varchar(10)  |
+| T_WC_T2S_EVALUATION           | INPUT_IMAGE_PATH                       | varchar(255) |
+| T_WC_T2S_EVALUATION           | ASSERTIONS_VISION_IDENTIFICATION       | mediumtext   |
+| T_WC_T2S_EVALUATION_EXECUTION | VISION_MODEL                           | varchar(50)  |
+| T_WC_T2S_EVALUATION_EXECUTION | VISION_IDENTIFICATION_PROCESSING_TIME  | double       |
+| T_WC_T2S_EVALUATION_EXECUTION | ASSERTIONS_VISION_IDENTIFICATION_SCORE | double       |
++-------------------------------+----------------------------------------+--------------+
++----------------------------------------+
+| SECTION                                |
++----------------------------------------+
+| 2. Rows: every existing row stays NULL |
++----------------------------------------+
++-------------------------------+------------+-----------------+
+| TABLE_NAME                    | ROWS_TOTAL | NEW_COLUMN_NULL |
++-------------------------------+------------+-----------------+
+| T_WC_T2S_EVALUATION           |       1697 |            1697 |
+| T_WC_T2S_EVALUATION_EXECUTION |      18805 |           18805 |
++-------------------------------+------------+-----------------+
