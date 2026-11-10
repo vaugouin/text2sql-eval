@@ -947,3 +947,129 @@ def median(values):
         return None
     mid = len(values) // 2
     return values[mid] if len(values) % 2 else (values[mid - 1] + values[mid]) / 2
+
+
+# --- FASTAPI-TEXT2SQL-277: image-input evaluations ----------------------------------------
+# ASSERTIONS_VISION_IDENTIFICATION holds the expected identification of the picture, as JSON:
+# {"type": movie|serie|person|collection|book|location|none, "id": TMDb id or null,
+#  "title": ..., "original_title": ... or null, "year": ... or null, "aliases": [...] optional}.
+# It is scored against `vision_evidence` of the response: the candidate the API selected,
+# else the most confident one. Out of ASSERTIONS_TOTAL_SCORE, like ASSERTIONS_RESULT_SHAPE,
+# so the text campaigns stay comparable; ASSERTIONS_QUERY_RESULT scores the rest of the
+# pipeline (did the identified work reach the right TMDb id).
+
+# What the vision contract calls each expected type. Books come back as `other`
+# (FASTAPI-TEXT2SQL-114 has no book type), a place as `location` or `other`.
+_VISION_TYPE_ACCEPTS = {
+    "movie": {"movie"},
+    "serie": {"serie"},
+    "person": {"person"},
+    "collection": {"collection"},
+    "book": {"other", "book"},
+    "location": {"location", "other"},
+}
+
+
+def normalize_title(text: Any) -> str:
+    """Lowercase, accents and punctuation removed, spaces collapsed: 'Boîte noire' == 'boite noire'."""
+    import unicodedata
+    s = unicodedata.normalize("NFKD", str(text or ""))
+    s = "".join(ch for ch in s if not unicodedata.combining(ch)).lower()
+    s = re.sub(r"[^0-9a-z]+", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def _title_matches(expected_names: list, value: Any) -> bool:
+    """True when the predicted value names one of the expected titles.
+
+    Exact match after normalisation, or the expected title as a whole-word prefix of the value:
+    the vision model writes a book as 'Heart of Darkness, a novella by Joseph Conrad' and the
+    bank keeps 'Heart of Darkness'. The reverse (value inside the expected title) is refused:
+    'Alien' must not pass for 'Aliens'.
+    """
+    got = normalize_title(value)
+    if not got:
+        return False
+    for name in expected_names:
+        want = normalize_title(name)
+        if not want:
+            continue
+        if got == want or got.startswith(want + " "):
+            return True
+    return False
+
+
+def vision_prediction(response_json: Any):
+    """The candidate a response stands on: `selected`, else the most confident candidate."""
+    evidence = (response_json or {}).get("vision_evidence") if isinstance(response_json, dict) else None
+    if not isinstance(evidence, dict):
+        return None, None
+    selected = evidence.get("selected")
+    if isinstance(selected, dict) and selected.get("value"):
+        return selected, evidence
+    candidates = [c for c in (evidence.get("candidates") or []) if isinstance(c, dict) and c.get("value")]
+    if candidates:
+        return max(candidates, key=lambda c: float(c.get("confidence") or 0)), evidence
+    return None, evidence
+
+
+def score_vision_identification(assertion: Any, response_json: Any):
+    """Score one image evaluation. Returns (score, detail lines); score None = not scorable.
+
+    - expected type `none`: 1 when the API identified nothing (`authoritative_empty`, or no
+      candidate at all), 0 when it named something.
+    - otherwise: 1 when the prediction has an accepted type, names the title, original title or
+      an alias, and, when both sides carry a year, is within one year of it.
+    A response with no `vision_evidence` at all scores 0: the image was not read.
+    """
+    lines = []
+    try:
+        expected = json.loads(html.unescape(str(assertion))) if not isinstance(assertion, dict) else assertion
+    except (TypeError, ValueError) as exc:
+        return None, [f"ASSERTIONS_VISION_IDENTIFICATION: SKIPPED", f"Reason: assertion is not JSON ({exc})"]
+    if not isinstance(expected, dict) or not expected.get("type"):
+        return None, ["ASSERTIONS_VISION_IDENTIFICATION: SKIPPED", "Reason: assertion has no type"]
+    exp_type = str(expected["type"]).strip().lower()
+    prediction, evidence = vision_prediction(response_json)
+    if evidence is None:
+        lines += ["ASSERTIONS_VISION_IDENTIFICATION: FAIL", "Reason: no vision_evidence in JSON_RESULT (image not read)"]
+        return 0, lines
+    pred_desc = ("nothing" if prediction is None else
+                 f"{prediction.get('type')}: {prediction.get('value')} {prediction.get('year') or ''} "
+                 f"[{prediction.get('confidence')}]").strip()
+    if exp_type == "none":
+        ok = prediction is None or bool(evidence.get("authoritative_empty"))
+        lines += [f"ASSERTIONS_VISION_IDENTIFICATION: {'PASS' if ok else 'FAIL'}",
+                  "Expected: nothing identified", f"Got: {pred_desc}"]
+        return (1 if ok else 0), lines
+    names = [expected.get("title"), expected.get("original_title")] + list(expected.get("aliases") or [])
+    names = [n for n in names if n]
+    exp_desc = f"{exp_type}: {expected.get('title')} {expected.get('year') or ''}".strip()
+    if prediction is None:
+        lines += ["ASSERTIONS_VISION_IDENTIFICATION: FAIL", f"Expected: {exp_desc}", "Got: nothing identified"]
+        return 0, lines
+    reasons = []
+    pred_type = str(prediction.get("type") or "").strip().lower()
+    if pred_type not in _VISION_TYPE_ACCEPTS.get(exp_type, {exp_type}):
+        reasons.append(f"type {pred_type} is not {exp_type}")
+    if not _title_matches(names, prediction.get("value")):
+        reasons.append("title does not match")
+    exp_year, pred_year = str(expected.get("year") or ""), str(prediction.get("year") or "")
+    if exp_year.isdigit() and pred_year[:4].isdigit() and abs(int(exp_year) - int(pred_year[:4])) > 1:
+        reasons.append(f"year {pred_year} is not {exp_year} (+/- 1)")
+    ok = not reasons
+    lines += [f"ASSERTIONS_VISION_IDENTIFICATION: {'PASS' if ok else 'FAIL'}",
+              f"Expected: {exp_desc}", f"Got: {pred_desc}"]
+    if reasons:
+        lines.append("Reason: " + "; ".join(reasons))
+    return (1 if ok else 0), lines
+
+
+def fixture_path(fixtures_dir: str, input_image_path: str) -> str:
+    """Absolute path of a fixture, refusing anything that leaves the fixtures folder."""
+    import os
+    root = os.path.realpath(fixtures_dir)
+    path = os.path.realpath(os.path.join(root, str(input_image_path or "")))
+    if not input_image_path or os.path.commonpath([root, path]) != root:
+        raise ValueError(f"INPUT_IMAGE_PATH outside the fixtures folder: {input_image_path!r}")
+    return path

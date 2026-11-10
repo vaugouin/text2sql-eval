@@ -184,6 +184,16 @@ EVAL_SUBSET=${EVAL_SUBSET:-}
 EVAL_IDS=${EVAL_IDS:-}
 EVAL_IDS_FILE=${EVAL_IDS_FILE:-}
 SUBSET_BASELINE_COMPLEX_MODEL=${SUBSET_BASELINE_COMPLEX_MODEL:-gpt-4o}
+# FASTAPI-TEXT2SQL-277. INPUT_KIND=image runs the image evaluations only (INPUT_KIND = 'image' in
+# the bank): each picture is read from $SHARED_DIR/fixtures/<INPUT_IMAGE_PATH>, deposited on the
+# API, then asked. VISION_IDENTIFICATION_MODEL joins the run signature (VISION_MODEL), so
+# gpt-6-astra and claude-fable-5-2 are two namespaces. Example:
+#   INPUT_KIND=image VISION_IDENTIFICATION_MODEL=claude-fable-5-2 ./text2sql-eval.sh
+INPUT_KIND=${INPUT_KIND:-text}
+VISION_IDENTIFICATION_MODEL=${VISION_IDENTIFICATION_MODEL:-gpt-6-astra}
+if [ "$INPUT_KIND" != "text" ] && [ "$INPUT_KIND" != "image" ]; then
+    echo "ERROR: INPUT_KIND must be 'text' or 'image' (got '$INPUT_KIND')."; exit 1
+fi
 
 EVAL_HOME=${EVAL_HOME:-$HOME/docker/text2sql-eval}
 SHARED_DIR=${SHARED_DIR:-$HOME/docker/shared_data/text2sql-eval}
@@ -304,20 +314,27 @@ except Exception as e:
 try:
     import citizenphil as cp
     cur = cp.f_getconnection().cursor()
+    image_run = os.environ.get("PF_INPUT_KIND") == "image"
     elig = ("FROM T_WC_T2S_EVALUATION e WHERE e.IS_EVAL = 1 AND e.DELETED = 0 AND ("
             "(e.ASSERTIONS_QUERY_RESULT <> '' AND e.ASSERTIONS_QUERY_RESULT IS NOT NULL) OR "
             "(e.ASSERTIONS_ENTITY_EXTRACTION <> '' AND e.ASSERTIONS_ENTITY_EXTRACTION IS NOT NULL) OR "
-            "(e.ASSERTIONS_SQL_QUERY <> '' AND e.ASSERTIONS_SQL_QUERY IS NOT NULL)) ")
+            "(e.ASSERTIONS_SQL_QUERY <> '' AND e.ASSERTIONS_SQL_QUERY IS NOT NULL) OR "
+            "(e.ASSERTIONS_VISION_IDENTIFICATION <> '' AND e.ASSERTIONS_VISION_IDENTIFICATION IS NOT NULL)) ")
+    # FASTAPI-TEXT2SQL-277: same split as phase 11, image rows on an image run, the rest otherwise.
+    elig += ("AND e.INPUT_KIND = 'image' AND e.INPUT_IMAGE_PATH <> '' " if image_run
+             else "AND (e.INPUT_KIND IS NULL OR e.INPUT_KIND <> 'image') ")
     def late(col, val):
         # Same rule as late_models_clause() in text2sql-eval.py (-234): the default model also
         # matches the NULL of the rows written before the column existed.
         v = val.replace("'", "''")
         return f"(x.{col} = '{v}' OR x.{col} IS NULL)" if val == "gpt-4o" else f"x.{col} = '{v}'"
+    vis = os.environ.get("PF_VIS", "").replace("'", "''")
+    vision_x = f"AND x.VISION_MODEL = '{vis}' " if image_run else "AND x.VISION_MODEL IS NULL "
     done = ("SELECT x.ID_T2S_EVALUATION FROM T_WC_T2S_EVALUATION_EXECUTION x WHERE x.DELETED = 0 "
             "AND x.API_VERSION = %s AND x.ENTITY_EXTRACTION_MODEL = %s AND x.TEXT2SQL_MODEL = %s "
             "AND x.COMPLEX_MODEL = %s AND x.LANG = %s "
             f"AND {late('RESULT_ENTITY_MODEL', os.environ['PF_RE'])} "
-            f"AND {late('ANSWER_SINGLE_VALUE_MODEL', os.environ['PF_ASV'])}")
+            f"AND {late('ANSWER_SINGLE_VALUE_MODEL', os.environ['PF_ASV'])} " + vision_x)
     models = (fver, os.environ["PF_EE"], os.environ["PF_T2S"], os.environ["PF_CX"])
     resume = (cp.f_getservervariable("strtext2sqlevalrunevalid", 0) or "").strip()
     # FASTAPI-TEXT2SQL-301: the same subset the evaluator will compute, by the same function.
@@ -328,7 +345,7 @@ try:
         print(f"PF_SUBSET_IDS={len(subset)} id(s) given")
     if os.environ.get("PF_SUBSET") == "escalated":
         late_x = (f"AND {late('RESULT_ENTITY_MODEL', os.environ['PF_RE'])} "
-                  f"AND {late('ANSWER_SINGLE_VALUE_MODEL', os.environ['PF_ASV'])}")
+                  f"AND {late('ANSWER_SINGLE_VALUE_MODEL', os.environ['PF_ASV'])} " + vision_x)
         ds = t2s_eval.escalated_subset(cur, fver, os.environ["PF_EE"], os.environ["PF_T2S"],
                                        os.environ["PF_BASE_CX"], late_x,
                                        ["en", "fr"] if lang == "*" else [lang])
@@ -344,7 +361,7 @@ try:
     for l, col in (("en", "QUESTION"), ("fr", "QUESTION_FR")):
         if lang not in (l, "*"):
             continue
-        base_q = elig + f"AND e.{col} IS NOT NULL AND e.{col} <> '' " + in_subset
+        base_q = elig + ("" if image_run else f"AND e.{col} IS NOT NULL AND e.{col} <> '' ") + in_subset
         cur.execute("SELECT COUNT(*) AS n " + base_q)
         eligible = cur.fetchone()["n"]
         q = "SELECT COUNT(*) AS n " + base_q + f"AND e.ID_T2S_EVALUATION NOT IN ({done}) "
@@ -357,6 +374,20 @@ try:
         total_remaining += remaining
         print(f"PF_LANG_{l}={eligible} eligible, {eligible - remaining} already done, {remaining} to run")
     print(f"PF_REMAINING={total_remaining}")
+    # FASTAPI-TEXT2SQL-277: every picture of the eligible image rows must be in the fixtures, or
+    # phase 11 stops at the first missing one (a deposit failure is a configuration error).
+    if image_run:
+        cur.execute("SELECT DISTINCT e.INPUT_IMAGE_PATH AS p " + elig + in_subset)
+        paths = [r["p"] for r in cur.fetchall()]
+        missing = [p for p in paths if not os.path.isfile(os.path.join("/shared/fixtures", p))]
+        print(f"PF_FIXTURES={len(paths) - len(missing)} of {len(paths)} pictures found under fixtures/")
+        print(f"PF_FIXTURES_MISSING={len(missing)}")
+        if missing:
+            print(f"PF_FIXTURES_FIRST_MISSING={missing[0]}")
+    # FASTAPI-TEXT2SQL-277: the columns an image run writes and a text run filters on.
+    cur.execute("SELECT COUNT(*) AS n FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() "
+                "AND TABLE_NAME = 'T_WC_T2S_EVALUATION_EXECUTION' AND COLUMN_NAME = 'VISION_MODEL'")
+    print(f"PF_VISION_COLUMNS={cur.fetchone()['n']}")
     print(f"PF_RESUME={resume or 'none'}")
     cur.execute("SELECT COUNT(*) AS n FROM T_WC_T2S_EVALUATION_EXECUTION WHERE DELETED = 1")
     print(f"PF_PURGE={cur.fetchone()['n']}")
@@ -379,6 +410,8 @@ PREFLIGHT=$(printf '%s\n' "$PREFLIGHT_PY" | docker run -i --rm --network="host" 
     -e PF_EE="$ENTITY_EXTRACTION_MODEL" -e PF_T2S="$TEXT2SQL_MODEL" -e PF_CX="$COMPLEX_MODEL" \
     -e PF_RE="$RESULT_ENTITY_MODEL" -e PF_ASV="$ANSWER_SINGLE_VALUE_MODEL" \
     -e PF_SUBSET="$EVAL_SUBSET" -e PF_IDS="$EVAL_IDS" -e PF_BASE_CX="$SUBSET_BASELINE_COMPLEX_MODEL" \
+    -e PF_INPUT_KIND="$INPUT_KIND" -e PF_VIS="$VISION_IDENTIFICATION_MODEL" \
+    -v "$SHARED_DIR:/shared:ro" \
     --entrypoint python text2sql-eval-python-app - 2>&1)
 
 pf() { printf '%s\n' "$PREFLIGHT" | sed -n "s/^$1=//p" | head -1; }
@@ -401,7 +434,14 @@ else
 fi
 echo "              to run one language: EVAL_LANGUAGE=en ./text2sql-eval.sh  (or EVAL_LANGUAGE=fr)"
 echo
-echo "LLM per task (the API has a 6th task, vision, that the evaluator never triggers):"
+if [ "$INPUT_KIND" = "image" ]; then
+    echo "INPUT KIND  : image (FASTAPI-TEXT2SQL-277): the image evaluations only, each picture deposited first"
+    echo "  0 vision_identification  $VISION_IDENTIFICATION_MODEL (part of the run signature)"
+    echo "    fixtures: $(pf PF_FIXTURES); recognition cache neither read nor written"
+else
+    echo "INPUT KIND  : text (image evaluations left out; INPUT_KIND=image to run them)"
+fi
+echo "LLM per task:"
 echo "  1 entity_extraction    $ENTITY_EXTRACTION_MODEL"
 echo "  2 text2sql             $TEXT2SQL_MODEL"
 echo "  3 result_entity        $RESULT_ENTITY_MODEL"
@@ -475,6 +515,14 @@ if [ "$FLEX_PROCESSING" = "--flex-processing" ]; then
         more "or the run stops on the first row it writes."
     fi
     echo "  - Flex timings do not compare with standard runs; scores and token counts do."
+fi
+if [ "$(pf PF_VISION_COLUMNS)" = "0" ]; then
+    warn "T_WC_T2S_EVALUATION_EXECUTION has no VISION_MODEL column: run"
+    more "~/docker/tools/runsqlvaugouindb.sh $EVAL_HOME/migrate-evaluation-vision.sql first (FASTAPI-TEXT2SQL-277)."
+fi
+if [ "$INPUT_KIND" = "image" ] && [ -n "$(pf PF_FIXTURES_MISSING)" ] && [ "$(pf PF_FIXTURES_MISSING)" != "0" ]; then
+    warn "$(pf PF_FIXTURES_MISSING) picture(s) missing under $SHARED_DIR/fixtures, first: $(pf PF_FIXTURES_FIRST_MISSING)."
+    more "Phase 11 stops at the first missing picture (configuration error, nothing scored)."
 fi
 if [ "$PF_BKTREES" = "False" ]; then
     warn "bktrees_ready is false: the API is still warming up and early latencies will be inflated. Wait."
@@ -625,6 +673,8 @@ f_runlogged text2sql-eval --rm --network="host" \
     "$COMPLEX_QUESTION_PROCESSING" \
     "$FLEX_PROCESSING" \
     --cache-guard-min-hit "$CACHE_GUARD_MIN_HIT" \
+    --input-kind "$INPUT_KIND" \
+    --vision-identification-model "$VISION_IDENTIFICATION_MODEL" \
     ${SUBSET_ARGS[@]+"${SUBSET_ARGS[@]}"}
 
 echo

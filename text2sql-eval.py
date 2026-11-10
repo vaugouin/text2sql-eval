@@ -129,22 +129,42 @@ def task_model_clause(column: str, value: str, prefix: str = "") -> str:
     return f"{col} = '{safe}'"
 
 
+# FASTAPI-TEXT2SQL-277. The vision model of an image run joins the run signature: an image
+# campaign on gpt-6-astra and one on claude-fable-5-2, same five text models, are two
+# namespaces. Set once from the command line (`--input-kind image`), None on a text run, whose
+# rows carry VISION_MODEL NULL: a text run never reads, skips or rescores an image row.
+VISION_RUN_MODEL = None
+
+
+def vision_model_clause(prefix: str = "") -> str:
+    """VISION_MODEL predicate of the run: the model on an image run, NULL on a text run."""
+    col = f"{prefix}VISION_MODEL"
+    if VISION_RUN_MODEL is None:
+        return f"AND {col} IS NULL "
+    safe = str(VISION_RUN_MODEL).replace("'", "''")
+    return f"AND {col} = '{safe}' "
+
+
 def late_models_clause(result_entity_model: str, answer_single_value_model: str, prefix: str = "") -> str:
-    """Both late columns, ready to append after the three historical ones."""
+    """Both late columns, ready to append after the three historical ones, and the vision
+    column of -277, so every place that builds the run signature gets it at once."""
     return (f"AND {task_model_clause('RESULT_ENTITY_MODEL', result_entity_model, prefix)} "
-            f"AND {task_model_clause('ANSWER_SINGLE_VALUE_MODEL', answer_single_value_model, prefix)} ")
+            f"AND {task_model_clause('ANSWER_SINGLE_VALUE_MODEL', answer_single_value_model, prefix)} "
+            + vision_model_clause(prefix))
 
 
-def late_models_suffix(result_entity_model, answer_single_value_model) -> str:
+def late_models_suffix(result_entity_model, answer_single_value_model, vision_model=None) -> str:
     """Folder and file-name suffix, read from the ROW, never from the command line: empty
-    when both are the default or NULL, so every folder written so far keeps its name
-    (<version>_<lang>_<ee>_<t2s>_<complex>) and the analysis scripts that build that path
-    keep working unchanged."""
+    when both are the default or NULL and the row is a text row, so every folder written so
+    far keeps its name (<version>_<lang>_<ee>_<t2s>_<complex>) and the analysis scripts that
+    build that path keep working unchanged. An image row adds `_vis-<model>` (-277)."""
     parts = []
     if result_entity_model and result_entity_model != DEFAULT_TASK_MODEL:
         parts.append("re-" + slug_for_filename(result_entity_model, max_len=40))
     if answer_single_value_model and answer_single_value_model != DEFAULT_TASK_MODEL:
         parts.append("asv-" + slug_for_filename(answer_single_value_model, max_len=40))
+    if vision_model:
+        parts.append("vis-" + slug_for_filename(vision_model, max_len=40))
     return ("_" + "_".join(parts)) if parts else ""
 
 
@@ -494,7 +514,19 @@ _parser.add_argument("--subset", default="", choices=["", "escalated"],
 _parser.add_argument("--subset-baseline-complex-model", default="gpt-4o",
                      help="Complex model of the baseline run the 'escalated' subset is read from and "
                           "compared against (default: gpt-4o)")
+# FASTAPI-TEXT2SQL-277. Image-input evaluations: the bank rows with INPUT_KIND = 'image'. Their
+# picture (INPUT_IMAGE_PATH, relative to EVAL_FIXTURES_DIR) is deposited on POST /uploads/vision
+# before the question is asked, and the vision model joins the run signature (VISION_MODEL).
+_parser.add_argument("--input-kind", default="text", choices=["text", "image"],
+                     help="'text' (default): the text bank, as before. 'image': the image "
+                          "evaluations only, each picture deposited on the API first.")
+_parser.add_argument("--vision-identification-model", default="gpt-6-astra",
+                     help="Vision model of an image run (llm_model_vision), checked against the "
+                          "API's echo; ignored on a text run (default: gpt-6-astra)")
 _cli_args = _parser.parse_args()
+EVAL_FIXTURES_DIR = os.getenv("EVAL_FIXTURES_DIR", "/shared/fixtures")
+if _cli_args.input_kind == "image":
+    VISION_RUN_MODEL = _cli_args.vision_identification_model.strip()
 
 datnow = datetime.now(cp.paris_tz)
 # Compute the date and time for J-1 (yesterday)
@@ -610,6 +642,9 @@ try:
             # when process 20 is not in arrprocessscope.
             dblcumulatedscore = 0
             dblevalcount = 0
+            # FASTAPI-TEXT2SQL-277: the vision identification score, apart from the global one.
+            dblvisionscore = 0
+            lngvisioncount = 0
             # Taux d'escalade par mode declare (FASTAPI-TEXT2SQL-257). "standard" doit tendre
             # vers 0 %, "complex" vers 100 %, et l'ecart est le seul chiffre qui dise si le
             # chemin normal se degrade sans que le score global bouge.
@@ -699,7 +734,7 @@ try:
                     strlangdesc = {"en": "English", "fr": "French", "*": "all-language"}
                     strcurrentprocess = f"{intindex}: running {strlangdesc.get(strlanguage, strlanguage)} evaluations on the FastAPI text2SQL API "
                     strsql = ""
-                    strsql += "SELECT ID_T2S_EVALUATION AS id, QUESTION, QUESTION_FR "
+                    strsql += "SELECT ID_T2S_EVALUATION AS id, QUESTION, QUESTION_FR, INPUT_IMAGE_PATH "
                     strsql += "FROM T_WC_T2S_EVALUATION "
                     strsql += "WHERE IS_EVAL = 1 "
                     strsql += "AND DELETED = 0 "
@@ -707,7 +742,18 @@ try:
                     strsql += "(ASSERTIONS_QUERY_RESULT <> '' AND ASSERTIONS_QUERY_RESULT IS NOT NULL) "
                     strsql += "OR (ASSERTIONS_ENTITY_EXTRACTION <> '' AND ASSERTIONS_ENTITY_EXTRACTION IS NOT NULL) "
                     strsql += "OR (ASSERTIONS_SQL_QUERY <> '' AND ASSERTIONS_SQL_QUERY IS NOT NULL) "
+                    strsql += "OR (ASSERTIONS_VISION_IDENTIFICATION <> '' AND ASSERTIONS_VISION_IDENTIFICATION IS NOT NULL) "
                     strsql += ") "
+                    # FASTAPI-TEXT2SQL-277. An image evaluation has no question of its own (the
+                    # picture is the question), so on an image run the language filters below
+                    # test nothing but the skip rule: the "question present" half is neutralised.
+                    if VISION_RUN_MODEL is None:
+                        strsql += "AND (INPUT_KIND IS NULL OR INPUT_KIND <> 'image') "
+                        strqen = "QUESTION IS NOT NULL AND QUESTION <> ''"
+                        strqfr = "QUESTION_FR IS NOT NULL AND QUESTION_FR <> ''"
+                    else:
+                        strsql += "AND INPUT_KIND = 'image' AND INPUT_IMAGE_PATH IS NOT NULL AND INPUT_IMAGE_PATH <> '' "
+                        strqen = strqfr = "1 = 1"
                     strnotinbase = (
                         "SELECT T_WC_T2S_EVALUATION_EXECUTION.ID_T2S_EVALUATION "
                         "FROM T_WC_T2S_EVALUATION_EXECUTION "
@@ -719,23 +765,23 @@ try:
                         + late_models_clause(strresultentitymodeleval, stranswersinglevaluemodeleval)
                     )
                     if strlanguage == "en":
-                        strsql += "AND QUESTION IS NOT NULL AND QUESTION <> '' "
+                        strsql += f"AND {strqen} "
                         strsql += "AND ID_T2S_EVALUATION NOT IN ( "
                         strsql += strnotinbase + "AND LANG = 'en' "
                         strsql += ") "
                     elif strlanguage == "fr":
-                        strsql += "AND QUESTION_FR IS NOT NULL AND QUESTION_FR <> '' "
+                        strsql += f"AND {strqfr} "
                         strsql += "AND ID_T2S_EVALUATION NOT IN ( "
                         strsql += strnotinbase + "AND LANG = 'fr' "
                         strsql += ") "
                     else:  # "*"
-                        strsql += "AND ((QUESTION IS NOT NULL AND QUESTION <> '') OR (QUESTION_FR IS NOT NULL AND QUESTION_FR <> '')) "
+                        strsql += f"AND (({strqen}) OR ({strqfr})) "
                         strsql += "AND ( "
-                        strsql += "(QUESTION IS NOT NULL AND QUESTION <> '' AND ID_T2S_EVALUATION NOT IN ( "
+                        strsql += f"({strqen} AND ID_T2S_EVALUATION NOT IN ( "
                         strsql += strnotinbase + "AND LANG = 'en' "
                         strsql += ")) "
                         strsql += "OR "
-                        strsql += "(QUESTION_FR IS NOT NULL AND QUESTION_FR <> '' AND ID_T2S_EVALUATION NOT IN ( "
+                        strsql += f"({strqfr} AND ID_T2S_EVALUATION NOT IN ( "
                         strsql += strnotinbase + "AND LANG = 'fr' "
                         strsql += ")) "
                         strsql += ") "
@@ -753,7 +799,7 @@ try:
                     # RESOLUTION_MODE est relu ICI, dans la phase de calcul, et non dans la phase de
                     # passage : c'est ce qui rend une requalification rejouable sans rappeler
                     # l'API, exactement comme une assertion modifiee (FASTAPI-TEXT2SQL-257).
-                    strsql += "SELECT T_WC_T2S_EVALUATION_EXECUTION.ID_ROW AS id, T_WC_T2S_EVALUATION_EXECUTION.JSON_RESULT, T_WC_T2S_EVALUATION.ASSERTIONS_QUERY_RESULT, T_WC_T2S_EVALUATION.ASSERTIONS_ENTITY_EXTRACTION, T_WC_T2S_EVALUATION.ASSERTIONS_SQL_QUERY, T_WC_T2S_EVALUATION.RESOLUTION_MODE "
+                    strsql += "SELECT T_WC_T2S_EVALUATION_EXECUTION.ID_ROW AS id, T_WC_T2S_EVALUATION_EXECUTION.JSON_RESULT, T_WC_T2S_EVALUATION.ASSERTIONS_QUERY_RESULT, T_WC_T2S_EVALUATION.ASSERTIONS_ENTITY_EXTRACTION, T_WC_T2S_EVALUATION.ASSERTIONS_SQL_QUERY, T_WC_T2S_EVALUATION.RESOLUTION_MODE, T_WC_T2S_EVALUATION.ASSERTIONS_VISION_IDENTIFICATION "
                     strsql += "FROM T_WC_T2S_EVALUATION_EXECUTION "
                     strsql += "INNER JOIN T_WC_T2S_EVALUATION ON T_WC_T2S_EVALUATION.ID_T2S_EVALUATION = T_WC_T2S_EVALUATION_EXECUTION.ID_T2S_EVALUATION "
                     strsql += "WHERE T_WC_T2S_EVALUATION.DELETED = 0 "
@@ -892,9 +938,12 @@ try:
 
                             # Build list of (question_text, lang_code) pairs to evaluate
                             arrlangpairs = []
-                            if strlanguage in ("en", "*") and strquestion_en:
+                            # FASTAPI-TEXT2SQL-277: an image evaluation runs in every language
+                            # asked, its question empty or not (the picture is the question).
+                            blnimagerow = VISION_RUN_MODEL is not None
+                            if strlanguage in ("en", "*") and (strquestion_en or blnimagerow):
                                 arrlangpairs.append((strquestion_en, "en"))
-                            if strlanguage in ("fr", "*") and strquestion_fr:
+                            if strlanguage in ("fr", "*") and (strquestion_fr or blnimagerow):
                                 arrlangpairs.append((strquestion_fr, "fr"))
 
                             if not arrlangpairs:
@@ -933,6 +982,34 @@ try:
                             if api_key:
                                 headers["X-API-Key"] = api_key
 
+                            # FASTAPI-TEXT2SQL-277. Deposit the picture once per evaluation, for
+                            # both languages: an image_ref lives 30 days, the bank keeps the
+                            # fixture path. A failed deposit is a CONFIGURATION error (fixtures
+                            # missing, API down, key refused) and stops the run: scoring it as a
+                            # wrong answer would charge the model with the evaluator's fault.
+                            strimageref = None
+                            if blnimagerow:
+                                try:
+                                    strfixture = t2s_eval.fixture_path(EVAL_FIXTURES_DIR, row.get('INPUT_IMAGE_PATH'))
+                                    with open(strfixture, "rb") as objfixture:
+                                        bytimage = objfixture.read()
+                                    dictupheaders = {"Content-Type": "application/octet-stream"}
+                                    if api_key:
+                                        dictupheaders["X-API-Key"] = api_key
+                                    objupload = requests.post(f"{base_url}/uploads/vision", headers=dictupheaders,
+                                                              data=bytimage, timeout=120)
+                                    objupload.raise_for_status()
+                                    strimageref = (objupload.json() or {}).get("image_ref")
+                                    if not strimageref:
+                                        raise ValueError(f"no image_ref in the deposit answer: {objupload.text[:300]}")
+                                except Exception as e:
+                                    print(f"❌ Image deposit failed for eval id {lngid} ({row.get('INPUT_IMAGE_PATH')}): "
+                                          f"{type(e).__name__}: {e}")
+                                    print(f"   Fixtures folder: {EVAL_FIXTURES_DIR}. Stopping the run (configuration error, nothing scored).")
+                                    cp.f_setservervariable("strtext2sqlevalcurrentprocess", "", "Current process in the Text2SQL evaluation", 0)
+                                    sys.exit(1)
+                                print(f"  image {row.get('INPUT_IMAGE_PATH')} deposited as {strimageref}")
+
                             # One API call per (question, lang) pair because ui_language affects the answer field
                             for strquestion, strevallang in arrlangpairs:
                                 print(f"  [{strevallang}] {strquestion}")
@@ -952,6 +1029,13 @@ try:
                                     "ui_language": strevallang,
                                     "flex_processing": blnflexprocessing,
                                 }
+                                if blnimagerow:
+                                    payload["image_ref"] = strimageref
+                                    payload["llm_model_vision"] = VISION_RUN_MODEL
+                                    # The recognition cache (T_WC_T2S_VISION_CACHE) is keyed on the
+                                    # image and the API version, not the model: a campaign must not
+                                    # leave one model's reading there for the live users.
+                                    payload["store_to_cache"] = False
                                 print(url)
                                 print(payload)
                                 strdatnow = datetime.now(cp.paris_tz).strftime("%Y-%m-%d %H:%M:%S")
@@ -1065,6 +1149,17 @@ try:
                                     print("API flex_processing mismatch; queried: ", response_json.get('flex_processing', 'field missing'),
                                           " expected: True. Deploy TEXT2SQL-EVAL-002 on the API (restart the colour in service).")
                                     intconfigerror = True
+                                # FASTAPI-TEXT2SQL-277. The vision model actually used, and that the
+                                # picture was actually read: an API that ignored image_ref would
+                                # answer an empty question and the row would score nothing true.
+                                if blnimagerow:
+                                    if response_json.get('llm_model_vision') != VISION_RUN_MODEL:
+                                        print("API llm_model_vision mismatch; queried: ", response_json.get('llm_model_vision', 'field missing'),
+                                              " expected: ", VISION_RUN_MODEL)
+                                        intconfigerror = True
+                                    if response_json.get('error_code') in ("image_gone", "image_missing", "image_ref_invalid"):
+                                        print("API could not read the deposited image: ", response_json.get('error_code'))
+                                        intconfigerror = True
                                 if intconfigerror:
                                     # We stop now so we do not consume tokens and money because there is a configuration error
                                     exit()
@@ -1077,6 +1172,8 @@ try:
                                 arrevalexeccouples["COMPLEX_MODEL"] = strcomplexmodeleval
                                 arrevalexeccouples["RESULT_ENTITY_MODEL"] = strresultentitymodeleval
                                 arrevalexeccouples["ANSWER_SINGLE_VALUE_MODEL"] = stranswersinglevaluemodeleval
+                                if blnimagerow:
+                                    arrevalexeccouples["VISION_MODEL"] = VISION_RUN_MODEL
                                 arrevalexeccouples["JSON_RESULT"] = response_text
                                 arrevalexeccouples["TIM_EXECUTION"] = strdatnow
                                 arrevalexeccouples["LANG"] = strevallang
@@ -1233,6 +1330,20 @@ try:
                                     + "\n".join(assertions_entity_extraction_details_lines)
                                 )
                             
+                            # === Vision identification (ASSERTIONS_VISION_IDENTIFICATION, FASTAPI-TEXT2SQL-277) ===
+                            # Out of ASSERTIONS_TOTAL_SCORE, like ASSERTIONS_RESULT_SHAPE: the text
+                            # campaigns stay comparable, and the image campaigns read this column.
+                            assertions_vision_identification_score = None
+                            strassertions_vision = row.get('ASSERTIONS_VISION_IDENTIFICATION')
+                            if strassertions_vision is not None and str(strassertions_vision).strip() != "":
+                                assertions_vision_identification_score, arrvisionlines = t2s_eval.score_vision_identification(
+                                    strassertions_vision, response_json)
+                                detailed_results_string = detailed_results_string + "\n\n" + "\n".join(arrvisionlines)
+                                print("\n".join(arrvisionlines))
+                                if assertions_vision_identification_score is not None:
+                                    dblvisionscore += assertions_vision_identification_score
+                                    lngvisioncount += 1
+
                             print(f"\n{'='*40}")
                             print(f"Evaluation Result: {status}")
                             print(f"{'='*40}")
@@ -1268,6 +1379,7 @@ try:
                             arrevalexeccouples["ASSERTIONS_SQL_QUERY_SCORE"] = assertions_sql_query_score
                             arrevalexeccouples["ASSERTIONS_ENTITY_EXTRACTION_SCORE"] = assertions_entity_extraction_score
                             arrevalexeccouples["ASSERTIONS_RESULT_SCORE"] = assertions_result_score
+                            arrevalexeccouples["ASSERTIONS_VISION_IDENTIFICATION_SCORE"] = assertions_vision_identification_score
                             # Compute total score across available (non-null) assertion scores
                             scores_for_total = []
                             if assertions_result_score is not None:
@@ -1349,6 +1461,9 @@ try:
                             )
                             arrevalexeccouples["ANSWER_SINGLE_VALUE_PROCESSING_TIME"] = _safe_float(
                                 (response_json or {}).get("answer_single_value_processing_time")
+                            )
+                            arrevalexeccouples["VISION_IDENTIFICATION_PROCESSING_TIME"] = _safe_float(
+                                (response_json or {}).get("vision_identification_processing_time")
                             )
                             # Le mode declare est copie sur l'execution, pas seulement lu :
                             # requalifier une evaluation plus tard ne doit pas reecrire le sens
@@ -1620,7 +1735,7 @@ try:
 
                             row_result_entity_model = row.get('RESULT_ENTITY_MODEL')
                             row_answer_single_value_model = row.get('ANSWER_SINGLE_VALUE_MODEL')
-                            late_suffix = late_models_suffix(row_result_entity_model, row_answer_single_value_model)
+                            late_suffix = late_models_suffix(row_result_entity_model, row_answer_single_value_model, row.get('VISION_MODEL'))
                             run_subfolder = (
                                 f"{api_version_formatted}_{row_lang}_"
                                 f"{ee_slug}_{t2s_slug}_{complex_slug}{late_suffix}"
@@ -1879,6 +1994,9 @@ try:
                     if dictcoststats["unpriced"]:
                         print(f"  NOT in the totals, no price in llm_costs.py: {', '.join(sorted(dictcoststats['unpriced']))}")
                 print(f"Global score: {dblcumulatedscore}/{dblevalcount} = {dblglobalscore:.2%}")
+                if lngvisioncount > 0:
+                    print(f"Vision identification score ({VISION_RUN_MODEL or 'text run'}, out of the global score): "
+                          f"{dblvisionscore}/{lngvisioncount} = {dblvisionscore / lngvisioncount:.2%}")
                 if lng_entity_extraction_processing_time_count > 0:
                     str_entity_extraction_processing_time_sum_duration = cp.convert_seconds_to_duration(
                         int(dbl_entity_extraction_processing_time_sum)
