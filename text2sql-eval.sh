@@ -131,8 +131,8 @@ fi
 # LLM-TASKS-010 (2026-10-03): the first two follow the API defaults (gpt-6-sol). For the gpt-4o
 # baseline: ENTITY_EXTRACTION_MODEL=gpt-4o TEXT2SQL_MODEL=gpt-4o ./text2sql-eval.sh
 ENTITY_EXTRACTION_MODEL=${ENTITY_EXTRACTION_MODEL:-gpt-6-sol}
-# GPT-6-008 (2026-11-10): text-to-SQL follows the API default, gpt-6.1-terra.
-TEXT2SQL_MODEL=${TEXT2SQL_MODEL:-gpt-6.1-terra}
+# GPT-6-008 (2026-11-10): gpt-6.1-terra was the API default for a few hours, reverted for latency.
+TEXT2SQL_MODEL=${TEXT2SQL_MODEL:-gpt-6-sol}
 # GPT-6-007 (2026-10-17): the complex question follows the API default to gpt-6.1-sol. No full
 # run exists yet on that namespace; the escalated subset still reads its baseline from gpt-4o.
 COMPLEX_MODEL=${COMPLEX_MODEL:-gpt-6.1-sol}

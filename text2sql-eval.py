@@ -418,9 +418,9 @@ _parser = argparse.ArgumentParser(description="Text2SQL evaluation runner")
 # does not move: it describes the NULL of the two late columns, written by gpt-4o runs.
 _parser.add_argument("--entity-extraction-model", default="gpt-6-sol",
                      help="LLM model for entity extraction (default: gpt-6-sol, the API default)")
-# GPT-6-008 (2026-11-10): text-to-SQL follows the API default, gpt-6.1-terra.
-_parser.add_argument("--text2sql-model", default="gpt-6.1-terra",
-                     help="LLM model for text-to-SQL (default: gpt-6.1-terra, the API default)")
+# GPT-6-008 (2026-11-10): gpt-6.1-terra was the API default for a few hours, reverted for latency.
+_parser.add_argument("--text2sql-model", default="gpt-6-sol",
+                     help="LLM model for text-to-SQL (default: gpt-6-sol, the API default)")
 _parser.add_argument("--complex-model", default="gpt-6.1-sol",
                      help="LLM model for complex question processing (default: gpt-6.1-sol, the API default since GPT-6-007)")
 # FASTAPI-TEXT2SQL-232 gave the answer-entity classifier and the single-value answerer their
