@@ -1,0 +1,15 @@
+-- new-evaluations-371-character-nicknames.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 17:30:14 +0100
+--
++-------------------+----------------------------+---------------------------------------------------------+-------------------------------------------------+-------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | QUESTION                                                | QUESTION_FR                                     | ASSERTIONS_QUERY_RESULT             |
++-------------------+----------------------------+---------------------------------------------------------+-------------------------------------------------+-------------------------------------+
+|              2815 |                         42 | Who starred as the Bionic Woman?                        | Qui a joué Super Jaimie ?                       | ID_PERSON IN (57905)                |
+|              2816 |                         42 | Who played the Bionic Man?                              | Qui a joué l'Homme bionique ?                   | ID_PERSON IN (18589)                |
+|              2817 |                         32 | Who played the Little Tramp?                            | Qui a joué Charlot ?                            | ID_PERSON IN (13848)                |
+|              2818 |                         32 | Who played the Caped Crusader in the movies?            | Qui a joué le Croisé masqué au cinéma ?         | ID_PERSON IN (2232, 3894)           |
+|              2819 |                         32 | Which actors played the Man of Steel?                   | Quels acteurs ont joué l'Homme d'acier ?        | ID_PERSON IN (20006, 73968)         |
+|              2820 |                         32 | Who played the Merc with a Mouth?                       | Qui a joué le Mercenaire à grande gueule ?      | ID_PERSON IN (10859)                |
+|              2821 |                         32 | Which actors have played the Web-Slinger in the movies? | Quels acteurs ont joué le Tisseur au cinéma ?   | ID_PERSON IN (2219, 37625, 1136406) |
+|              2822 |                         32 | Who played Hannibal the Cannibal in the movies?         | Qui a joué Hannibal le Cannibale au cinéma ?    | ID_PERSON IN (4173)                 |
++-------------------+----------------------------+---------------------------------------------------------+-------------------------------------------------+-------------------------------------+
