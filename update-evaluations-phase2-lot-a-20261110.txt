@@ -1,0 +1,51 @@
+-- update-evaluations-phase2-lot-a.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 15:34:50 +0100
+--
++-------------------+---------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ASSERTIONS_RESULT_SHAPE                                             |
++-------------------+---------------------------------------------------------------------+
+|              2600 | representation == card-grid; intent.task == sequence                |
+|              2601 | representation == card-grid; intent.task == sequence                |
+|              2602 | representation == card-grid; intent.task == sequence                |
+|              2603 | representation == card-grid; intent.task == sequence                |
+|              2604 | representation == card-grid; intent.task == sequence                |
+|              2605 | representation == card-grid; intent.task == sequence                |
+|              2606 | representation == card-grid; intent.task == sequence                |
+|              2607 | representation == card-grid; intent.task == sequence                |
+|              2608 | representation == card-grid; intent.task == sequence                |
+|              2609 | representation == card-grid; intent.task == sequence                |
+|              2610 | representation == table; intent.task == trend                       |
+|              2611 | representation == table; intent.task == trend                       |
+|              2612 | representation == table; intent.task == trend                       |
+|              2613 | representation == table; intent.task == trend                       |
+|              2614 | representation == table; unit(any) == minutes; intent.task == trend |
+|              2615 | representation == table; intent.task == trend                       |
+|              2616 | representation == table; intent.task == trend                       |
+|              2617 | representation == table; intent.task == trend                       |
+|              2618 | representation == table; intent.task == trend                       |
+|              2619 | representation == table; intent.task == trend                       |
++-------------------+---------------------------------------------------------------------+
++-------------------+-----------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ASSERTIONS_RESULT_SHAPE                                                     |
++-------------------+-----------------------------------------------------------------------------+
+|              2600 | representation == sequence-strip; intent.task == sequence                   |
+|              2601 | representation == sequence-strip; intent.task == sequence                   |
+|              2602 | representation == sequence-strip; intent.task == sequence                   |
+|              2603 | representation == sequence-strip; intent.task == sequence                   |
+|              2604 | representation == sequence-strip; intent.task == sequence                   |
+|              2605 | representation == sequence-strip; intent.task == sequence                   |
+|              2606 | representation == sequence-strip; intent.task == sequence                   |
+|              2607 | representation == sequence-strip; intent.task == sequence                   |
+|              2608 | representation == sequence-strip; intent.task == sequence                   |
+|              2609 | representation == sequence-strip; intent.task == sequence                   |
+|              2610 | representation == trend-columns; intent.task == trend                       |
+|              2611 | representation == trend-columns; intent.task == trend                       |
+|              2612 | representation == trend-columns; intent.task == trend                       |
+|              2613 | representation == trend-columns; intent.task == trend                       |
+|              2614 | representation == trend-columns; unit(any) == minutes; intent.task == trend |
+|              2615 | representation == trend-columns; intent.task == trend                       |
+|              2616 | representation == trend-columns; intent.task == trend                       |
+|              2617 | representation == trend-columns; intent.task == trend                       |
+|              2618 | representation == trend-columns; intent.task == trend                       |
+|              2619 | representation == trend-columns; intent.task == trend                       |
++-------------------+-----------------------------------------------------------------------------+
