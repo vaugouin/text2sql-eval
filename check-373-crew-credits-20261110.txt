@@ -1,0 +1,70 @@
+-- check-373-crew-credits.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 05:55:03 +0100
+--
++-----------+-------------------+------------+
+| ID_PERSON | PERSON_NAME       | POPULARITY |
++-----------+-------------------+------------+
+|      7467 | David Fincher     |     3.8882 |
+|     57646 | Henry Selick      |     0.8648 |
+|      4600 | Joe Dante         |     0.9754 |
+|       138 | Quentin Tarantino |     5.5397 |
+|       488 | Steven Spielberg  |     7.7826 |
+|       510 | Tim Burton        |     5.1864 |
+|     10051 | Tobe Hooper       |     0.9321 |
++-----------+-------------------+------------+
++----------+-------------------------------------------+--------------------------------------------+--------------+-----------------+-------------------+-------------+-----------------+
+| ID_MOVIE | MOVIE_TITLE                               | MOVIE_TITLE_FR                             | RELEASE_YEAR | STATUS          | PERSON_NAME       | CREDIT_TYPE | CREW_DEPARTMENT |
++----------+-------------------------------------------+--------------------------------------------+--------------+-----------------+-------------------+-------------+-----------------+
+|      609 | Poltergeist                               | Poltergeist                                |         1982 | Released        | Steven Spielberg  | crew        | Production      |
+|      609 | Poltergeist                               | Poltergeist                                |         1982 | Released        | Steven Spielberg  | crew        | Writing         |
+|      609 | Poltergeist                               | Poltergeist                                |         1982 | Released        | Steven Spielberg  | crew        | Writing         |
+|      609 | Poltergeist                               | Poltergeist                                |         1982 | Released        | Tobe Hooper       | crew        | Directing       |
+|      927 | Gremlins                                  | Gremlins                                   |         1984 | Released        | Joe Dante         | cast        |                 |
+|      927 | Gremlins                                  | Gremlins                                   |         1984 | Released        | Joe Dante         | crew        | Directing       |
+|      927 | Gremlins                                  | Gremlins                                   |         1984 | Released        | Steven Spielberg  | cast        |                 |
+|      927 | Gremlins                                  | Gremlins                                   |         1984 | Released        | Steven Spielberg  | crew        | Crew            |
+|      927 | Gremlins                                  | Gremlins                                   |         1984 | Released        | Steven Spielberg  | crew        | Production      |
+|     9479 | The Nightmare Before Christmas            | L'Étrange Noël de monsieur Jack            |         1993 | Released        | Henry Selick      | crew        | Directing       |
+|     9479 | The Nightmare Before Christmas            | L'Étrange Noël de monsieur Jack            |         1993 | Released        | Tim Burton        | cast        |                 |
+|     9479 | The Nightmare Before Christmas            | L'Étrange Noël de monsieur Jack            |         1993 | Released        | Tim Burton        | crew        | Production      |
+|     9479 | The Nightmare Before Christmas            | L'Étrange Noël de monsieur Jack            |         1993 | Released        | Tim Burton        | crew        | Writing         |
+|     9479 | The Nightmare Before Christmas            | L'Étrange Noël de monsieur Jack            |         1993 | Released        | Tim Burton        | crew        | Writing         |
+|   466272 | Once Upon a Time in… Hollywood            | Once Upon a Time in… Hollywood             |         2019 | Released        | Quentin Tarantino | cast        |                 |
+|   466272 | Once Upon a Time in… Hollywood            | Once Upon a Time in… Hollywood             |         2019 | Released        | Quentin Tarantino | crew        | Directing       |
+|   466272 | Once Upon a Time in… Hollywood            | Once Upon a Time in… Hollywood             |         2019 | Released        | Quentin Tarantino | crew        | Production      |
+|   466272 | Once Upon a Time in… Hollywood            | Once Upon a Time in… Hollywood             |         2019 | Released        | Quentin Tarantino | crew        | Writing         |
+|  1457866 | THE FURTHER MIS-ADVENTURES OF CLIFF BOOTH | Les Nouvelles Mésaventures de Cliff Booth  |         2026 | Post Production | David Fincher     | crew        | Directing       |
+|  1457866 | THE FURTHER MIS-ADVENTURES OF CLIFF BOOTH | Les Nouvelles Mésaventures de Cliff Booth  |         2026 | Post Production | Quentin Tarantino | crew        | Writing         |
+|  1457866 | THE FURTHER MIS-ADVENTURES OF CLIFF BOOTH | Les Nouvelles Mésaventures de Cliff Booth  |         2026 | Post Production | Quentin Tarantino | crew        | Writing         |
++----------+-------------------------------------------+--------------------------------------------+--------------+-----------------+-------------------+-------------+-----------------+
++----------+-------------------------------------------+--------------+-----------------+-------------+-------------+-----------------+
+| ID_MOVIE | MOVIE_TITLE                               | RELEASE_YEAR | STATUS          | DAT_RELEASE | CREDIT_TYPE | CREW_DEPARTMENT |
++----------+-------------------------------------------+--------------+-----------------+-------------+-------------+-----------------+
+|  1569780 | Only What We Carry                        |         2026 | Released        | 2026-06-06  | cast        |                 |
+|  1688867 | Dernsie: The Amazing Life of Bruce Dern   |         2026 | Released        | 2026-05-20  | cast        |                 |
+|  1706746 | Robert Richardson: The White Devil        |         2026 | Released        | 2026-12-03  | cast        |                 |
+|  1290792 | One Spoon of Chocolate                    |         2026 | Released        | 2026-05-01  | crew        | Production      |
+|  1457866 | THE FURTHER MIS-ADVENTURES OF CLIFF BOOTH |         2026 | Post Production | 2026-11-25  | crew        | Writing         |
+|  1457866 | THE FURTHER MIS-ADVENTURES OF CLIFF BOOTH |         2026 | Post Production | 2026-11-25  | crew        | Writing         |
+|  1598142 | The Projectionist                         |         2026 | Released        | 2026-02-19  | crew        | Production      |
++----------+-------------------------------------------+--------------+-----------------+-------------+-------------+-----------------+
++----------+------------------------------------+--------------+
+| ID_MOVIE | MOVIE_TITLE                        | RELEASE_YEAR |
++----------+------------------------------------+--------------+
+|   443129 | Reservoir Dogs                     |         1991 |
+|      500 | Reservoir Dogs                     |         1992 |
+|      680 | Pulp Fiction                       |         1994 |
+|        5 | Four Rooms                         |         1995 |
+|      184 | Jackie Brown                       |         1997 |
+|       24 | Kill Bill: Vol. 1                  |         2003 |
+|      393 | Kill Bill: Vol. 2                  |         2004 |
+|      187 | Sin City                           |         2005 |
+|     1991 | Death Proof                        |         2007 |
+|   285923 | Grindhouse                         |         2007 |
+|    16869 | Inglourious Basterds               |         2009 |
+|   414419 | Kill Bill: The Whole Bloody Affair |         2011 |
+|    68718 | Django Unchained                   |         2012 |
+|   273248 | The Hateful Eight                  |         2015 |
+|   466272 | Once Upon a Time in… Hollywood     |         2019 |
+|  1588237 | The Lost Chapter: Yuki's Revenge   |         2025 |
++----------+------------------------------------+--------------+
