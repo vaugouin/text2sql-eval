@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.21.5 (source of truth: [VERSION](VERSION))
+**Version:** 2.21.6 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-10
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1096,6 +1096,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.21.6 | 2026-11-11 | `AGENTS.md`: the PHP pages that read the evaluation tables moved from `tmdb-front` to `t2s-front`. No code change. |
 | 2.21.3 | 2026-11-10 | **`migrate-screens-evaluation-fields.sql`** (voie 2, writes two rows of `T_WC_FORM`): the back-office screens `t2seval.php` and `t2sevalexec.php` declare the columns their tables gained (vision, resolution mode, tokens, Flex, models, costs, timings), in the record view and in the list. No evaluator code change. |
 | 2.20.8 | 2026-11-08 | **`retire-executions-372-20261108.sql`** (voie 2): soft-deletes the 1.1.20 rows of 2692 to 2704 so the person side of the homonym evaluations is re-run on the same version with FASTAPI-TEXT2SQL-372 (fastapi-text2sql `0038f39`); baseline persons 0/24, expected 24/24 with the control 2704 still two rows. No evaluator code change. |
 | 2.20.9 | 2026-11-10 | **`new-evaluations-373-misattributed-crew-role.sql`** (voie 1): seven questions with French twins (category 4) where the question gives a person a crew role they do not hold on the work meant (Tarantino "directed" the Cliff Booth sequel, Spielberg Poltergeist and Gremlins, Burton The Nightmare Before Christmas), plus a no-role 2026 question and a right-role control; `answer =~ <actual director>` on four of them. **`check-373-crew-credits.sql`** (voie 1) confirms the credits first. For FASTAPI-TEXT2SQL-373. No evaluator code change. |

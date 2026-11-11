@@ -8,7 +8,7 @@ Agent-facing operating context only. The evaluator itself (phases, CLI, assertio
 
 ## Related repositories (project ecosystem)
 
-Evaluation stage of **Agent BBB** (`vaugouin`, siblings under `%USERPROFILE%/Code/<repo>`; roster `%USERPROFILE%/Nestor/projets/t2s-backlog/topics/related-repositories.txt`). A pure HTTP client of `fastapi-text2sql` (`/search/text2sql`), like `voice-agent` or `tmdb-front`: it never imports the API's code. Scripts that test the API's internals live in `fastapi-text2sql/checks/`; some read this repo through `../text2sql-eval`.
+Evaluation stage of **Agent BBB** (`vaugouin`, siblings under `%USERPROFILE%/Code/<repo>`; roster `%USERPROFILE%/Nestor/projets/t2s-backlog/topics/related-repositories.txt`). A pure HTTP client of `fastapi-text2sql` (`/search/text2sql`), like `voice-agent` or the web front `t2s-front` (formerly `tmdb-front`): it never imports the API's code. Scripts that test the API's internals live in `fastapi-text2sql/checks/`; some read this repo through `../text2sql-eval`.
 
 **Cinéphile Bench** (definition at the top of @README.md): use this name, with the accent, in docs, posts and reports. A score always names its bench version (v1 = 902 questions frozen 2026-10-14) and shows the EN and FR pass rates next to the pooled figure. `cinephile-bench-v1.sql` stays at the root as a living reference, not an archive candidate.
 
