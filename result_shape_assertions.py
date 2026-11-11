@@ -37,7 +37,8 @@ one of a closed vocabulary validated by Philippe on 2026-11-08: `list` (a plain 
 or persons, or the page of one entity), `value` (one figure or one
 attribute), `rank` (a list ordered by a measure), `count` (how many), `compare` (two or more
 named works side by side), `sequence` (an order in time or in a series), `trend` (a measure
-over time). A value outside the vocabulary is a parse error, so a typo in the bank cannot
+over time), and since phase 2 lot B (2026-11-11) `verdict` (a yes/no question, the
+`verdict` representation). A value outside the vocabulary is a parse error, so a typo in the bank cannot
 pass silently. A response without an `intent` object (any API before -353) leaves the
 clause NOT EMITTED: it neither passes nor fails, it is reported apart, and the other clauses
 of the assertion decide alone. The baseline of an intent-labelled bank on 1.1.20 is
@@ -75,7 +76,7 @@ _CLAUSE_RE = re.compile(
     re.IGNORECASE,
 )
 _NULLS = {"null", "none", ""}
-INTENT_TASKS = ("list", "value", "rank", "count", "compare", "sequence", "trend")
+INTENT_TASKS = ("list", "value", "rank", "count", "compare", "sequence", "trend", "verdict")
 
 # Bank-wide invariant: no database identifier in the answer to a question that typed none.
 ANSWER_INVARIANT_SPEC = "answer !~ (tt|nm)[0-9]{7}|matching identifier|identifiant"
