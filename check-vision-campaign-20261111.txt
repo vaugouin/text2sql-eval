@@ -1,0 +1,191 @@
+-- check-vision-campaign.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-11 11:53:22 +0100
+--
++----------------------------------------------------+
+| SECTION                                            |
++----------------------------------------------------+
+| 1. Score per vision model and language (live rows) |
++----------------------------------------------------+
++------------------+------+-------------+------------+-------------+------------+--------+------------+--------------------+------------+------------+
+| VISION_MODEL     | LANG | API_VERSION | EXECUTIONS | EVALUATIONS | IDENTIFIED | MISSED | NOT_SCORED | AVG_VISION_SECONDS | FIRST_ROW  | LAST_ROW   |
++------------------+------+-------------+------------+-------------+------------+--------+------------+--------------------+------------+------------+
+| claude-fable-5-2 | en   | 001.001.020 |         83 |          83 |         49 |     34 |          0 |                9.0 | 2026-11-10 | 2026-11-11 |
+| gpt-6-astra      | en   | 001.001.020 |         83 |          83 |         63 |     20 |          0 |               10.9 | 2026-11-10 | 2026-11-11 |
+| claude-fable-5-2 | fr   | 001.001.020 |         83 |          83 |         51 |     32 |          0 |                9.3 | 2026-11-10 | 2026-11-11 |
+| gpt-6-astra      | fr   | 001.001.020 |         83 |          83 |         64 |     19 |          0 |               11.5 | 2026-11-10 | 2026-11-11 |
++------------------+------+-------------+------------+-------------+------------+--------+------------+--------------------+------------+------------+
++---------------------------------------------------------------------------------+
+| SECTION                                                                         |
++---------------------------------------------------------------------------------+
+| 2. Per image, both models side by side (latest live row per model and language) |
++---------------------------------------------------------------------------------+
++-------------------+------+------+---------------+---------------------------------------------------------------------------+-------+-------+---------+---------+
+| ID_T2S_EVALUATION | LANG | CAT  | EXPECTED_TYPE | EXPECTED_TITLE                                                            | ASTRA | FABLE | ASTRA_S | FABLE_S |
++-------------------+------+------+---------------+---------------------------------------------------------------------------+-------+-------+---------+---------+
+|              2732 | en   |   64 | movie         | The Big Lebowski                                                          |     1 |     1 |  11.924 |    8.96 |
+|              2733 | en   |   64 | movie         | Blade Runner                                                              |     1 |     1 |  11.128 |  11.875 |
+|              2734 | en   |   64 | movie         | Planet Ocean                                                              |     1 |     1 |   9.268 |   9.242 |
+|              2735 | en   |   64 | person        | David Moreau                                                              |     0 |     0 |  14.539 |   9.539 |
+|              2736 | en   |   64 | movie         | Seven Samurai                                                             |     1 |     1 |   7.932 |   4.583 |
+|              2737 | en   |   64 | movie         | Iron Boy                                                                  |     1 |     1 |  14.949 |  12.613 |
+|              2738 | en   |   64 | movie         | Santa Sangre                                                              |     1 |     1 |  10.764 |  12.782 |
+|              2739 | en   |   64 | movie         | Big Trouble in Little China                                               |     1 |     1 |  16.647 |  12.893 |
+|              2740 | en   |   64 | movie         | On the Beach                                                              |     1 |     1 |  13.363 |   6.144 |
+|              2741 | en   |   64 | movie         | Hope                                                                      |     1 |     1 |  15.174 |  11.329 |
+|              2742 | en   |   65 | collection    | The Lord of the Rings                                                     |     1 |     1 |  14.117 |   7.171 |
+|              2743 | en   |   65 | movie         | The Things of Life                                                        |     1 |     0 |  14.184 |   6.869 |
+|              2744 | en   |   65 | movie         | The Sheep Detectives                                                      |     0 |     0 |  17.526 |   7.924 |
+|              2745 | en   |   65 | movie         | The Big Sleep                                                             |     1 |     1 |  10.635 |   7.789 |
+|              2746 | en   |   65 | movie         | The Lord of the Rings: The Two Towers                                     |     0 |     0 |  12.649 |  11.358 |
+|              2747 | en   |   65 | movie         | The Shining                                                               |     1 |     1 |  10.064 |  10.673 |
+|              2748 | en   |   65 | movie         | Brazil                                                                    |     1 |     1 |  18.246 |  12.752 |
+|              2749 | en   |   65 | movie         | Black Box                                                                 |     1 |     1 |  11.535 |   7.569 |
+|              2750 | en   |   65 | movie         | Monty Python Live (Mostly)                                                |     1 |     1 |  18.622 |  16.439 |
+|              2751 | en   |   65 | movie         | Entergalactic                                                             |     1 |     0 |  14.694 |  13.537 |
+|              2752 | en   |   65 | movie         | Call My Agent! The Movie                                                  |     0 |     0 |  28.467 |   7.007 |
+|              2753 | en   |   65 | serie         | Squid Game                                                                |     1 |     1 |  11.409 |   6.646 |
+|              2754 | en   |   65 | movie         | Bambi                                                                     |     1 |     1 |   9.608 |   6.717 |
+|              2755 | en   |   65 | movie         | Get Out                                                                   |     1 |     1 |  10.712 |  11.168 |
+|              2756 | en   |   65 | movie         | Before Sunset                                                             |     1 |     1 |  12.587 |  13.533 |
+|              2757 | en   |   65 | movie         | Parasite                                                                  |     0 |     0 |    9.05 |   9.269 |
+|              2758 | en   |   65 | movie         | Batman Returns                                                            |     1 |     1 |  10.367 |  10.348 |
+|              2759 | en   |   65 | movie         | Maestro                                                                   |     1 |     0 |  14.012 |    9.53 |
+|              2760 | en   |   65 | movie         | Michael                                                                   |     1 |     0 |  16.589 |  11.746 |
+|              2761 | en   |   65 | movie         | Chouchou                                                                  |     1 |     1 |  12.416 |   14.17 |
+|              2762 | en   |   65 | movie         | The Rivals of Amziah King                                                 |     1 |     1 |  12.672 |  13.583 |
+|              2763 | en   |   65 | movie         | Taxi Driver                                                               |     1 |     0 |   9.301 |    6.18 |
+|              2764 | en   |   65 | serie         | Game of Thrones                                                           |     1 |     1 |  10.431 |  10.852 |
+|              2765 | en   |   65 | movie         | Concerto for Abigail                                                      |     1 |     1 |   8.919 |   9.812 |
+|              2766 | en   |   65 | movie         | The Naked City                                                            |     0 |     0 |  20.595 |    7.16 |
+|              2767 | en   |   65 | movie         | Black Box                                                                 |     0 |     0 |  19.435 |   9.552 |
+|              2768 | en   |   65 | movie         | The Things of Life                                                        |     1 |     0 |  12.629 |   6.289 |
+|              2769 | en   |   66 | movie         | Roofman                                                                   |     0 |     0 |   7.889 |   5.923 |
+|              2770 | en   |   66 | serie         | Je te connais                                                             |     1 |     1 |  12.295 |   6.576 |
+|              2771 | en   |   66 | person        | Bernard Blier                                                             |     1 |     0 |   8.232 |    9.28 |
+|              2772 | en   |   66 | movie         | A Useful Ghost                                                            |     0 |     0 |  15.108 |   8.395 |
+|              2773 | en   |   66 | movie         | Rebel Ridge                                                               |     1 |     0 |   10.87 |   8.963 |
+|              2774 | en   |   66 | movie         | Family Diary                                                              |     1 |     0 |  13.679 |    9.78 |
+|              2775 | en   |   66 | serie         | Blade Runner 2099                                                         |     1 |     1 |   7.872 |   9.453 |
+|              2776 | en   |   66 | movie         | He Walked by Night                                                        |     0 |     0 |  22.854 |  10.254 |
+|              2777 | en   |   66 | movie         | Out of the Past                                                           |     0 |     0 |    9.85 |   7.711 |
+|              2778 | en   |   66 | movie         | Do Not Expect Too Much from the End of the World                          |     1 |     1 |  10.488 |   7.963 |
+|              2779 | en   |   67 | person        | Peter Sellers                                                             |     1 |     0 |   8.693 |  13.015 |
+|              2780 | en   |   67 | person        | Marlon Brando                                                             |     1 |     1 |   7.486 |   7.254 |
+|              2781 | en   |   67 | movie         | Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb      |     1 |     1 |  13.124 |  16.458 |
+|              2782 | en   |   67 | movie         | Bonnie and Clyde                                                          |     1 |     1 |  11.154 |  15.075 |
+|              2783 | en   |   67 | movie         | Letters from Iwo Jima                                                     |     1 |     1 |  10.147 |  10.026 |
+|              2784 | en   |   67 | movie         | The Blues Brothers                                                        |     1 |     1 |  12.778 |   9.768 |
+|              2785 | en   |   68 | book          | Heart of Darkness, a novella by Joseph Conrad                             |     1 |     1 |   7.122 |   5.111 |
+|              2786 | en   |   68 | movie         | Les Misérables                                                            |     1 |     1 |   19.11 |  10.624 |
+|              2787 | en   |   68 | book          | Dracula, a novel by Bram Stoker                                           |     1 |     1 |   5.882 |   7.015 |
+|              2788 | en   |   68 | book          | Nineteen Eighty-Four                                                      |     1 |     1 |   6.765 |   9.668 |
+|              2789 | en   |   68 | book          | For Whom the Bell Tolls                                                   |     1 |     1 |   7.362 |   6.786 |
+|              2790 | en   |   68 | book          | White Fang                                                                |     1 |     1 |   7.134 |   8.507 |
+|              2791 | en   |   68 | book          | Neuromancer, a novel by William Gibson                                    |     1 |     1 |   7.526 |   8.481 |
+|              2792 | en   |   68 | book          | Hamlet, a play by William Shakespeare                                     |     1 |     1 |   6.861 |   5.299 |
+|              2793 | en   |   68 | book          | Frankenstein, a novel by Mary Shelley                                     |     1 |     1 |   6.424 |   5.218 |
+|              2794 | en   |   68 | book          | The Hobbit and The Lord of the Rings, books by J. R. R. Tolkien           |     0 |     0 |   8.903 |   9.211 |
+|              2795 | en   |   68 | book          | Ask the Dust, a novel by John Fante                                       |     1 |     1 |    6.55 |   5.014 |
+|              2796 | en   |   68 | book          | The Complete Robot, a short-story collection by Isaac Asimov              |     0 |     0 |   7.398 |  10.336 |
+|              2797 | en   |   68 | book          | The Complete Works of Shakespeare, collected works by William Shakespeare |     0 |     0 |   7.722 |     9.1 |
+|              2798 | en   |   68 | book          | Jane Eyre, a novel by Charlotte Brontë                                    |     1 |     1 |   7.247 |   4.689 |
+|              2799 | en   |   68 | book          | The Phantom of the Opera, a novel by Gaston Leroux                        |     1 |     1 |   6.382 |   8.693 |
+|              2800 | en   |   69 | movie         | Wicked                                                                    |     0 |     0 |   6.692 |   8.301 |
+|              2801 | en   |   69 | movie         | Killing Kennedy                                                           |     1 |     1 |   8.549 |   5.405 |
+|              2802 | en   |   69 | person        | Bertrand Blier                                                            |     1 |     0 |   6.719 |    10.7 |
+|              2803 | en   |   69 | person        | David Cronenberg                                                          |     0 |     0 |   5.427 |   5.843 |
+|              2804 | en   |   69 | person        | Karan Johar                                                               |     1 |     0 |   5.488 |   5.586 |
+|              2805 | en   |   69 | person        | Zendaya                                                                   |     1 |     0 |   5.449 |   5.386 |
+|              2806 | en   |   69 | person        | David Fincher                                                             |     1 |     0 |   6.319 |   5.823 |
+|              2807 | en   |   69 | person        | Bertrand Blier                                                            |     1 |     0 |   6.837 |   8.032 |
+|              2808 | en   |   69 | person        | Bertrand Blier                                                            |     0 |     0 |   8.495 |   6.038 |
+|              2809 | en   |   70 | movie         | 2001: A Space Odyssey                                                     |     1 |     1 |   7.162 |  10.262 |
+|              2810 | en   |   70 | location      | Pont de Bir-Hakeim                                                        |     0 |     1 |   6.078 |   8.282 |
+|              2811 | en   |   70 | collection    | The Muppets                                                               |     0 |     0 |  11.526 |   7.674 |
+|              2812 | en   |   70 | movie         | The Hunger Games: Sunrise on the Reaping                                  |     0 |     0 |   7.331 |  10.849 |
+|              2813 | en   |   70 | collection    | Spider-Man                                                                |     1 |     1 |   6.384 |   8.293 |
+|              2814 | en   |   70 | serie         | The Muppet Show                                                           |     1 |     1 |   7.866 |   7.852 |
+|              2732 | fr   |   64 | movie         | The Big Lebowski                                                          |     1 |     1 |  11.328 |   16.12 |
+|              2733 | fr   |   64 | movie         | Blade Runner                                                              |     1 |     1 |   11.99 |  11.501 |
+|              2734 | fr   |   64 | movie         | Planet Ocean                                                              |     1 |     1 |  11.709 |   9.457 |
+|              2735 | fr   |   64 | person        | David Moreau                                                              |     0 |     0 |   9.976 |  12.825 |
+|              2736 | fr   |   64 | movie         | Seven Samurai                                                             |     1 |     1 |   8.355 |   5.635 |
+|              2737 | fr   |   64 | movie         | Iron Boy                                                                  |     1 |     1 |  14.207 |   11.12 |
+|              2738 | fr   |   64 | movie         | Santa Sangre                                                              |     1 |     1 |  12.328 |    9.57 |
+|              2739 | fr   |   64 | movie         | Big Trouble in Little China                                               |     1 |     1 |  15.815 |  12.685 |
+|              2740 | fr   |   64 | movie         | On the Beach                                                              |     1 |     1 |  12.088 |  12.094 |
+|              2741 | fr   |   64 | movie         | Hope                                                                      |     1 |     1 |  13.866 |  12.405 |
+|              2742 | fr   |   65 | collection    | The Lord of the Rings                                                     |     1 |     0 |  15.757 |   8.428 |
+|              2743 | fr   |   65 | movie         | The Things of Life                                                        |     1 |     0 |  14.134 |   7.483 |
+|              2744 | fr   |   65 | movie         | The Sheep Detectives                                                      |     0 |     0 |  36.079 |  13.029 |
+|              2745 | fr   |   65 | movie         | The Big Sleep                                                             |     1 |     1 |  14.399 |   7.268 |
+|              2746 | fr   |   65 | movie         | The Lord of the Rings: The Two Towers                                     |     0 |     1 |   13.16 |   8.597 |
+|              2747 | fr   |   65 | movie         | The Shining                                                               |     1 |     1 |  10.601 |   6.966 |
+|              2748 | fr   |   65 | movie         | Brazil                                                                    |     1 |     1 |  15.988 |   9.296 |
+|              2749 | fr   |   65 | movie         | Black Box                                                                 |     1 |     1 |  17.957 |   8.111 |
+|              2750 | fr   |   65 | movie         | Monty Python Live (Mostly)                                                |     1 |     1 |  23.634 |  11.983 |
+|              2751 | fr   |   65 | movie         | Entergalactic                                                             |     1 |     0 |  14.674 |  11.025 |
+|              2752 | fr   |   65 | movie         | Call My Agent! The Movie                                                  |     0 |     0 |  16.851 |   9.809 |
+|              2753 | fr   |   65 | serie         | Squid Game                                                                |     1 |     1 |  11.705 |   9.873 |
+|              2754 | fr   |   65 | movie         | Bambi                                                                     |     1 |     1 |  11.321 |    5.41 |
+|              2755 | fr   |   65 | movie         | Get Out                                                                   |     1 |     1 |  13.312 |   6.683 |
+|              2756 | fr   |   65 | movie         | Before Sunset                                                             |     1 |     1 |   14.16 |  12.942 |
+|              2757 | fr   |   65 | movie         | Parasite                                                                  |     1 |     0 |  11.746 |   6.962 |
+|              2758 | fr   |   65 | movie         | Batman Returns                                                            |     1 |     1 |  11.564 |   6.399 |
+|              2759 | fr   |   65 | movie         | Maestro                                                                   |     1 |     1 |  14.832 |   7.537 |
+|              2760 | fr   |   65 | movie         | Michael                                                                   |     0 |     0 |   12.68 |  10.546 |
+|              2761 | fr   |   65 | movie         | Chouchou                                                                  |     1 |     1 |  13.924 |    9.92 |
+|              2762 | fr   |   65 | movie         | The Rivals of Amziah King                                                 |     1 |     1 |   11.64 |  12.256 |
+|              2763 | fr   |   65 | movie         | Taxi Driver                                                               |     1 |     1 |  11.612 |  11.064 |
+|              2764 | fr   |   65 | serie         | Game of Thrones                                                           |     1 |     1 |  12.085 |  12.108 |
+|              2765 | fr   |   65 | movie         | Concerto for Abigail                                                      |     1 |     1 |  10.259 |  11.848 |
+|              2766 | fr   |   65 | movie         | The Naked City                                                            |     0 |     0 |  13.053 |   7.318 |
+|              2767 | fr   |   65 | movie         | Black Box                                                                 |     0 |     0 |  15.091 |   7.025 |
+|              2768 | fr   |   65 | movie         | The Things of Life                                                        |     1 |     0 |  15.202 |   9.632 |
+|              2769 | fr   |   66 | movie         | Roofman                                                                   |     0 |     0 |   9.427 |   5.964 |
+|              2770 | fr   |   66 | serie         | Je te connais                                                             |     1 |     1 |   8.765 |  10.188 |
+|              2771 | fr   |   66 | person        | Bernard Blier                                                             |     1 |     0 |  10.235 |   7.318 |
+|              2772 | fr   |   66 | movie         | A Useful Ghost                                                            |     0 |     0 |  20.204 |  11.123 |
+|              2773 | fr   |   66 | movie         | Rebel Ridge                                                               |     1 |     0 |  11.818 |   6.097 |
+|              2774 | fr   |   66 | movie         | Family Diary                                                              |     1 |     0 |  16.047 |  10.231 |
+|              2775 | fr   |   66 | serie         | Blade Runner 2099                                                         |     1 |     1 |   9.122 |   9.433 |
+|              2776 | fr   |   66 | movie         | He Walked by Night                                                        |     0 |     0 |  16.094 |  11.507 |
+|              2777 | fr   |   66 | movie         | Out of the Past                                                           |     1 |     0 |   16.41 |   6.416 |
+|              2778 | fr   |   66 | movie         | Do Not Expect Too Much from the End of the World                          |     1 |     1 |   8.603 |   8.274 |
+|              2779 | fr   |   67 | person        | Peter Sellers                                                             |     1 |     0 |   7.964 |   9.035 |
+|              2780 | fr   |   67 | person        | Marlon Brando                                                             |     1 |     1 |   8.233 |  11.741 |
+|              2781 | fr   |   67 | movie         | Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb      |     1 |     1 |  13.516 |  17.872 |
+|              2782 | fr   |   67 | movie         | Bonnie and Clyde                                                          |     1 |     1 |  11.714 |  10.175 |
+|              2783 | fr   |   67 | movie         | Letters from Iwo Jima                                                     |     1 |     1 |  10.954 |  21.086 |
+|              2784 | fr   |   67 | movie         | The Blues Brothers                                                        |     1 |     1 |  13.283 |   8.825 |
+|              2785 | fr   |   68 | book          | Heart of Darkness, a novella by Joseph Conrad                             |     1 |     1 |   7.687 |   9.369 |
+|              2786 | fr   |   68 | movie         | Les Misérables                                                            |     1 |     1 |  25.702 |  16.668 |
+|              2787 | fr   |   68 | book          | Dracula, a novel by Bram Stoker                                           |     1 |     1 |   7.106 |   6.869 |
+|              2788 | fr   |   68 | book          | Nineteen Eighty-Four                                                      |     1 |     1 |   6.918 |    9.37 |
+|              2789 | fr   |   68 | book          | For Whom the Bell Tolls                                                   |     1 |     1 |   6.756 |   5.325 |
+|              2790 | fr   |   68 | book          | White Fang                                                                |     1 |     1 |   5.926 |   5.952 |
+|              2791 | fr   |   68 | book          | Neuromancer, a novel by William Gibson                                    |     1 |     1 |   8.462 |   5.854 |
+|              2792 | fr   |   68 | book          | Hamlet, a play by William Shakespeare                                     |     1 |     1 |   7.444 |   7.862 |
+|              2793 | fr   |   68 | book          | Frankenstein, a novel by Mary Shelley                                     |     1 |     1 |   6.045 |   7.344 |
+|              2794 | fr   |   68 | book          | The Hobbit and The Lord of the Rings, books by J. R. R. Tolkien           |     0 |     0 |   7.845 |   8.768 |
+|              2795 | fr   |   68 | book          | Ask the Dust, a novel by John Fante                                       |     1 |     1 |    7.13 |   4.162 |
+|              2796 | fr   |   68 | book          | The Complete Robot, a short-story collection by Isaac Asimov              |     0 |     0 |   6.986 |   9.384 |
+|              2797 | fr   |   68 | book          | The Complete Works of Shakespeare, collected works by William Shakespeare |     0 |     0 |   5.987 |   5.655 |
+|              2798 | fr   |   68 | book          | Jane Eyre, a novel by Charlotte Brontë                                    |     1 |     1 |   6.486 |   9.025 |
+|              2799 | fr   |   68 | book          | The Phantom of the Opera, a novel by Gaston Leroux                        |     1 |     1 |   7.053 |   4.997 |
+|              2800 | fr   |   69 | movie         | Wicked                                                                    |     1 |     0 |     9.8 |   9.887 |
+|              2801 | fr   |   69 | movie         | Killing Kennedy                                                           |     1 |     1 |   10.56 |   9.928 |
+|              2802 | fr   |   69 | person        | Bertrand Blier                                                            |     1 |     0 |   9.904 |   5.783 |
+|              2803 | fr   |   69 | person        | David Cronenberg                                                          |     1 |     0 |   6.613 |   5.923 |
+|              2804 | fr   |   69 | person        | Karan Johar                                                               |     0 |     0 |    7.94 |   6.214 |
+|              2805 | fr   |   69 | person        | Zendaya                                                                   |     1 |     0 |   8.655 |    8.75 |
+|              2806 | fr   |   69 | person        | David Fincher                                                             |     1 |     0 |    6.63 |   9.485 |
+|              2807 | fr   |   69 | person        | Bertrand Blier                                                            |     0 |     0 |   5.861 |   8.835 |
+|              2808 | fr   |   69 | person        | Bertrand Blier                                                            |     0 |     0 |   7.442 |  10.299 |
+|              2809 | fr   |   70 | movie         | 2001: A Space Odyssey                                                     |     1 |     1 |   8.656 |  11.243 |
+|              2810 | fr   |   70 | location      | Pont de Bir-Hakeim                                                        |     0 |     1 |   5.637 |   7.245 |
+|              2811 | fr   |   70 | collection    | The Muppets                                                               |     0 |     0 |   8.251 |   6.842 |
+|              2812 | fr   |   70 | movie         | The Hunger Games: Sunrise on the Reaping                                  |     0 |     0 |   8.665 |    10.9 |
+|              2813 | fr   |   70 | collection    | Spider-Man                                                                |     1 |     1 |   6.502 |   6.194 |
+|              2814 | fr   |   70 | serie         | The Muppet Show                                                           |     1 |     1 |   8.889 |  12.473 |
++-------------------+------+------+---------------+---------------------------------------------------------------------------+-------+-------+---------+---------+

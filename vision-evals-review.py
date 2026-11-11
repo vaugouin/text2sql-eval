@@ -8,11 +8,15 @@ remove switch to drop the row from the evaluation set. Judgments autosave in the
 (localStorage) and leave the page through the Export button as vision-evals-review-judged-YYYYMMDD.csv,
 the input of the new-evaluations file. Import reloads an export to resume on another browser.
 
-Run: uv run python vision-evals-review.py [--images-dir <dir>]
+Run: uv run python vision-evals-review.py [--images-dir <dir>] [--csv <file.csv> --title <page title>]
+The second page, the images both models missed in the 2026-11-10 campaigns, is built with
+  --csv vision-misses-review.csv --title "Vision misses review"
+  --images-dir C:/Users/vaugo/Code/shared_data/text2sql-eval/fixtures/vision
 The page reads the images from file:///, so it is meant to be opened locally, never published.
 """
 import argparse
 import csv
+import html
 import json
 from pathlib import Path
 
@@ -26,7 +30,7 @@ CATEGORIES = {
 
 PAGE = r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vision Evals Review</title>
+<title>__TITLE__</title>
 <style>
 :root{--bg:#f7f7f5;--card:#fff;--fg:#1d1d1b;--mut:#6b6b66;--line:#ddd;--ok:#1f7a3a;--ko:#b42318;--warn:#b45309;--acc:#2f5fb3}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--card:#20201e;--fg:#e8e8e3;--mut:#9a9a93;--line:#3a3a36;--ok:#4ade80;--ko:#f87171;--warn:#fbbf24;--acc:#7aa2f7}}
@@ -45,7 +49,7 @@ dl{display:grid;grid-template-columns:110px 1fr;gap:2px 8px;margin:8px 0 0;font-
 .verdict{display:flex;gap:6px}.verdict button{flex:1}.verdict .y.on{background:var(--ok);color:#fff;border-color:var(--ok)}.verdict .n.on{background:var(--ko);color:#fff;border-color:var(--ko)}
 .rm{margin-top:10px;width:100%}.removed .rm{border-color:var(--ko);color:var(--ko)}
 </style></head><body>
-<header><h1>Vision evals review</h1><span class="stats" id="stats"></span>
+<header><h1>__TITLE__</h1><span class="stats" id="stats"></span>
 <select id="filter"><option value="all">All</option><option value="pending">To judge</option><option value="yes">Yes</option><option value="no">No</option><option value="removed">Removed</option></select>
 <select id="catfilter"><option value="">All categories</option></select>
 <button id="export">Export CSV</button><label><button id="importbtn">Import</button><input id="import" type="file" accept=".csv" hidden></label>
@@ -55,7 +59,8 @@ dl{display:grid;grid-template-columns:110px 1fr;gap:2px 8px;margin:8px 0 0;font-
 const ROWS = __ROWS__;
 const CATS = __CATS__;
 const IMG = __IMG__;
-const KEY = "vision-evals-review-v1";
+const OUT = __OUT__;
+const KEY = __KEY__;
 const FIELDS = ["verdict","clues","valid_type","valid_title","valid_year","valid_tmdb","category_id","removed"];
 let state = {};
 try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { state = {}; }
@@ -67,9 +72,11 @@ document.getElementById("catfilter").innerHTML += Object.entries(CATS).map(([k,v
 
 function card(r) {
   const s = st(r), conf = parseFloat(r.astra_conf);
-  const failed = !r.astra_title || r.astra_title === "none";
+  // The first page (candidates) shows Astra's history; a campaign review always has an expected answer.
+  const failed = !r.expected_title && (!r.astra_title || r.astra_title === "none");
   const expected = failed ? '<span class="fail">No identification</span>' :
-    `${esc(r.expected_type)}: ${esc(r.expected_title)} ${esc(r.expected_year)} <span class="${conf < 0.9 ? "low" : ""}">[${esc(r.astra_conf)}]</span>`;
+    `${esc(r.expected_type)}: ${esc(r.expected_title || r.astra_title)} ${esc(r.expected_year)}` +
+    (r.astra_conf ? ` <span class="${conf < 0.9 ? "low" : ""}">[${esc(r.astra_conf)}]</span>` : "");
   const extra = Object.keys(r).filter(k => !["prefix","md5","file"].includes(k))
     .map(k => `<dt>${esc(k)}</dt><dd>${esc(r[k])}</dd>`).join("");
   const src = IMG + encodeURIComponent(r.file);
@@ -132,7 +139,7 @@ document.getElementById("export").onclick = () => {
   const d = new Date(), ymd = d.getFullYear() + String(d.getMonth()+1).padStart(2,"0") + String(d.getDate()).padStart(2,"0");
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob(["\ufeff" + lines.join("\n")], {type: "text/csv;charset=utf-8"}));
-  a.download = `vision-evals-review-judged-${ymd}.csv`; a.click(); URL.revokeObjectURL(a.href);
+  a.download = `${OUT}-judged-${ymd}.csv`; a.click(); URL.revokeObjectURL(a.href);
 };
 
 function parseCsv(t) {
@@ -161,15 +168,24 @@ render();
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--images-dir", default=str(DEFAULT_IMAGES))
+    ap.add_argument("--csv", default=str(HERE / "vision-evals-review.csv"),
+                    help="input CSV; the page is written beside it with the same name, .html")
+    ap.add_argument("--title", default="Vision evals review")
     args = ap.parse_args()
-    with open(HERE / "vision-evals-review.csv", encoding="utf-8-sig", newline="") as f:
+    src = Path(args.csv)
+    stem = src.stem
+    with open(src, encoding="utf-8-sig", newline="") as f:
         rows = list(csv.DictReader(f, delimiter=";"))
     img = Path(args.images_dir).as_uri().rstrip("/") + "/"
     page = (PAGE.replace("__ROWS__", json.dumps(rows, ensure_ascii=False).replace("</", "<\\/"))
                 .replace("__CATS__", json.dumps(CATEGORIES))
-                .replace("__IMG__", json.dumps(img)))
-    (HERE / "vision-evals-review.html").write_text(page, encoding="utf-8", newline="\n")
-    print(f"{len(rows)} rows -> vision-evals-review.html")
+                .replace("__IMG__", json.dumps(img))
+                .replace("__OUT__", json.dumps(stem))
+                .replace("__KEY__", json.dumps("vision-evals-review-v1" if stem == "vision-evals-review" else stem + "-v1"))
+                .replace("__TITLE__", html.escape(args.title)))
+    out = src.with_suffix(".html")
+    out.write_text(page, encoding="utf-8", newline="\n")
+    print(f"{len(rows)} rows -> {out.name}")
 
 
 if __name__ == "__main__":
