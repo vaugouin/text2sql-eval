@@ -207,6 +207,11 @@ class PromptCacheGuard:
         for task, entry in llm_usage.items():
             if not isinstance(entry, dict):
                 continue
+            # FASTAPI-TEXT2SQL-277: each image is a new prompt (~7,000 tokens, the picture
+            # itself), so the vision task can never read from cache. Counting it stopped both
+            # 2026-11-10 image campaigns at call 23 (3 warm-up + 20 misses) before scoring.
+            if str(task).startswith("vision"):
+                continue
             calls = int(entry.get("calls") or 0)
             prompt = int(entry.get("prompt_tokens") or 0)
             if calls <= 0 or prompt / calls < self.MIN_PROMPT_PER_CALL:

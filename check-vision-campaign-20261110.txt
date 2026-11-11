@@ -1,0 +1,48 @@
+-- check-vision-campaign.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-10 21:14:49 +0100
+--
++----------------------------------------------------+
+| SECTION                                            |
++----------------------------------------------------+
+| 1. Score per vision model and language (live rows) |
++----------------------------------------------------+
++------------------+------+-------------+------------+-------------+------------+--------+------------+--------------------+------------+------------+
+| VISION_MODEL     | LANG | API_VERSION | EXECUTIONS | EVALUATIONS | IDENTIFIED | MISSED | NOT_SCORED | AVG_VISION_SECONDS | FIRST_ROW  | LAST_ROW   |
++------------------+------+-------------+------------+-------------+------------+--------+------------+--------------------+------------+------------+
+| claude-fable-5-2 | en   | 001.001.020 |         12 |          12 |       NULL |   NULL |         12 |               NULL | 2026-11-10 | 2026-11-10 |
+| gpt-6-astra      | en   | 001.001.020 |         12 |          12 |       NULL |   NULL |         12 |               NULL | 2026-11-10 | 2026-11-10 |
+| claude-fable-5-2 | fr   | 001.001.020 |         11 |          11 |       NULL |   NULL |         11 |               NULL | 2026-11-10 | 2026-11-10 |
+| gpt-6-astra      | fr   | 001.001.020 |         11 |          11 |       NULL |   NULL |         11 |               NULL | 2026-11-10 | 2026-11-10 |
++------------------+------+-------------+------------+-------------+------------+--------+------------+--------------------+------------+------------+
++---------------------------------------------------------------------------------+
+| SECTION                                                                         |
++---------------------------------------------------------------------------------+
+| 2. Per image, both models side by side (latest live row per model and language) |
++---------------------------------------------------------------------------------+
++-------------------+------+------+---------------+-----------------------------+-------+-------+---------+---------+
+| ID_T2S_EVALUATION | LANG | CAT  | EXPECTED_TYPE | EXPECTED_TITLE              | ASTRA | FABLE | ASTRA_S | FABLE_S |
++-------------------+------+------+---------------+-----------------------------+-------+-------+---------+---------+
+|              2732 | en   |   64 | movie         | The Big Lebowski            |  NULL |  NULL |    NULL |    NULL |
+|              2733 | en   |   64 | movie         | Blade Runner                |  NULL |  NULL |    NULL |    NULL |
+|              2734 | en   |   64 | movie         | Planet Ocean                |  NULL |  NULL |    NULL |    NULL |
+|              2735 | en   |   64 | person        | David Moreau                |  NULL |  NULL |    NULL |    NULL |
+|              2736 | en   |   64 | movie         | Seven Samurai               |  NULL |  NULL |    NULL |    NULL |
+|              2737 | en   |   64 | movie         | Iron Boy                    |  NULL |  NULL |    NULL |    NULL |
+|              2738 | en   |   64 | movie         | Santa Sangre                |  NULL |  NULL |    NULL |    NULL |
+|              2739 | en   |   64 | movie         | Big Trouble in Little China |  NULL |  NULL |    NULL |    NULL |
+|              2740 | en   |   64 | movie         | On the Beach                |  NULL |  NULL |    NULL |    NULL |
+|              2741 | en   |   64 | movie         | Hope                        |  NULL |  NULL |    NULL |    NULL |
+|              2742 | en   |   65 | collection    | The Lord of the Rings       |  NULL |  NULL |    NULL |    NULL |
+|              2743 | en   |   65 | movie         | The Things of Life          |  NULL |  NULL |    NULL |    NULL |
+|              2732 | fr   |   64 | movie         | The Big Lebowski            |  NULL |  NULL |    NULL |    NULL |
+|              2733 | fr   |   64 | movie         | Blade Runner                |  NULL |  NULL |    NULL |    NULL |
+|              2734 | fr   |   64 | movie         | Planet Ocean                |  NULL |  NULL |    NULL |    NULL |
+|              2735 | fr   |   64 | person        | David Moreau                |  NULL |  NULL |    NULL |    NULL |
+|              2736 | fr   |   64 | movie         | Seven Samurai               |  NULL |  NULL |    NULL |    NULL |
+|              2737 | fr   |   64 | movie         | Iron Boy                    |  NULL |  NULL |    NULL |    NULL |
+|              2738 | fr   |   64 | movie         | Santa Sangre                |  NULL |  NULL |    NULL |    NULL |
+|              2739 | fr   |   64 | movie         | Big Trouble in Little China |  NULL |  NULL |    NULL |    NULL |
+|              2740 | fr   |   64 | movie         | On the Beach                |  NULL |  NULL |    NULL |    NULL |
+|              2741 | fr   |   64 | movie         | Hope                        |  NULL |  NULL |    NULL |    NULL |
+|              2742 | fr   |   65 | collection    | The Lord of the Rings       |  NULL |  NULL |    NULL |    NULL |
++-------------------+------+------+---------------+-----------------------------+-------+-------+---------+---------+
