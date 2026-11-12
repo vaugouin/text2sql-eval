@@ -1,0 +1,226 @@
+-- check-phase3-lot-e-lineage.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-12 12:29:25 +0100
+--
++----------------------------+----------------------------+
+| block                      | t                          |
++----------------------------+----------------------------+
+| E1 closure size per anchor | 2026-11-12 12:29:26.291482 |
++----------------------------+----------------------------+
++---------+------+-------+---------+
+| ANCHOR  | WAY  | nodes | deepest |
++---------+------+-------+---------+
+| m111    | down |     1 |       0 |
+| m111    | up   |     3 |       2 |
+| m11878  | down |     7 |       2 |
+| m11878  | up   |     2 |       1 |
+| m1422   | down |     4 |       1 |
+| m1422   | up   |     2 |       1 |
+| m22692  | down |     4 |       2 |
+| m22692  | up   |     1 |       0 |
+| m332562 | down |     1 |       0 |
+| m332562 | up   |     4 |       2 |
+| m333484 | down |     1 |       0 |
+| m333484 | up   |     3 |       2 |
+| m346    | down |     6 |       2 |
+| m346    | up   |     1 |       0 |
+| m391    | down |     1 |       0 |
+| m391    | up   |     3 |       2 |
+| m426063 | down |     1 |       0 |
+| m426063 | up   |     3 |       2 |
+| m653    | down |     6 |       2 |
+| m653    | up   |     2 |       1 |
+| m877    | down |     2 |       1 |
+| m877    | up   |     2 |       1 |
+| m9333   | down |     1 |       0 |
+| m9333   | up   |     3 |       2 |
+| m966    | down |     4 |       1 |
+| m966    | up   |     2 |       1 |
+| w6848   | down |     9 |       3 |
+| w6848   | up   |     1 |       0 |
++---------+------+-------+---------+
++---------------------------------------------+----------------------------+
+| block                                       | t                          |
++---------------------------------------------+----------------------------+
+| E2 links touching the closure (walk layout) | 2026-11-12 12:29:27.151120 |
++---------------------------------------------+----------------------------+
++------------+----------+---------------+----------------+------------------+------------------+----------+----------+-----------------------------+--------------------------------+------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------+
+| CHILD_TYPE | CHILD_ID | DISPLAY_ORDER | ID_SOURCE_WORK | SOURCE_WORK_TYPE | SOURCE_WORK_FORM | ID_MOVIE | ID_SERIE | SOURCE_WORK_NAME            | SOURCE_WORK_NAME_FR            | SOURCE_WORK_YEAR | POSTER_PATH | WIKIPEDIA_IMAGE_PATH                                                                                                          |
++------------+----------+---------------+----------------+------------------+------------------+----------+----------+-----------------------------+--------------------------------+------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------+
+| movie      |      111 |          NULL |           7931 | literary         | NULL             |     NULL |     NULL | Scarface                    | Scarface                       |             1930 | NULL        | https://upload.wikimedia.org/wikipedia/commons/1/10/Scarface1930.webp                                                         |
+| movie      |      111 |          NULL |          11891 | screen           | NULL             |      877 |     NULL | Scarface                    | Scarface                       |             1932 | NULL        | NULL                                                                                                                          |
+| movie      |      138 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |      391 |          NULL |           6848 | literary         | NULL             |     NULL |     NULL | Red Harvest                 | La Moisson rouge               |             1927 | NULL        | https://upload.wikimedia.org/wikipedia/commons/f/f4/Black_Mask_November_1927_-_Poisonville.jpg                                |
+| movie      |      391 |          NULL |           7219 | screen           | NULL             |    11878 |     NULL | Yojimbo                     | Le Garde du corps              |             1961 | NULL        | NULL                                                                                                                          |
+| movie      |      653 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |      877 |          NULL |           7931 | literary         | NULL             |     NULL |     NULL | Scarface                    | Scarface                       |             1930 | NULL        | https://upload.wikimedia.org/wikipedia/commons/1/10/Scarface1930.webp                                                         |
+| movie      |      966 |          NULL |           6749 | screen           | NULL             |      346 |     NULL | Seven Samurai               | Les Sept Samouraïs             |             1954 | NULL        | NULL                                                                                                                          |
+| movie      |     1422 |          NULL |          14968 | screen           | NULL             |    10775 |     NULL | Infernal Affairs            | Infernal Affairs               |             2002 | NULL        | NULL                                                                                                                          |
+| movie      |     3111 |          NULL |          16734 | screen           | NULL             |    22692 |     NULL | A Star Is Born              | Une étoile est née             |             1937 | NULL        | NULL                                                                                                                          |
+| movie      |     5620 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |     6114 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |     6404 |          NULL |           5212 | screen           | NULL             |      653 |     NULL | Nosferatu                   | Nosferatu                      |             1922 | NULL        | NULL                                                                                                                          |
+| movie      |     6404 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |     7092 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |     9333 |          NULL |           7219 | screen           | NULL             |    11878 |     NULL | Yojimbo                     | Le Garde du corps              |             1961 | NULL        | NULL                                                                                                                          |
+| movie      |    10577 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    10772 |          NULL |           7219 | screen           | NULL             |    11878 |     NULL | Yojimbo                     | Le Garde du corps              |             1961 | NULL        | NULL                                                                                                                          |
+| movie      |    11868 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    11878 |          NULL |           6848 | literary         | NULL             |     NULL |     NULL | Red Harvest                 | La Moisson rouge               |             1927 | NULL        | https://upload.wikimedia.org/wikipedia/commons/f/f4/Black_Mask_November_1927_-_Poisonville.jpg                                |
+| movie      |    12110 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    15490 |          NULL |           6152 | screen           | NULL             |     1422 |     NULL | The Departed                | Les Infiltrés                  |             2006 | NULL        | NULL                                                                                                                          |
+| movie      |    17135 |          NULL |           7219 | screen           | NULL             |    11878 |     NULL | Yojimbo                     | Le Garde du corps              |             1961 | NULL        | NULL                                                                                                                          |
+| movie      |    19610 |          NULL |          16734 | screen           | NULL             |    22692 |     NULL | A Star Is Born              | Une étoile est née             |             1937 | NULL        | NULL                                                                                                                          |
+| movie      |    19613 |          NULL |          14968 | screen           | NULL             |    10775 |     NULL | Infernal Affairs            | Infernal Affairs               |             2002 | NULL        | NULL                                                                                                                          |
+| movie      |    22440 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    25944 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    26480 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    28198 |          NULL |           5212 | screen           | NULL             |      653 |     NULL | Nosferatu                   | Nosferatu                      |             1922 | NULL        | NULL                                                                                                                          |
+| movie      |    30460 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    33521 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    39259 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    40631 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    46500 |          NULL |           7219 | screen           | NULL             |    11878 |     NULL | Yojimbo                     | Le Garde du corps              |             1961 | NULL        | NULL                                                                                                                          |
+| movie      |    48519 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    49017 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    50448 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    55616 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |    80895 |          NULL |           6848 | literary         | NULL             |     NULL |     NULL | Red Harvest                 | La Moisson rouge               |             1927 | NULL        | https://upload.wikimedia.org/wikipedia/commons/f/f4/Black_Mask_November_1927_-_Poisonville.jpg                                |
+| movie      |    86889 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   109118 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   135812 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   194031 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   262187 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   330639 |          NULL |           6776 | screen           | NULL             |      966 |     NULL | The Magnificent Seven       | Les Sept Mercenaires           |             1960 | NULL        | NULL                                                                                                                          |
+| movie      |   332562 |          NULL |           3994 | screen           | NULL             |     3111 |     NULL | A Star Is Born              | Une étoile est née             |             1954 | NULL        | NULL                                                                                                                          |
+| movie      |   332562 |          NULL |           9429 | screen           | NULL             |    19610 |     NULL | A Star Is Born              | Une étoile est née             |             1976 | NULL        | NULL                                                                                                                          |
+| movie      |   332562 |          NULL |          16734 | screen           | NULL             |    22692 |     NULL | A Star Is Born              | Une étoile est née             |             1937 | NULL        | NULL                                                                                                                          |
+| movie      |   333484 |          NULL |           6749 | screen           | NULL             |      346 |     NULL | Seven Samurai               | Les Sept Samouraïs             |             1954 | NULL        | NULL                                                                                                                          |
+| movie      |   333484 |          NULL |           6776 | screen           | NULL             |      966 |     NULL | The Magnificent Seven       | Les Sept Mercenaires           |             1960 | NULL        | NULL                                                                                                                          |
+| movie      |   364003 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   394151 |          NULL |           5212 | screen           | NULL             |      653 |     NULL | Nosferatu                   | Nosferatu                      |             1922 | NULL        | NULL                                                                                                                          |
+| movie      |   394151 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   402448 |          NULL |            751 | screen           | NULL             |     6114 |     NULL | Bram Stoker's Dracula       | Dracula                        |             1992 | NULL        | NULL                                                                                                                          |
+| movie      |   402448 |          NULL |           6152 | screen           | NULL             |     1422 |     NULL | The Departed                | Les Infiltrés                  |             2006 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |           5201 | screen           | NULL             |       19 |     NULL | Metropolis                  | Metropolis                     |             1927 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |           5212 | screen           | NULL             |      653 |     NULL | Nosferatu                   | Nosferatu                      |             1922 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |           5279 | screen           | NULL             |      234 |     NULL | The Cabinet of Dr. Caligari | Le Cabinet du docteur Caligari |             1920 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |           5462 | screen           | NULL             |     6404 |     NULL | Nosferatu the Vampyre       | Nosferatu, fantôme de la nuit  |             1979 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |           5467 | literary         | NULL             |     NULL |     NULL | German Expressionism        | cinéma expressionniste         |             NULL | NULL        | https://upload.wikimedia.org/wikipedia/commons/7/7e/Das_Plakat_Sonderheft_Der_Film_1920_Titel.jpg                             |
+| movie      |   402456 |          NULL |           5980 | screen           | NULL             |   246741 |     NULL | What We Do in the Shadows   | Vampires en toute intimité     |             2014 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |           8949 | screen           | NULL             |      138 |     NULL | Dracula                     | Dracula                        |             1931 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |          12943 | screen           | NULL             |     3035 |     NULL | Frankenstein                | Frankenstein                   |             1931 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |          13102 | screen           | NULL             |     NULL |    83631 | What We Do in the Shadows   | What We Do in the Shadows      |             2019 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |          14546 | screen           | NULL             |    10728 |     NULL | Faust                       | Faust, une légende allemande   |             1926 | NULL        | NULL                                                                                                                          |
+| movie      |   402456 |          NULL |          16974 | screen           | NULL             |      964 |     NULL | The Phantom of the Opera    | Le Fantôme de l'Opéra          |             1925 | NULL        | NULL                                                                                                                          |
+| movie      |   426063 |          NULL |           5212 | screen           | NULL             |      653 |     NULL | Nosferatu                   | Nosferatu                      |             1922 | NULL        | NULL                                                                                                                          |
+| movie      |   426063 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   436617 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |   635910 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| movie      |  1246049 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| serie      |     5863 |          NULL |           6749 | screen           | NULL             |      346 |     NULL | Seven Samurai               | Les Sept Samouraïs             |             1954 | NULL        | NULL                                                                                                                          |
+| serie      |    10706 |          NULL |           6776 | screen           | NULL             |      966 |     NULL | The Magnificent Seven       | Les Sept Mercenaires           |             1960 | NULL        | NULL                                                                                                                          |
+| serie      |    17716 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| serie      |    58928 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| serie      |    86850 |          NULL |          11237 | literary         | NULL             |     NULL |     NULL | Dracula                     | Dracula                        |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
+| serie      |   125359 |          NULL |           8124 | screen           | NULL             |    10772 |     NULL | Django                      | Django                         |             1966 | NULL        | NULL                                                                                                                          |
+| serie      |   209454 |          NULL |           6152 | screen           | NULL             |     1422 |     NULL | The Departed                | Les Infiltrés                  |             2006 | NULL        | NULL                                                                                                                          |
+| serie      |   209454 |          NULL |           8818 | screen           | NULL             |     NULL |    68388 | Insider                     | inside                         |             2016 | NULL        | NULL                                                                                                                          |
+| serie      |   209454 |          NULL |          14968 | screen           | NULL             |    10775 |     NULL | Infernal Affairs            | Infernal Affairs               |             2002 | NULL        | NULL                                                                                                                          |
++------------+----------+---------------+----------------+------------------+------------------+----------+----------+-----------------------------+--------------------------------+------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------+
++-----------------------------+----------------------------+
+| block                       | t                          |
++-----------------------------+----------------------------+
+| E3 movies met (walk layout) | 2026-11-12 12:29:28.052202 |
++-----------------------------+----------------------------+
++-----------+---------+--------------------------------------+---------------------------------------+------+----------------------------------+
+| NODE_TYPE | ID      | TITLE                                | TITLE_FR                              | YEAR | POSTER_PATH                      |
++-----------+---------+--------------------------------------+---------------------------------------+------+----------------------------------+
+| movie     |      19 | Metropolis                           | Metropolis                            | 1927 | /kr9wXRN23zLuWJIelahas1mtnYj.jpg |
+| movie     |     111 | Scarface                             | Scarface                              | 1983 | /iQ5ztdjvteGeboxtmRdXEChJOHh.jpg |
+| movie     |     138 | Dracula                              | Dracula                               | 1931 | /ueVSPt7vAba0XScHWTDWS5tNxYX.jpg |
+| movie     |     234 | The Cabinet of Dr. Caligari          | Le Cabinet du docteur Caligari        | 1920 | /myK9DeIsXWGKgUTZyGXg2IfFk0W.jpg |
+| movie     |     346 | Seven Samurai                        | Les Sept Samouraïs                    | 1954 | /lOMGc8bnSwQhS4XyE1S99uH8NXf.jpg |
+| movie     |     391 | A Fistful of Dollars                 | Pour une poignée de dollars           | 1964 | /lBwOEpwVeUAmrmglcstnaGcJq3Y.jpg |
+| movie     |     653 | Nosferatu                            | Nosferatu                             | 1922 | /zv7J85D8CC9qYagAEhPM63CIG6j.jpg |
+| movie     |     877 | Scarface                             | Scarface                              | 1932 | /y4E5oRiHMTFkEB12IIcpbKbKzDW.jpg |
+| movie     |     964 | The Phantom of the Opera             | Le Fantôme de l'Opéra                 | 1925 | /mvaYpAYj957C2tlq3vVJPSzGJXK.jpg |
+| movie     |     966 | The Magnificent Seven                | Les Sept Mercenaires                  | 1960 | /e5ToxOyJwuZD4VOfI0qEn5uIjeJ.jpg |
+| movie     |    1422 | The Departed                         | Les Infiltrés                         | 2006 | /nT97ifVT2J1yMQmeq20Qblg61T.jpg  |
+| movie     |    3035 | Frankenstein                         | Frankenstein                          | 1931 | /mu6wHwH0IwCCaEYtpqujuPJYat1.jpg |
+| movie     |    3111 | A Star Is Born                       | Une étoile est née                    | 1954 | /zpg2SzpYhZk1D1seDfIIlwaqAxT.jpg |
+| movie     |    5620 | Count Dracula                        | Les nuits de Dracula                  | 1970 | /hilXfuoYRwDfpzzh8xWZPtXnNbj.jpg |
+| movie     |    6114 | Bram Stoker's Dracula                | Dracula                               | 1992 | /wpRrdm6g8zWtJnzVqME5QwSKkn7.jpg |
+| movie     |    6404 | Nosferatu the Vampyre                | Nosferatu, fantôme de la nuit         | 1979 | /jHKzGYwf7P34vz8MhJBTN6cnaYD.jpg |
+| movie     |    7092 | Van Helsing: The London Assignment   | Van Helsing : Mission à Londres       | 2004 | /2MFdzeCL2YTqbbBgiZT8e51MUGO.jpg |
+| movie     |    9333 | Last Man Standing                    | Dernier recours                       | 1996 | /2cWqlkXaKKdl32Waep4FwCQnyH0.jpg |
+| movie     |   10577 | Dracula 2000                         | Dracula 2001                          | 2000 | /jnAfl6GSZbBMigL98RJGbOSk4V1.jpg |
+| movie     |   10728 | Faust                                | Faust, une légende allemande          | 1926 | /rN703hMFxmkZfyEzsXvFtuFhkXE.jpg |
+| movie     |   10772 | Django                               | Django                                | 1966 | /XO7MrV0nsDlBWLjfM5ekiGgjyt.jpg  |
+| movie     |   10775 | Infernal Affairs                     | Infernal Affairs                      | 2002 | /gix9thDBXfjJ8M7rYbihqbQGBcP.jpg |
+| movie     |   11868 | Dracula                              | Le Cauchemar de Dracula               | 1958 | /9UHOATvzXQWbElSGygOY1ar3vpp.jpg |
+| movie     |   11878 | Yojimbo                              | Le Garde du corps                     | 1961 | /tN7kYPjRhDolpui9sc9Eq9n5b2O.jpg |
+| movie     |   12110 | Dracula: Dead and Loving It          | Dracula, mort et heureux de l’être    | 1995 | /5QmMhHdKpJ2eQp5i8NqopzGbw9r.jpg |
+| movie     |   15490 | Homam                                | హోమం                                  | 2008 | /tkXTFFjsOsBAW4LONZvZizoGH69.jpg |
+| movie     |   17135 | Omega Doom                           | Omega Doom                            | 1996 | /yLXlIJIGmlDZMPbGaQ1l55vhCap.jpg |
+| movie     |   19610 | A Star Is Born                       | Une étoile est née                    | 1976 | /3Hr63lBDhvYGpSd8HxDpWvowZpY.jpg |
+| movie     |   19613 | City of Damnation                    | City of Damnation                     | 2009 | /m219TMluAETowhOfU8ZsSPV7vTo.jpg |
+| movie     |   22440 | Dracula's Daughter                   | La Fille de Dracula                   | 1936 | /y7xBkkRLcg1I0fXHO4yYC5SwBCX.jpg |
+| movie     |   22692 | A Star Is Born                       | Une étoile est née                    | 1937 | /90EfCmXXWOs5dy7rHTNvGT9T8Kz.jpg |
+| movie     |   25944 | Blood for Dracula                    | Du sang pour Dracula                  | 1974 | /cLyCHzPT5kLBEPn4DMcqgNbjwke.jpg |
+| movie     |   26480 | The Legend of the 7 Golden Vampires  | La Légende des sept vampires d'or     | 1974 | /xPhesvQhGKxTsiLsdZFvKabVzlp.jpg |
+| movie     |   28198 | Nosferatu in Venice                  | Nosferatu à Venise                    | 1988 | /9WoZrEl55sPbyd1OKieidPa1CRR.jpg |
+| movie     |   30460 | Zinda Laash                          | Dracula au Pakistan                   | 1967 | /wEgS4mqajQ4UODs541QaTC9NhLT.jpg |
+| movie     |   33521 | Dracula                              | Dracula                               | 1979 | /gU0BMydJQV9HES5fRAEAPs2qw2M.jpg |
+| movie     |   39259 | Drácula                              | Drácula (Versions alternatives)       | 1931 | /vXpPf8MFLqp4f9KdUyjL7tSYDmd.jpg |
+| movie     |   40631 | Dracula                              | Dracula                               | 2006 | /d3f2Be6nIIrdu7B9yl5jup2ZL8w.jpg |
+| movie     |   46500 | The Warrior and the Sorceress        | Kaine le mercenaire                   | 1984 | /8jSoWzOuuNQgeAXWGK3cB64H18I.jpg |
+| movie     |   48519 | Dracula's Curse                      | Dracula's Curse                       | 2006 | /5bf4omXTPvQcLzZyhr4pEI81M0H.jpg |
+| movie     |   49017 | Dracula Untold                       | Dracula Untold                        | 2014 | /m5h3NtZ2ZfryIHl1MvatmANvIqQ.jpg |
+| movie     |   50448 | Count Dracula                        | Count Dracula                         | 1977 | /pZqlsK4A5vAH7kKwsWZ9Fjh9Aeq.jpg |
+| movie     |   55616 | Dracula: Pages from a Virgin's Diary | Dracula: Pages from a Virgin's Diary  | 2002 | /qioaICsGsr8Bu8yr6UGPLmV9crX.jpg |
+| movie     |   80895 | Roadhouse Nights                     | Roadhouse Nights                      | 1930 | /9GxU4Er9E0nm8TVbRHvnrsdlKsR.jpg |
+| movie     |   86889 | Dracula                              | Dracula et ses femmes vampires        | 1974 | /yxbbIWVwRBfXHoXhB4uidnkaSBi.jpg |
+| movie     |  109118 | Dracula in Istanbul                  | Drakula İstanbul'da                   | 1953 | /owPJmHSBxI3JLqmhUBY9JzshFkM.jpg |
+| movie     |  135812 | Dracula 3D                           | Dracula                               | 2012 | /n1EsoM2cotsQRmvNnQJlOeC1jNe.jpg |
+| movie     |  194031 | Dracula: Reborn                      | Dracula: Reborn                       | 2012 | /lP7e0OEVgG6ihCR6qZFOgUVPryh.jpg |
+| movie     |  246741 | What We Do in the Shadows            | Vampires en toute intimité            | 2014 | /a2rD3i3DBMeYbA34rBv6z3B9S3a.jpg |
+| movie     |  262187 | Jonathan                             | Jonathan                              | 1970 | /9cPYdnIVEyZICPRAbaGOUDYUrb5.jpg |
+| movie     |  330639 | Shams El Zanaty                      | شمس الزناتي                           | 1991 | /rNO4VHxjcgi8wLn3LavhNu0hl6v.jpg |
+| movie     |  332562 | A Star Is Born                       | A Star is Born                        | 2018 | /wrFpXMNBRj2PBiN4Z5kix51XaIZ.jpg |
+| movie     |  333484 | The Magnificent Seven                | Les Sept Mercenaires                  | 2016 | /ezcS78TIjgr85pVdaPDd2rSPVNs.jpg |
+| movie     |  364003 | Count Dracula                        | Le Comte Dracula                      | 1971 | /93PkvPN9wWprMRGsr3GhRJnl4p1.jpg |
+| movie     |  394151 | Nosferatu: A Symphony of Horror      | Nosferatu: A Symphony of Horror       | 2023 | /dD9B9Z9YoW1mrtmHPQ26LlhApka.jpg |
+| movie     |  402448 | Bullets, Fangs and Dinner at 8       | Bullets, Fangs and Dinner at 8        | 2015 | /9CfTQlNdoKjwOEOUls3NbwdRUri.jpg |
+| movie     |  402456 | The Phantom Hour                     | The Phantom Hour                      | 2017 | /ueYurn1iN424DLCYcypUpd5KV3n.jpg |
+| movie     |  426063 | Nosferatu                            | Nosferatu                             | 2024 | /d0B8xDdqBZlzlPEzES8lu5LlNQn.jpg |
+| movie     |  436617 | Dracula's Death                      | Drakula halála                        | 1921 | /6YLNh2bhdKve8BJ41PQXMiyZUwn.jpg |
+| movie     |  635910 | The Last Voyage of the Demeter       | Le Dernier Voyage du Demeter          | 2023 | /nrtbv6Cew7qC7k9GsYSf5uSmuKh.jpg |
+| movie     | 1246049 | Dracula                              | Dracula                               | 2025 | /ykyRfv7JDofLxXLAwtLXaSuaFfM.jpg |
+| serie     |    5863 | Samurai 7                            | SAMURAI 7                             | 2004 | /klSXeepcjr89ltqfwcth8xXHiwC.jpg |
+| serie     |   10706 | The Magnificent Seven                | Les Sept mercenaires                  | 1998 | /1fFkXghgxKAS4qI8S72O75yUq4j.jpg |
+| serie     |   17716 | Dracula's Kiss                       | Dracula's Kiss                        | 2002 | /3ZBrxh1ATygWLFXERqTSzGmU6jE.jpg |
+| serie     |   58928 | Dracula                              | Dracula                               | 2013 | /oQUU8LKVl10ejpxJC0qfsSuPZeF.jpg |
+| serie     |   68388 | Insider                              | inside                                | 2016 | /yWoQNqdxkx1QnYbzPI2SikUdPzc.jpg |
+| serie     |   83631 | What We Do in the Shadows            | What We Do in the Shadows             | 2019 | /wa3ZQE9kLnqwN3vQ0NNjg1NPsCa.jpg |
+| serie     |   86850 | Dracula                              | Dracula                               | 2020 | /5SqUNnExnN7Cr8rzyTXJTWmEMHn.jpg |
+| serie     |  125359 | Django                               | Django                                | 2023 | /eQ4GRmP0EEkxjwlPbZlVn7HLoZp.jpg |
+| serie     |  209454 | The Clan                             | Clanul                                | 2022 | /8yfUQcWRGqVlE3oBQn2kVuK4Nj3.jpg |
++-----------+---------+--------------------------------------+---------------------------------------+------+----------------------------------+
++--------------------------------------------+----------------------------+
+| block                                      | t                          |
++--------------------------------------------+----------------------------+
+| E4 named source work anchors (walk layout) | 2026-11-12 12:29:36.709236 |
++--------------------------------------------+----------------------------+
++----------------+------------------+------------------+----------+----------+------------------+---------------------+------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------+
+| ID_SOURCE_WORK | SOURCE_WORK_TYPE | SOURCE_WORK_FORM | ID_MOVIE | ID_SERIE | SOURCE_WORK_NAME | SOURCE_WORK_NAME_FR | SOURCE_WORK_YEAR | POSTER_PATH | WIKIPEDIA_IMAGE_PATH                                                                                                          |
++----------------+------------------+------------------+----------+----------+------------------+---------------------+------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------+
+|           6848 | literary         | NULL             |     NULL |     NULL | Red Harvest      | La Moisson rouge    |             1927 | NULL        | https://upload.wikimedia.org/wikipedia/commons/f/f4/Black_Mask_November_1927_-_Poisonville.jpg                                |
+|           7219 | screen           | NULL             |    11878 |     NULL | Yojimbo          | Le Garde du corps   |             1961 | NULL        | NULL                                                                                                                          |
+|           7931 | literary         | NULL             |     NULL |     NULL | Scarface         | Scarface            |             1930 | NULL        | https://upload.wikimedia.org/wikipedia/commons/1/10/Scarface1930.webp                                                         |
+|          11237 | literary         | NULL             |     NULL |     NULL | Dracula          | Dracula             |             1897 | NULL        | https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Dracula-First-Edition-1897.jpg/3840px-Dracula-First-Edition-1897.jpg |
++----------------+------------------+------------------+----------+----------+------------------+---------------------+------------------+-------------+-------------------------------------------------------------------------------------------------------------------------------+
++--------+----------------------------+
+| block  | t                          |
++--------+----------------------------+
+| E5 end | 2026-11-12 12:29:36.726593 |
++--------+----------------------------+
