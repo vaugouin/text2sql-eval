@@ -1,0 +1,222 @@
+-- check-phase3-lot-d-places.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-14 16:57:50 +0100
+--
++-------------------------+
+| SECTION                 |
++-------------------------+
+| places of the baselines |
++-------------------------+
++-------------+-----------------------------------+-----------------------------------+---------------+------------+-------------+
+| ID_LOCATION | LOCATION_NAME                     | LOCATION_NAME_FR                  | LOCATION_TYPE | LATITUDE   | LONGITUDE   |
++-------------+-----------------------------------+-----------------------------------+---------------+------------+-------------+
+|           2 | New York City                     | New York                          | city          |  40.712778 |  -74.006111 |
+|           3 | Rome                              | Rome                              | city          |  41.893056 |   12.482778 |
+|           4 | Los Angeles                       | Los Angeles                       | city          |  34.052230 | -118.243680 |
+|           5 | California                        | Californie                        | region        |  37.000000 | -120.000000 |
+|           7 | Venice                            | Venise                            | country       |  45.439722 |   12.331944 |
+|           9 | Washington, D.C.                  | Washington                        | city          |  38.895000 |  -77.036667 |
+|          10 | Russia                            | Russie                            | country       |  66.416667 |   94.250000 |
+|          15 | Mumbai                            | Bombay                            | city          |  19.075833 |   72.877500 |
+|          16 | Chicago                           | Chicago                           | city          |  41.881944 |  -87.627778 |
+|          21 | London                            | Londres                           | city          |  51.507222 |   -0.127500 |
+|          22 | Scotland                          | Écosse                            | country       |  57.000000 |   -5.000000 |
+|          23 | Arizona                           | Arizona                           | region        |  34.286667 | -111.656944 |
+|          24 | Florida                           | Floride                           | region        |  28.133333 |  -81.631667 |
+|          25 | Turkey                            | Turquie                           | country       |  39.000000 |   36.000000 |
+|          29 | Switzerland                       | Suisse                            | country       |  46.798562 |    8.231973 |
+|          30 | South Korea                       | Corée du Sud                      | country       |  36.000000 |  128.000000 |
+|          32 | Japan                             | Japon                             | country       |  35.000000 |  136.000000 |
+|          34 | Russian Empire                    | Empire russe                      | country       |  58.650000 |   70.116700 |
+|          38 | Paris                             | Paris                             | city          |  48.856667 |    2.352222 |
+|          41 | Vienna                            | Vienne                            | city          |  48.208333 |   16.372500 |
+|          45 | Italy                             | Italie                            | country       |  42.500000 |   12.500000 |
+|          51 | Hong Kong                         | Hong Kong                         | city          |  22.278333 |  114.158611 |
+|          54 | Vancouver                         | Vancouver                         | city          |  49.260833 | -123.113889 |
+|          55 | Colorado                          | Colorado                          | region        |  39.000000 | -105.500000 |
+|          56 | Spain                             | Espagne                           | country       |  40.200000 |   -3.500000 |
+|          58 | Egypt                             | Égypte                            | country       |  27.000000 |   29.000000 |
+|          59 | Kyoto                             | Kyoto                             | city          |  35.011611 |  135.768111 |
+|          63 | Mexico                            | Mexique                           | country       |  23.000000 | -102.000000 |
+|          65 | Naples                            | Naples                            | city          |  40.835833 |   14.248611 |
+|          66 | Hertfordshire                     | Hertfordshire                     | region        |  51.900000 |   -0.200000 |
+|          70 | Madrid                            | Madrid                            | region        |  40.416944 |   -3.703333 |
+|          76 | Iran                              | Iran                              | country       |  32.000000 |   53.000000 |
+|          80 | Norway                            | Norvège                           | country       |  59.933333 |   10.683333 |
+|          85 | Soviet Union                      | Union soviétique                  | country       |  65.000000 |   90.000000 |
+|          88 | Malibu                            | Malibu                            | city          |  34.035000 | -118.695000 |
+|          89 | Romania                           | Roumanie                          | country       |  46.000000 |   25.000000 |
+|          90 | Netherlands                       | Pays-Bas                          | country       |  52.316667 |    5.550000 |
+|          92 | Indonesia                         | Indonésie                         | country       |  -2.000000 |  118.000000 |
+|          95 | Rio de Janeiro                    | Rio de Janeiro                    | city          | -22.911111 |  -43.205556 |
+|         103 | New Mexico                        | Nouveau-Mexique                   | region        |  34.000000 | -106.000000 |
+|         104 | United States                     | États-Unis                        | country       |  39.828175 |  -98.579500 |
+|         105 | Canada                            | Canada                            | country       |  56.000000 | -109.000000 |
+|         106 | India                             | Inde                              | country       |  22.800000 |   83.000000 |
+|         111 | Berlin                            | Berlin                            | city          |  52.516667 |   13.383333 |
+|         112 | England                           | Angleterre                        | country       |  53.000000 |   -1.000000 |
+|         114 | New Orleans                       | La Nouvelle-Orléans               | city          |  29.976111 |  -90.078333 |
+|         122 | Milan                             | Milan                             | country       |  45.466944 |    9.190000 |
+|         123 | Poland                            | Pologne                           | country       |  52.000000 |   19.000000 |
+|         126 | France                            | France                            | country       |  47.000000 |    2.000000 |
+|         135 | Genoa                             | Gênes                             | city          |  44.407222 |    8.933889 |
+|         136 | Istanbul                          | Istanbul                          | city          |  41.010000 |   28.960278 |
+|         146 | Ancient Rome                      | Rome antique                      | country       |  41.890000 |   12.480000 |
+|         148 | Austria                           | Autriche                          | country       |  48.000000 |   14.000000 |
+|         150 | Pittsburgh                        | Pittsburgh                        | city          |  40.441667 |  -80.000000 |
+|         154 | Shanghai                          | Shanghaï                          | city          |  31.232500 |  121.469167 |
+|         158 | San Francisco                     | San Francisco                     | city          |  37.775000 | -122.419444 |
+|         159 | Portugal                          | Portugal                          | country       |  38.700000 |   -9.183333 |
+|         162 | Toronto                           | Toronto                           | city          |  43.670278 |  -79.386667 |
+|         163 | Taiwan                            | Taïwan                            | country       |  24.000000 |  121.000000 |
+|         174 | Argentina                         | Argentine                         | country       | -34.000000 |  -64.000000 |
+|         176 | New Jersey                        | New Jersey                        | region        |  40.000000 |  -74.500000 |
+|         177 | South Africa                      | Afrique du Sud                    | country       | -29.000000 |   24.000000 |
+|         190 | Utah                              | Utah                              | region        |  39.500000 | -111.500000 |
+|         194 | Kauaʻi                            | Kauai                             | island        |  22.070000 | -159.497500 |
+|         202 | Tokyo                             | Tokyo                             | city          |  35.689444 |  139.691667 |
+|         211 | Cuba                              | Cuba                              | country       |  22.000000 |  -79.500000 |
+|         222 | Las Vegas Valley                  | vallée de Las Vegas               | city          |  36.131800 | -115.184000 |
+|         224 | Greece                            | Grèce                             | country       |  38.500000 |   23.000000 |
+|         228 | Australia                         | Australie                         | country       | -25.000000 |  133.000000 |
+|         230 | Saint Petersburg                  | Saint-Pétersbourg                 | city          |  59.950000 |   30.316667 |
+|         239 | Israel                            | Israël                            | country       |  31.000000 |   35.000000 |
+|         250 | Amsterdam                         | Amsterdam                         | city          |  52.366667 |    4.883333 |
+|         254 | Lisbon                            | Lisbonne                          | city          |  38.708042 |   -9.139016 |
+|         258 | United Kingdom                    | Royaume-Uni                       | country       |  54.600000 |   -2.000000 |
+|         269 | Germany                           | Allemagne                         | country       |  51.000000 |   10.000000 |
+|         271 | Liverpool                         | Liverpool                         | city          |  53.407222 |   -2.991667 |
+|         275 | Turin                             | Turin                             | city          |  45.079167 |    7.676111 |
+|         290 | Miami                             | Miami                             | city          |  25.774167 |  -80.193611 |
+|         295 | Philippines                       | Philippines                       | country       |  12.000000 |  123.000000 |
+|         299 | Chile                             | Chili                             | country       | -33.000000 |  -71.000000 |
+|         302 | Florence                          | Florence                          | country       |  43.771389 |   11.254167 |
+|         311 | Brazil                            | Brésil                            | country       | -14.000000 |  -53.000000 |
+|         313 | Kenya                             | Kenya                             | country       |   0.100000 |   38.000000 |
+|         316 | Sicily                            | Sicile                            | region        |  37.600000 |   14.016667 |
+|         323 | Thailand                          | Thaïlande                         | country       |  14.000000 |  101.000000 |
+|         327 | Belgium                           | Belgique                          | country       |  50.641111 |    4.668056 |
+|         346 | Trieste                           | Trieste                           | city          |  45.650278 |   13.770278 |
+|         348 | Finland                           | Finlande                          | country       |  65.000000 |   27.000000 |
+|         363 | Hawaii                            | Hawaï                             | region        |  21.500000 | -158.000000 |
+|         368 | Alberta                           | Alberta                           | region        |  54.500000 | -115.000000 |
+|         370 | Ireland                           | Irlande                           | country       |  53.000000 |   -8.000000 |
+|         394 | Palermo                           | Palerme                           | city          |  38.115658 |   13.361262 |
+|         404 | Sweden                            | Suède                             | country       |  61.000000 |   15.000000 |
+|         406 | Pisa                              | Pise                              | city          |  43.716667 |   10.400000 |
+|         416 | Morocco                           | Maroc                             | country       |  32.000000 |   -6.000000 |
+|         448 | Detroit                           | Détroit                           | city          |  42.331667 |  -83.047500 |
+|         451 | Hamburg                           | Hambourg                          | country       |  53.550000 |   10.000000 |
+|         459 | New Zealand                       | Nouvelle-Zélande                  | country       | -41.200000 |  174.000000 |
+|         467 | Bulgaria                          | Bulgarie                          | country       |  42.750000 |   25.500000 |
+|         493 | Prague                            | Prague                            | city          |  50.087500 |   14.421389 |
+|         532 | Serbia                            | Serbie                            | country       |  43.950000 |   20.933333 |
+|         589 | Livorno                           | Livourne                          | city          |  43.550000 |   10.316667 |
+|         609 | Iceland                           | Islande                           | country       |  65.000000 |  -19.000000 |
+|         661 | Tallinn                           | Tallinn                           | city          |  59.437222 |   24.745000 |
+|         677 | Lecce                             | Lecce                             | city          |  40.352011 |   18.169139 |
+|         810 | Tangier                           | Tanger                            | city          |  35.769491 |   -5.804468 |
+|         879 | Jordan                            | Jordanie                          | country       |  31.200000 |   36.500000 |
+|        1022 | Oslo                              | Oslo                              | city          |  59.913333 |   10.738889 |
+|        1029 | Monaco                            | Monaco                            | country       |  43.731111 |    7.420000 |
+|        1064 | Czech Republic                    | Tchéquie                          | country       |  50.000000 |   15.000000 |
+|        1144 | Almería Province                  | province d'Almería                | region        |  37.018611 |   -2.444722 |
+|        1486 | Palace of Versailles              | château de Versailles             | structure     |  48.804722 |    2.120278 |
+|        1505 | Sanremo                           | Sanremo                           | city          |  43.817500 |    7.775000 |
+|        1606 | Marrakech                         | Marrakech                         | city          |  31.629470 |   -7.981080 |
+|        1770 | Dunkirk                           | Dunkerque                         | region        |  51.037778 |    2.376389 |
+|        2205 | Crotone                           | Crotone                           | city          |  39.083333 |   17.116667 |
+|        2790 | Latina                            | Latina                            | city          |  41.467222 |   12.903611 |
+|        2838 | Milano Due                        | Milano Due                        | city          |  45.499167 |    9.265278 |
+|        3130 | Heian Jingū                       | sanctuaire Heian                  | structure     |  35.016667 |  135.782222 |
+|        3286 | Lucca                             | Lucques                           | city          |  43.850000 |   10.516667 |
+|        3359 | Canary Wharf                      | Canary Wharf                      | city          |  51.505000 |   -0.019444 |
+|        3551 | Metropolitan City of Turin        | ville métropolitaine de Turin     | city          |  45.066700 |    7.700000 |
+|        3602 | Torvaianica                       | Torvaianica                       | city          |  41.634310 |   12.447680 |
+|        4558 | Pinewood Studios                  | Pinewood Studios                  | structure     |  51.548611 |   -0.535000 |
+|        4577 | Warner Bros. Studios, Leavesden   | Studios de Leavesden              | structure     |  51.693333 |   -0.419722 |
+|        4613 | Duino                             | Duino                             | city          |  45.766667 |   13.600000 |
+|        4637 | Oxfordshire                       | Oxfordshire                       | region        |  51.750000 |   -1.280000 |
+|        4699 | Europa                            | Europa                            | city          |  41.831287 |   12.469675 |
+|        4726 | Almería                           | Almería                           | region        |  36.841667 |   -2.463889 |
+|        4752 | Goathland railway station         | Goathland                         | structure     |  54.400700 |   -0.712124 |
+|        4936 | Pembrokeshire                     | Pembrokeshire                     | region        |  51.845000 |   -4.842222 |
+|        4945 | Rogaro                            | Rogaro                            | city          |  45.987220 |    9.224285 |
+|        4971 | Agrigento                         | Agrigente                         | city          |  37.312500 |   13.575000 |
+|        5012 | Shepperton Studios                | Studios de Shepperton             | structure     |       NULL |        NULL |
+|        5160 | Giverny                           | Giverny                           | region        |  49.076111 |    1.529167 |
+|        5237 | Garbatella                        | Garbatella                        | city          |  41.860548 |   12.488151 |
+|        5399 | Brindisi                          | Brindisi                          | city          |  40.638333 |   17.945833 |
+|        5433 | Alabama Hills                     | Alabama Hills                     | nature        |  36.610000 | -118.100000 |
+|        5463 | Maccarese                         | Maccarese                         | city          |  41.876960 |   12.219750 |
+|        5715 | Imperia                           | Imperia                           | city          |  43.886467 |    8.029653 |
+|        5935 | square Jean-XXIII                 | square Jean-XXIII                 | structure     |  48.852500 |    2.351390 |
+|        5967 | Alnwick Castle                    | château d'Alnwick                 | structure     |  55.415783 |   -1.706078 |
+|        6020 | Castiglioncello                   | Castiglioncello                   | city          |  43.405278 |   10.410278 |
+|        6177 | RAF Cardington                    | RAF Cardington                    | region        |  52.108922 |   -0.422499 |
+|        6207 | Cesena                            | Cesena                            | city          |  44.133333 |   12.233333 |
+|        6322 | Gloucester Cathedral              | cathédrale de Gloucester          | structure     |  51.867300 |   -2.246540 |
+|        6404 | Monte Sacro                       | Monte Sacro                       | city          |  41.933333 |   12.533333 |
+|        6514 | Custer State Park                 | parc d'État de Custer             | structure     |  43.745800 | -103.418000 |
+|        6623 | Imola                             | Imola                             | city          |  44.353056 |   11.714722 |
+|        6704 | Caserta                           | Caserte                           | city          |  41.066667 |   14.333333 |
+|        6790 | New College                       | New College                       | structure     |  51.754167 |   -1.251111 |
+|        6851 | Lido di Ostia                     | Ostie                             | city          |  41.733244 |   12.278939 |
+|        6897 | Ventimiglia                       | Vintimille                        | city          |  43.790278 |    7.608333 |
+|        7055 | Prato                             | Prato                             | city          |  43.880814 |   11.096561 |
+|        7400 | Amalfi                            | Amalfi                            | region        |  40.633333 |   14.602778 |
+|        7402 | Harrow School                     | Harrow School                     | structure     |  51.572500 |   -0.335000 |
+|        7551 | Farnborough Airport               | RAF Farnborough                   | region        |  51.275278 |   -0.777500 |
+|        7645 | Sistiana                          | Sistiana                          | city          |  45.772370 |   13.638240 |
+|        7687 | Palais Galliera                   | musée Galliera                    | structure     |  48.865556 |    2.296667 |
+|        7724 | Palace of Caserta                 | palais de Caserte                 | city          |  41.073167 |   14.327111 |
+|        8300 | Saint-Étienne-du-Mont             | église Saint-Étienne-du-Mont      | structure     |  48.846530 |    2.348030 |
+|        8307 | London Zoo                        | zoo de Londres                    | structure     |  51.535556 |   -0.155833 |
+|        8326 | Durham Cathedral                  | cathédrale de Durham              | structure     |  54.773475 |   -1.576215 |
+|        8390 | Leadenhall Market                 | Leadenhall Market                 | structure     |  51.512700 |   -0.083500 |
+|        8688 | Waukegan                          | Waukegan                          | city          |  42.363633 |  -87.844794 |
+|        9037 | Christ Church                     | Christ Church                     | NULL          |  51.750200 |   -1.255850 |
+|        9267 | Coalhouse Fort                    | fort Coalhouse                    | structure     |  51.463500 |    0.432682 |
+|        9343 | Municipio III                     | Municipio III                     | city          |  41.936080 |   12.535116 |
+|        9516 | Fortress Mountain Resort          | Fortress Mountain                 | city          |  50.827800 | -115.202000 |
+|        9592 | Inyo National Forest              | forêt nationale d'Inyo            | structure     |  37.852800 | -118.286000 |
+|        9741 | pont de Bir-Hakeim                | pont de Bir-Hakeim                | region        |  48.855556 |    2.287778 |
+|        9844 | Consonno                          | Consonno                          | city          |  45.783930 |    9.392810 |
+|       10106 | Testaccio                         | Testaccio                         | city          |  41.876111 |   12.475000 |
+|       10136 | Uncompahgre National Forest       | forêt nationale d'Uncompahgre     | structure     |  38.262900 | -108.112400 |
+|       10317 | Essaouira                         | Essaouira                         | city          |  31.513023 |   -9.768696 |
+|       10343 | Mentmore Towers                   | Mentmore Towers                   | structure     |  51.868221 |   -0.690619 |
+|       10744 | Universal Studios Lot             | Universal Studios                 | structure     |  34.141395 | -118.349780 |
+|       10759 | Acilia                            | Acilia                            | city          |  41.783333 |   12.366667 |
+|       11284 | Commodore Schuyler F. Heim Bridge | Commodore Schuyler F. Heim Bridge | region        |  33.766111 | -118.239722 |
+|       11505 | Cirella                           | Cirella                           | city          |  39.713700 |   15.810100 |
+|       11537 | Vatnajökull                       | Vatnajökull                       | region        |  64.400000 |  -16.800000 |
+|       11552 | Carrara                           | Carrare                           | city          |  44.083333 |   10.100000 |
+|       11617 | Abbey Mills Pumping Station       | Station de pompage d'Abbey Mills  | NULL          |  51.530700 |   -0.000835 |
+|       11853 | University College London         | University College de Londres     | NULL          |  51.524722 |   -0.133611 |
+|       11866 | Glen Nevis                        | Glen Nevis                        | region        |  56.770556 |   -5.035556 |
+|       11879 | Bolzano                           | Bolzano                           | city          |  46.498113 |   11.354780 |
+|       11992 | Mill Hill                         | Mill Hill                         | city          |  51.620000 |   -0.230000 |
+|       12042 | Riva                              | Riva                              | city          |  45.780480 |   11.105160 |
+|       12174 | Albinia                           | Albinia                           | city          |  42.502222 |   11.208056 |
+|       12233 | Selve                             | Selve                             | city          |  45.324380 |    8.309070 |
+|       12260 | Corso Vittorio Emanuele II        | Corso Vittorio Emanuele II        | city          |  45.465350 |    9.195240 |
+|       12313 | Certosa di Pavia                  | chartreuse de Pavie               | city          |  45.257000 |    9.148278 |
+|       13031 | Kronplatz                         | Plan de Corones                   | city          |  46.738056 |   11.960000 |
++-------------+-----------------------------------+-----------------------------------+---------------+------------+-------------+
++---------------------------------------+
+| SECTION                               |
++---------------------------------------+
+| coverage of the living places by type |
++---------------------------------------+
++---------------+--------+------------------+
+| LOCATION_TYPE | PLACES | WITH_COORDINATES |
++---------------+--------+------------------+
+| city          |   4350 |             4332 |
+| region        |   3213 |             3088 |
+| structure     |   2967 |             2832 |
+| (NULL)        |   1073 |              565 |
+| fiction       |    579 |                5 |
+| country       |    367 |              349 |
+| nature        |    309 |              304 |
+| island        |    241 |              239 |
++---------------+--------+------------------+
