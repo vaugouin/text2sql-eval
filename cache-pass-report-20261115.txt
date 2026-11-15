@@ -1,0 +1,13 @@
+-- cache-pass-report.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-15 15:06:51 +0100
+--
++------+------+-------------+--------------+-------------------+---------------------+-----------------------+------------------+-------------------------------------+------------------------+
+| ID   | LANG | FRESH_SCORE | CACHED_SCORE | SERVED_FROM_CACHE | WARM_REPRESENTATION | CACHED_REPRESENTATION | WARM_ANCHOR      | CACHED_ANCHOR                       | VERDICT                |
++------+------+-------------+--------------+-------------------+---------------------+-----------------------+------------------+-------------------------------------+------------------------+
+| 2935 | en   |           0 |            1 | 0                 | chain               | chain                 | movie:426063     | movie:426063                        | not served from cache  |
+| 2935 | fr   |           1 |            1 | 1                 | chain               | ranked-bars           | movie:426063     |                                     | representation differs |
+| 2937 | en   |           1 |            1 | 1                 | chain               | card-grid             | source_work:6848 |                                     | representation differs |
+| 2937 | fr   |           1 |            1 | 1                 | chain               | card-grid             | source_work:6848 |                                     | representation differs |
+| 2938 | en   |           1 |            1 | 0                 | chain               | chain                 | movie:346        | movie:346                           | not served from cache  |
+| 2938 | fr   |           1 |            1 | 1                 | chain               | chain                 | movie:346        | movie:966,movie:330639,movie:333484 | chain anchor differs   |
++------+------+-------------+--------------+-------------------+---------------------+-----------------------+------------------+-------------------------------------+------------------------+
