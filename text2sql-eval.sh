@@ -194,6 +194,16 @@ VISION_IDENTIFICATION_MODEL=${VISION_IDENTIFICATION_MODEL:-gpt-6-astra}
 if [ "$INPUT_KIND" != "text" ] && [ "$INPUT_KIND" != "image" ]; then
     echo "ERROR: INPUT_KIND must be 'text' or 'image' (got '$INPUT_KIND')."; exit 1
 fi
+# TEXT2SQL-EVAL-007. CACHE_PASS=1 asks each question twice, cache read off then on, and stores
+# the cached answer in its own namespace (CACHE_PASS = 1, export folder _cache). Off by default;
+# needs migrate-evaluation-execution-cache-pass.sql. Text runs only. Example:
+#   CACHE_PASS=1 EVAL_IDS=2935,2937,2938 API_VERSION=1.1.20 ./text2sql-eval.sh
+CACHE_PASS=${CACHE_PASS:-0}
+CACHE_PASS_ARGS=()
+if [ "$CACHE_PASS" = "1" ]; then
+    [ "$INPUT_KIND" = "text" ] || { echo "ERROR: CACHE_PASS=1 is for text runs only."; exit 1; }
+    CACHE_PASS_ARGS=(--cache-pass)
+fi
 
 EVAL_HOME=${EVAL_HOME:-$HOME/docker/text2sql-eval}
 SHARED_DIR=${SHARED_DIR:-$HOME/docker/shared_data/text2sql-eval}
@@ -675,7 +685,7 @@ f_runlogged text2sql-eval --rm --network="host" \
     --cache-guard-min-hit "$CACHE_GUARD_MIN_HIT" \
     --input-kind "$INPUT_KIND" \
     --vision-identification-model "$VISION_IDENTIFICATION_MODEL" \
-    ${SUBSET_ARGS[@]+"${SUBSET_ARGS[@]}"}
+    ${SUBSET_ARGS[@]+"${SUBSET_ARGS[@]}"}     ${CACHE_PASS_ARGS[@]+"${CACHE_PASS_ARGS[@]}"}
 
 echo
 echo "Campaign launched in the detached container 'text2sql-eval' (Ctrl+C leaves the logs, not the run)."

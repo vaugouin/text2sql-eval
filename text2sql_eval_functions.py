@@ -23,6 +23,34 @@ def any_flex_eligible_model(*models):
     return any(str(m or "").strip().lower().startswith(FLEX_MODEL_PREFIXES) for m in models)
 
 
+def cache_pass_summary(response_json: Any) -> dict:
+    """What one answer drew, compactly, for the cache pass of TEXT2SQL-EVAL-007.
+
+    Kept for the warm call and for the cached call alike, so the two can be compared without
+    storing the warm answer: row count, representation, the chain anchor when a chain was
+    drawn, and the cache flags. The chain anchor is the node marked `anchor` in
+    `summary_facts.chain`, written `<kind>:<id>` (for example `movie:346`).
+    """
+    if not isinstance(response_json, dict):
+        return {}
+    result = response_json.get("result")
+    facts = response_json.get("summary_facts") if isinstance(response_json.get("summary_facts"), dict) else {}
+    chain = facts.get("chain") if isinstance(facts.get("chain"), dict) else None
+    anchors = []
+    if chain:
+        for node in chain.get("nodes") or []:
+            if isinstance(node, dict) and node.get("anchor"):
+                anchors.append(f"{node.get('type', '')}:{node.get('id', '')}")
+    return {
+        "rows": len(result) if isinstance(result, list) else None,
+        "representation": response_json.get("representation") or "",
+        "chain_nodes": len(chain.get("nodes") or []) if chain else 0,
+        "chain_anchor": ",".join(anchors),
+        "cached_exact_question": bool(response_json.get("cached_exact_question")),
+        "cache_bypassed_by_feedback": bool(response_json.get("cache_bypassed_by_feedback")),
+    }
+
+
 def flex_usage_counts(llm_usage: Any) -> dict:
     """Sum what OpenAI Flex processing did over one response's `llm_usage` (TEXT2SQL-EVAL-002).
 

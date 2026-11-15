@@ -145,19 +145,42 @@ def vision_model_clause(prefix: str = "") -> str:
     return f"AND {col} = '{safe}' "
 
 
+# TEXT2SQL-EVAL-007 (FASTAPI-TEXT2SQL-389). `--cache-pass` asks every question twice: a warm
+# call (cache read off, cache write on, as a normal campaign) then the same text with the cache
+# read on, and stores the SECOND answer. Those rows carry CACHE_PASS = 1 and form their own
+# namespace (export folder `_cache`), so a normal campaign never reads, skips or rescores them.
+# CACHE_PASS_COLUMN is set at startup from the live table: before
+# migrate-evaluation-execution-cache-pass.sql has run, a normal run adds no clause at all and
+# works as before, and a --cache-pass run stops with the migration to apply.
+CACHE_PASS_RUN = False
+CACHE_PASS_COLUMN = False
+
+
+def cache_pass_clause(prefix: str = "") -> str:
+    """CACHE_PASS predicate of the run: 1 on a --cache-pass run, NULL or 0 on any other."""
+    if not CACHE_PASS_COLUMN:
+        return ""
+    col = f"{prefix}CACHE_PASS"
+    if CACHE_PASS_RUN:
+        return f"AND {col} = 1 "
+    return f"AND ({col} IS NULL OR {col} = 0) "
+
+
 def late_models_clause(result_entity_model: str, answer_single_value_model: str, prefix: str = "") -> str:
     """Both late columns, ready to append after the three historical ones, and the vision
-    column of -277, so every place that builds the run signature gets it at once."""
+    column of -277, so every place that builds the run signature gets it at once. The
+    cache-pass column of TEXT2SQL-EVAL-007 joins the signature the same way."""
     return (f"AND {task_model_clause('RESULT_ENTITY_MODEL', result_entity_model, prefix)} "
             f"AND {task_model_clause('ANSWER_SINGLE_VALUE_MODEL', answer_single_value_model, prefix)} "
-            + vision_model_clause(prefix))
+            + vision_model_clause(prefix) + cache_pass_clause(prefix))
 
 
-def late_models_suffix(result_entity_model, answer_single_value_model, vision_model=None) -> str:
+def late_models_suffix(result_entity_model, answer_single_value_model, vision_model=None, cache_pass=None) -> str:
     """Folder and file-name suffix, read from the ROW, never from the command line: empty
     when both are the default or NULL and the row is a text row, so every folder written so
     far keeps its name (<version>_<lang>_<ee>_<t2s>_<complex>) and the analysis scripts that
-    build that path keep working unchanged. An image row adds `_vis-<model>` (-277)."""
+    build that path keep working unchanged. An image row adds `_vis-<model>` (-277), a
+    cache-pass row `_cache` (TEXT2SQL-EVAL-007)."""
     parts = []
     if result_entity_model and result_entity_model != DEFAULT_TASK_MODEL:
         parts.append("re-" + slug_for_filename(result_entity_model, max_len=40))
@@ -165,6 +188,8 @@ def late_models_suffix(result_entity_model, answer_single_value_model, vision_mo
         parts.append("asv-" + slug_for_filename(answer_single_value_model, max_len=40))
     if vision_model:
         parts.append("vis-" + slug_for_filename(vision_model, max_len=40))
+    if cache_pass:
+        parts.append("cache")
     return ("_" + "_".join(parts)) if parts else ""
 
 
@@ -230,6 +255,83 @@ class PromptCacheGuard:
                     return (f"task {task} on {self.models[task]}: {sum(ring)} of its last {self.window} calls "
                             f"read the prompt from cache ({rate:.0%}, the floor is {self.min_hit:.0%})")
         return None
+
+
+def post_text2sql(url, headers, payload, lngid, strevallang, lngapitimeoutseconds, blnflexprocessing, dictflexstats):
+    """One /search/text2sql call with the 429/quota and Flex-timeout retries of phase 11.
+    Returns (response, response_json); either may be None on a failure the caller skips.
+    Moved out of the phase-11 loop for TEXT2SQL-EVAL-007, whose cache pass calls it twice."""
+    retry_count = 0
+    timeout_retry_count = 0
+    response = None
+    response_json = None
+    while True:
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=lngapitimeoutseconds)
+        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as e:
+            print(f"⚠ Request failed for eval id {lngid} [{strevallang}]: {type(e).__name__}: {e}")
+            # TEXT2SQL-EVAL-002: in Flex mode a slow call is expected, so it is
+            # retried rather than leaving the question without a row.
+            if blnflexprocessing and timeout_retry_count < EVAL_API_FLEX_TIMEOUT_MAX_RETRIES:
+                timeout_retry_count += 1
+                dictflexstats["timeout_retries"] += 1
+                response = None
+                print(f"⚠ Flex mode: retrying the question (attempt {timeout_retry_count + 1}/{EVAL_API_FLEX_TIMEOUT_MAX_RETRIES + 1}) in {EVAL_API_429_FALLBACK_DELAY_SECONDS:.0f}s")
+                time.sleep(EVAL_API_429_FALLBACK_DELAY_SECONDS)
+                continue
+            break
+
+        response_json = None
+        try:
+            response_json = response.json()
+        except ValueError:
+            response_json = None
+
+        error_text = ""
+        if isinstance(response_json, dict):
+            error_text = str(response_json.get("error") or "")
+        if response is not None and response.status_code >= 400 and not error_text:
+            error_text = response.text or ""
+
+        is_retryable = _is_retryable_quota_error(response=response, response_json=response_json, error_text=error_text)
+        if is_retryable:
+            retry_count += 1
+            retry_after = _extract_retry_after_seconds(response=response, response_json=response_json, error_text=error_text)
+            wait_seconds = (retry_after if retry_after is not None else EVAL_API_429_FALLBACK_DELAY_SECONDS) + EVAL_API_429_BUFFER_SECONDS
+            structured_error_code = None
+            structured_is_retryable = None
+            structured_provider = None
+            if isinstance(response_json, dict):
+                structured_error_code = response_json.get("error_code")
+                structured_is_retryable = response_json.get("is_retryable")
+                structured_provider = response_json.get("provider")
+            print(f"⚠ Retryable 429/quota error for eval id {lngid} [{strevallang}] (attempt {retry_count}/{EVAL_API_429_MAX_RETRIES})")
+            print(
+                f"⚠ Retry metadata: status={response.status_code if response is not None else 'n/a'} "
+                f"error_code={structured_error_code} is_retryable={structured_is_retryable} "
+                f"provider={structured_provider} retry_after_seconds={retry_after}"
+            )
+            if error_text:
+                print(f"⚠ Retry error text: {error_text}")
+            print(f"⚠ Waiting {wait_seconds:.1f}s before retry")
+            if retry_count >= EVAL_API_429_MAX_RETRIES:
+                print(f"❌ Retry budget exhausted for eval id {lngid} [{strevallang}]. Stopping evaluation run.")
+                sys.exit(1)
+            time.sleep(wait_seconds)
+            continue
+
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            print(f"⚠ Request failed for eval id {lngid} [{strevallang}]: {type(e).__name__}: {e}")
+            break
+
+        if response_json is None:
+            print(f"⚠ Response JSON parsing failed for eval id {lngid} [{strevallang}]")
+            break
+
+        break
+    return response, response_json
 
 
 # Model of the Phase 4/5/6 translations, moved from gpt-4o on 2026-10-01. Sol rather than Luna:
@@ -528,10 +630,19 @@ _parser.add_argument("--input-kind", default="text", choices=["text", "image"],
 _parser.add_argument("--vision-identification-model", default="gpt-6-astra",
                      help="Vision model of an image run (llm_model_vision), checked against the "
                           "API's echo; ignored on a text run (default: gpt-6-astra)")
+_parser.add_argument("--cache-pass", dest="cache_pass", action="store_true", default=False,
+                     help="Off by default. Ask each question twice, cache read off then on, and "
+                          "store the cached answer in its own namespace (CACHE_PASS = 1, export "
+                          "folder _cache) to catch defects of the cache-hit path (TEXT2SQL-EVAL-007). "
+                          "Text runs only.")
 _cli_args = _parser.parse_args()
 EVAL_FIXTURES_DIR = os.getenv("EVAL_FIXTURES_DIR", "/shared/fixtures")
 if _cli_args.input_kind == "image":
     VISION_RUN_MODEL = _cli_args.vision_identification_model.strip()
+CACHE_PASS_RUN = bool(_cli_args.cache_pass)
+if CACHE_PASS_RUN and VISION_RUN_MODEL is not None:
+    print("--cache-pass is for text runs only: an image run never writes the recognition cache.")
+    sys.exit(2)
 
 datnow = datetime.now(cp.paris_tz)
 # Compute the date and time for J-1 (yesterday)
@@ -547,6 +658,17 @@ try:
     with conn:
         with conn.cursor() as cursor:
             cursor3 = conn.cursor()
+            # TEXT2SQL-EVAL-007: is the CACHE_PASS column there yet? Read once, before any
+            # clause is built (module level: this assignment sets the global).
+            cursor3.execute("SHOW COLUMNS FROM T_WC_T2S_EVALUATION_EXECUTION LIKE 'CACHE_PASS'")
+            CACHE_PASS_COLUMN = bool(cursor3.fetchall())
+            if CACHE_PASS_RUN:
+                if not CACHE_PASS_COLUMN:
+                    print("--cache-pass needs the CACHE_PASS column: apply "
+                          "migrate-evaluation-execution-cache-pass.sql first (voie 2).")
+                    sys.exit(2)
+                print("Cache pass (TEXT2SQL-EVAL-007): ON. Each question is asked twice, cache read "
+                      "off then on; the cached answer is stored and scored (export folder _cache).")
             # Start timing the script execution
             start_time = time.time()
             strnow = datetime.now(cp.paris_tz).strftime("%Y-%m-%d %H:%M:%S")
@@ -1048,79 +1170,49 @@ try:
                                     print(f"Sleeping {EVAL_API_CALL_DELAY_SECONDS:.1f}s before API call")
                                     time.sleep(EVAL_API_CALL_DELAY_SECONDS)
 
-                                retry_count = 0
-                                timeout_retry_count = 0
-                                response = None
-                                response_json = None
-                                while True:
-                                    try:
-                                        response = requests.post(url, headers=headers, json=payload, timeout=lngapitimeoutseconds)
-                                    except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as e:
-                                        print(f"⚠ Request failed for eval id {lngid} [{strevallang}]: {type(e).__name__}: {e}")
-                                        # TEXT2SQL-EVAL-002: in Flex mode a slow call is expected, so it is
-                                        # retried rather than leaving the question without a row.
-                                        if blnflexprocessing and timeout_retry_count < EVAL_API_FLEX_TIMEOUT_MAX_RETRIES:
-                                            timeout_retry_count += 1
-                                            dictflexstats["timeout_retries"] += 1
-                                            response = None
-                                            print(f"⚠ Flex mode: retrying the question (attempt {timeout_retry_count + 1}/{EVAL_API_FLEX_TIMEOUT_MAX_RETRIES + 1}) in {EVAL_API_429_FALLBACK_DELAY_SECONDS:.0f}s")
-                                            time.sleep(EVAL_API_429_FALLBACK_DELAY_SECONDS)
-                                            continue
-                                        break
-
-                                    response_json = None
-                                    try:
-                                        response_json = response.json()
-                                    except ValueError:
-                                        response_json = None
-
-                                    error_text = ""
-                                    if isinstance(response_json, dict):
-                                        error_text = str(response_json.get("error") or "")
-                                    if response is not None and response.status_code >= 400 and not error_text:
-                                        error_text = response.text or ""
-
-                                    is_retryable = _is_retryable_quota_error(response=response, response_json=response_json, error_text=error_text)
-                                    if is_retryable:
-                                        retry_count += 1
-                                        retry_after = _extract_retry_after_seconds(response=response, response_json=response_json, error_text=error_text)
-                                        wait_seconds = (retry_after if retry_after is not None else EVAL_API_429_FALLBACK_DELAY_SECONDS) + EVAL_API_429_BUFFER_SECONDS
-                                        structured_error_code = None
-                                        structured_is_retryable = None
-                                        structured_provider = None
-                                        if isinstance(response_json, dict):
-                                            structured_error_code = response_json.get("error_code")
-                                            structured_is_retryable = response_json.get("is_retryable")
-                                            structured_provider = response_json.get("provider")
-                                        print(f"⚠ Retryable 429/quota error for eval id {lngid} [{strevallang}] (attempt {retry_count}/{EVAL_API_429_MAX_RETRIES})")
-                                        print(
-                                            f"⚠ Retry metadata: status={response.status_code if response is not None else 'n/a'} "
-                                            f"error_code={structured_error_code} is_retryable={structured_is_retryable} "
-                                            f"provider={structured_provider} retry_after_seconds={retry_after}"
-                                        )
-                                        if error_text:
-                                            print(f"⚠ Retry error text: {error_text}")
-                                        print(f"⚠ Waiting {wait_seconds:.1f}s before retry")
-                                        if retry_count >= EVAL_API_429_MAX_RETRIES:
-                                            print(f"❌ Retry budget exhausted for eval id {lngid} [{strevallang}]. Stopping evaluation run.")
-                                            sys.exit(1)
-                                        time.sleep(wait_seconds)
+                                dictcachepasswarm = None
+                                if CACHE_PASS_RUN:
+                                    # TEXT2SQL-EVAL-007. Warm call: computed fresh and written to the
+                                    # cache by the code in service, so the second call reads the row
+                                    # this code just wrote (the cache keeps every write and serves the
+                                    # latest). Its answer is not stored, only summarised below.
+                                    payload["retrieve_from_cache"] = False
+                                    payload["store_to_cache"] = True
+                                    warm_response, warm_json = post_text2sql(
+                                        url, headers, payload, lngid, strevallang, lngapitimeoutseconds,
+                                        blnflexprocessing, dictflexstats)
+                                    if warm_response is None or warm_json is None or warm_response.status_code >= 400:
+                                        print(f"⚠ Cache pass: warm call failed for eval id {lngid} [{strevallang}], question skipped")
                                         continue
+                                    dictcachepasswarm = t2s_eval.cache_pass_summary(warm_json)
+                                    strcachestop = objcacheguard.observe(warm_json.get("llm_usage"))
+                                    if strcachestop:
+                                        print(f"STOPPED BY THE PROMPT-CACHE GUARD (PROMPT-CACHING-010) on a warm call: {strcachestop}.")
+                                        cp.f_setservervariable("strtext2sqlevalcurrentprocess", "", "Current process in the Text2SQL evaluation", 0)
+                                        sys.exit(3)
+                                    payload["retrieve_from_cache"] = True
+                                    payload["store_to_cache"] = False
+                                    print(f"  cache pass: warm call done ({dictcachepasswarm}), asking again with the cache read on")
 
-                                    try:
-                                        response.raise_for_status()
-                                    except requests.exceptions.HTTPError as e:
-                                        print(f"⚠ Request failed for eval id {lngid} [{strevallang}]: {type(e).__name__}: {e}")
-                                        break
-
-                                    if response_json is None:
-                                        print(f"⚠ Response JSON parsing failed for eval id {lngid} [{strevallang}]")
-                                        break
-
-                                    break
+                                response, response_json = post_text2sql(
+                                    url, headers, payload, lngid, strevallang, lngapitimeoutseconds,
+                                    blnflexprocessing, dictflexstats)
 
                                 if response is None or response_json is None or (response is not None and response.status_code >= 400):
                                     continue
+                                if CACHE_PASS_RUN:
+                                    # Kept inside JSON_RESULT so the export and the report read it
+                                    # without a join: what the warm call drew, and whether the second
+                                    # answer really came from the cache (an open 👎 bypasses it).
+                                    dictcachepassserved = t2s_eval.cache_pass_summary(response_json)
+                                    response_json["cache_pass"] = {
+                                        "warm": dictcachepasswarm,
+                                        "cached": dictcachepassserved,
+                                        "served_from_cache": bool(response_json.get("cached_exact_question")),
+                                    }
+                                    if not response_json["cache_pass"]["served_from_cache"]:
+                                        print(f"⚠ Cache pass: eval id {lngid} [{strevallang}] was NOT served from the cache"
+                                              f" (cache_bypassed_by_feedback={response_json.get('cache_bypassed_by_feedback')})")
                                 response_text = json.dumps(response_json, ensure_ascii=False)
                                 print("FastAPI text2sql response received")
                                 print(response_json)
@@ -1179,6 +1271,8 @@ try:
                                 arrevalexeccouples["ANSWER_SINGLE_VALUE_MODEL"] = stranswersinglevaluemodeleval
                                 if blnimagerow:
                                     arrevalexeccouples["VISION_MODEL"] = VISION_RUN_MODEL
+                                if CACHE_PASS_RUN:
+                                    arrevalexeccouples["CACHE_PASS"] = 1
                                 arrevalexeccouples["JSON_RESULT"] = response_text
                                 arrevalexeccouples["TIM_EXECUTION"] = strdatnow
                                 arrevalexeccouples["LANG"] = strevallang
@@ -1740,7 +1834,8 @@ try:
 
                             row_result_entity_model = row.get('RESULT_ENTITY_MODEL')
                             row_answer_single_value_model = row.get('ANSWER_SINGLE_VALUE_MODEL')
-                            late_suffix = late_models_suffix(row_result_entity_model, row_answer_single_value_model, row.get('VISION_MODEL'))
+                            late_suffix = late_models_suffix(row_result_entity_model, row_answer_single_value_model,
+                                                             row.get('VISION_MODEL'), row.get('CACHE_PASS'))
                             run_subfolder = (
                                 f"{api_version_formatted}_{row_lang}_"
                                 f"{ee_slug}_{t2s_slug}_{complex_slug}{late_suffix}"
