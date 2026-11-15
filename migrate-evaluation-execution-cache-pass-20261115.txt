@@ -1,0 +1,8 @@
+-- migrate-evaluation-execution-cache-pass.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-15 12:07:07 +0100
+--
++------------+------------+------+-----+---------+-------+
+| Field      | Type       | Null | Key | Default | Extra |
++------------+------------+------+-----+---------+-------+
+| CACHE_PASS | tinyint(1) | YES  |     | NULL    |       |
++------------+------------+------+-----+---------+-------+

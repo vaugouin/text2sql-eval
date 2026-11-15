@@ -1,6 +1,8 @@
 -- TEXT2SQL-EVAL-007: fresh answer vs cached answer, per question and language.
 -- Read-only (voie 1). Compares the normal run (CACHE_PASS NULL or 0) with the --cache-pass run
 -- (CACHE_PASS = 1) of the same API version and text-to-SQL model. Edit the two variables below.
+-- Without a normal run, the score cannot be compared, but the warm-call summary kept in
+-- JSON_RESULT.cache_pass still shows a representation or chain-anchor difference.
 
 SET @api_version = '001.001.020';
 SET @t2s_model = 'gpt-6-sol';
@@ -15,12 +17,12 @@ SELECT C.ID_T2S_EVALUATION AS ID, C.LANG,
        JSON_VALUE(C.JSON_RESULT, '$.cache_pass.cached.chain_anchor') AS CACHED_ANCHOR,
        CASE
          WHEN JSON_VALUE(C.JSON_RESULT, '$.cache_pass.served_from_cache') <> 'true' THEN 'not served from cache'
-         WHEN F.ID_ROW IS NULL THEN 'no fresh row to compare'
          WHEN C.ASSERTIONS_TOTAL_SCORE < F.ASSERTIONS_TOTAL_SCORE THEN 'CACHE-PATH DEFECT'
          WHEN JSON_VALUE(C.JSON_RESULT, '$.cache_pass.warm.representation')
               <> JSON_VALUE(C.JSON_RESULT, '$.cache_pass.cached.representation') THEN 'representation differs'
          WHEN JSON_VALUE(C.JSON_RESULT, '$.cache_pass.warm.chain_anchor')
               <> JSON_VALUE(C.JSON_RESULT, '$.cache_pass.cached.chain_anchor') THEN 'chain anchor differs'
+         WHEN F.ID_ROW IS NULL THEN 'no fresh row to compare'
          ELSE 'same'
        END AS VERDICT
 FROM T_WC_T2S_EVALUATION_EXECUTION C
