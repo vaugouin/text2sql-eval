@@ -20,7 +20,8 @@ SELECT C.ID_T2S_EVALUATION AS ID, C.LANG,
        JSON_VALUE(C.JSON_RESULT, '$.cache_pass.warm.chain_anchor') AS WARM_ANCHOR,
        JSON_VALUE(C.JSON_RESULT, '$.cache_pass.cached.chain_anchor') AS CACHED_ANCHOR,
        CASE
-         WHEN JSON_VALUE(C.JSON_RESULT, '$.cache_pass.served_from_cache') <> 'true' THEN 'not served from cache'
+         -- JSON true comes back from JSON_VALUE as 1 on this server, 'true' elsewhere: accept both.
+         WHEN COALESCE(JSON_VALUE(C.JSON_RESULT, '$.cache_pass.served_from_cache'), '') NOT IN ('true', '1') THEN 'not served from cache'
          WHEN C.ASSERTIONS_TOTAL_SCORE < F.ASSERTIONS_TOTAL_SCORE THEN 'CACHE-PATH DEFECT'
          WHEN JSON_VALUE(C.JSON_RESULT, '$.cache_pass.warm.representation')
               <> JSON_VALUE(C.JSON_RESULT, '$.cache_pass.cached.representation') THEN 'representation differs'

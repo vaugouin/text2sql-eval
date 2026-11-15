@@ -1,6 +1,6 @@
 # Text2SQL Evaluator
 
-**Version:** 2.22.2 (source of truth: [VERSION](VERSION))
+**Version:** 2.22.3 (source of truth: [VERSION](VERSION))
 **Last Updated:** 2026-11-15
 **Status:** Production Ready
 **Main file:** [text2sql-eval.py](text2sql-eval.py)
@@ -1098,6 +1098,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.22.3 | 2026-11-15 | `cache-pass-report.sql`: `served_from_cache` is read as `'true'` or `'1'` (MariaDB's `JSON_VALUE` returns 1 for JSON true), so a cached answer is no longer reported as "not served from cache". Carries `cache-pass-report-20261115.txt`, first report on 2935, 2937, 2938 (API 1.1.20). |
 | 2.22.2 | 2026-11-15 | `cache-pass-report.sql`: `SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci` first, the agent connection defaulted to `utf8mb4_general_ci` and the report stopped on ERROR 1267. |
 | 2.22.1 | 2026-11-15 | `cache-pass-report.sql`: "no fresh row to compare" is tested after the representation and chain-anchor checks, so a cache pass on questions never run normally still shows those differences from the warm-call summary. Carries `migrate-evaluation-execution-cache-pass-20261115.txt` (column `CACHE_PASS` added). |
 | 2.22.0 | 2026-11-15 | **`--cache-pass`** (TEXT2SQL-EVAL-007, `CACHE_PASS=1` in `text2sql-eval.sh`), off by default: phase 11 asks each question warm then from the cache and stores the cached answer under `CACHE_PASS = 1` (export `_cache`), with `JSON_RESULT.cache_pass` (both calls summarised by `cache_pass_summary()`, `served_from_cache`). The phase-11 request loop moved into `post_text2sql()`, unchanged. `migrate-evaluation-execution-cache-pass.sql` (voie 2) adds the column; `cache-pass-report.sql` (voie 1) compares fresh and cached rows. Written for FASTAPI-TEXT2SQL-389 (the chain loses its anchor on an exact cache hit). |
