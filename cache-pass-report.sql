@@ -4,6 +4,10 @@
 -- Without a normal run, the score cannot be compared, but the warm-call summary kept in
 -- JSON_RESULT.cache_pass still shows a representation or chain-anchor difference.
 
+-- The connection collation must match the columns (utf8mb4_unicode_ci), or the comparisons with
+-- the variables and literals fail with ERROR 1267 (illegal mix of collations).
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 SET @api_version = '001.001.020';
 SET @t2s_model = 'gpt-6-sol';
 
