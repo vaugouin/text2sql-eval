@@ -1,0 +1,189 @@
+-- check-api-1-1-20-failures-20261115.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-15 16:54:30 +0100
+--
++--------+-------------------+------+---------+------------+---------------------+---------------------------+---------------------+---------------------+------------------------+-----------------------+----------+---------+
+| ID_ROW | ID_T2S_EVALUATION | LANG | DELETED | CACHE_PASS | RESULT_ENTITY_MODEL | ANSWER_SINGLE_VALUE_MODEL | TIM_EXECUTION       | TIM_UPDATED         | ASSERTIONS_TOTAL_SCORE | TOTAL_PROCESSING_TIME | JSON_LEN | JSON_OK |
++--------+-------------------+------+---------+------------+---------------------+---------------------------+---------------------+---------------------+------------------------+-----------------------+----------+---------+
+|  20901 |              2830 | en   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:05:38 | 2026-11-15 13:05:43 |                   NULL |                  NULL |    19537 |       1 |
+|  20902 |              2830 | fr   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:05:43 | 2026-11-15 13:26:08 |                      1 |                 4.552 |    14576 |       1 |
+|  20903 |              2831 | en   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:05:48 | 2026-11-15 13:26:08 |                      1 |                 5.083 |    17925 |       1 |
+|  20904 |              2831 | fr   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:05:53 | 2026-11-15 13:26:08 |                      1 |                 5.405 |    18199 |       1 |
+|  20905 |              2832 | en   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:05:58 | 2026-11-15 13:06:04 |                   NULL |                  NULL |    28515 |       1 |
+|  20906 |              2832 | fr   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:06:04 | 2026-11-15 13:26:08 |                      0 |                 4.447 |    21147 |       1 |
+|  20907 |              2833 | en   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:06:08 | 2026-11-15 13:26:08 |                      1 |                 4.288 |    13249 |       1 |
+|  20908 |              2833 | fr   |       0 |       NULL | gpt-6-luna          | gpt-4o                    | 2026-11-15 13:06:12 | 2026-11-15 13:26:08 |                      1 |                 4.084 |    13220 |       1 |
++--------+-------------------+------+---------+------------+---------------------+---------------------------+---------------------+---------------------+------------------------+-----------------------+----------+---------+
++----------+-------------+----------------+-------------------+------------+-----------------+--------------+-------------+---------+
+| ID_AWARD | ID_WIKIDATA | AWARD_NAME     | AWARD_NAME_FR     | AWARD_TYPE | ID_AWARD_PARENT | PERSON_COUNT | MOVIE_COUNT | DELETED |
++----------+-------------+----------------+-------------------+------------+-----------------+--------------+-------------+---------+
+|    10464 | Q19020      | Academy Awards | Oscars du cinéma  | award      |            NULL |           16 |           1 |       0 |
+|    30680 | Q974736     | Osgar          | Osgar             | award      |            NULL |           32 |           0 |       0 |
++----------+-------------+----------------+-------------------+------------+-----------------+--------------+-------------+---------+
++----------+-------------------------------------------+-----------------+----------------+------------+
+| ID_AWARD | AWARD_NAME                                | ID_AWARD_PARENT | PARENT_NAME    | AWARD_YEAR |
++----------+-------------------------------------------+-----------------+----------------+------------+
+|      753 | Academy Award for Best Supporting Actress |           10464 | Academy Awards |       1980 |
+|      269 | Academy Award for Best Actress            |           10464 | Academy Awards |       1983 |
+|      269 | Academy Award for Best Actress            |           10464 | Academy Awards |       2012 |
++----------+-------------------------------------------+-----------------+----------------+------------+
++----------+------------+---------------+-------------+--------------+
+| ID_AWARD | AWARD_NAME | AWARD_NAME_FR | MOVIE_COUNT | PERSON_COUNT |
++----------+------------+---------------+-------------+--------------+
+|     9539 | Palme d'Or | Palme d'or    |          84 |           71 |
++----------+------------+---------------+-------------+--------------+
++------------------+-----------+
+| COUNTRY_OF_BIRTH | DIRECTORS |
++------------------+-----------+
+| US               |        18 |
+| FR               |        13 |
+| IT               |        11 |
+| GB               |         4 |
+| DE               |         3 |
+| JP               |         3 |
+| GR               |         3 |
+| DK               |         2 |
+| SE               |         2 |
+| BE               |         2 |
++------------------+-----------+
++----------+--------------+---------+
+| ID_MOVIE | COUNTRY_CODE | DELETED |
++----------+--------------+---------+
+|      120 | NZ           |       0 |
+|      120 | US           |       0 |
++----------+--------------+---------+
++---------------+---------------+
+| LOCATION_NAME | LOCATION_TYPE |
++---------------+---------------+
+| New Zealand   | country       |
++---------------+---------------+
++------------+--------------------------------------+-----------+-------------+-------------+----------+
+| ID_COMPANY | COMPANY_NAME                         | ID_PARENT | MOVIE_COUNT | SERIE_COUNT | CHILDREN |
++------------+--------------------------------------+-----------+-------------+-------------+----------+
+|        128 | Time Warner                          |         0 |           5 |           1 |        1 |
+|       2044 | Time Warner Cable                    |         0 |           1 |           0 |        0 |
+|     157695 | Time Warner Entertainment Company    |         0 |           8 |           0 |        0 |
+|     198699 | Warner Bros. Discovery               |         0 |           4 |          12 |        0 |
+|     199060 | Warner Bros. Discovery Brasil        |         0 |           2 |          25 |        0 |
+|     207151 | Warner Bros. Discovery New Zealand   |         0 |           0 |           1 |        0 |
+|     209285 | Warner Bros. Discovery Latin America |         0 |           0 |           9 |        0 |
+|     225265 | Time Warner                          |         0 |           1 |           0 |        0 |
+|     248946 | Warner Bros. Discovery               |         0 |           0 |           4 |        0 |
+|     256659 | WarnerMedia                          |         0 |           1 |           0 |        0 |
++------------+--------------------------------------+-----------+-------------+-------------+----------+
++-------------------+----------------------------------+--------+
+| ID_T2S_COLLECTION | COLLECTION_NAME                  | MOVIES |
++-------------------+----------------------------------+--------+
+|              4805 | Middle-Earth: Movies, TV Shows   |      6 |
+|                65 | Star Wars Collection             |      9 |
+|               651 | The Hobbit Collection            |      3 |
+|                67 | The Lord of the Rings Collection |      3 |
++-------------------+----------------------------------+--------+
++----------+-----------------------+-----------------------+-----------------------+---------+
+| ID_MOVIE | MOVIE_TITLE           | MOVIE_TITLE_FR        | ORIGINAL_TITLE        | RUNTIME |
++----------+-----------------------+-----------------------+-----------------------+---------+
+|      238 | The Godfather         | Le Parrain            | The Godfather         |     175 |
+|      240 | The Godfather Part II | Le Parrain, 2e partie | The Godfather Part II |     202 |
++----------+-----------------------+-----------------------+-----------------------+---------+
++-------------------------------------+-------+
+| CAST_CHARACTER                      | FILMS |
++-------------------------------------+-------+
+| Self (archive footage)              |    59 |
+| (archive footage)                   |    10 |
+| Self                                |     8 |
+| A Tramp                             |     4 |
+| Tramp                               |     4 |
+| Charlie                             |     4 |
+| (archive footage) (uncredited)      |     3 |
+| Self (archive footage) (uncredited) |     3 |
+|                                     |     3 |
+| Various Roles (archive footage)     |     3 |
+| The Tramp                           |     2 |
+| The Janitor                         |     2 |
+| Archive Footage                     |     2 |
+| Self - Filmmaker (archive footage)  |     2 |
+| The Tramp (archive footage)         |     2 |
++-------------------------------------+-------+
++----------+-------------+----------------+-------------+------------+------------+
+| ID_MOVIE | MOVIE_TITLE | ORIGINAL_TITLE | DAT_RELEASE | IMDB_VOTES | POPULARITY |
++----------+-------------+----------------+-------------+------------+------------+
+|      426 | Vertigo     | Vertigo        | 1958-05-28  |     465034 |     9.0096 |
+|   922902 | Vertigo     | Vertigo        | 2016-08-10  |        385 |     0.0987 |
+|   598075 | Vertigo     | 버티고         | 2019-10-17  |        366 |     1.5554 |
+|   593450 | Vertigo     | Ίλιγγος        | 1963-08-14  |        215 |     0.9236 |
+|   414621 | Vertigo     | Vértigo        | 1945-09-06  |         92 |     0.4003 |
+|   236312 | Vertigo     | Závrať         | 1963-02-08  |         80 |     0.1988 |
+|  1010373 | Vértigo     | Vértigo        | 1950-05-28  |         12 |      1.259 |
+|   356234 | Vertigo     | Vertigo        | 2013-12-25  |          8 |     0.3971 |
+|  1027344 | Vértigo     | Vértigo        | 1936-03-11  |       NULL |     0.1271 |
+|  1783080 | Vértigo     | Vértigo        | 2025-06-01  |       NULL |     0.0968 |
+|   643914 | Vertigo     | Vertige        | 2019-10-30  |       NULL |     0.0193 |
+|  1649751 | Vertigo     | Vértigo        | 2018-09-10  |       NULL |     0.7801 |
++----------+-------------+----------------+-------------+------------+------------+
++----------+--------------+-------------+-------------------+
+| ID_SERIE | SERIE_TITLE  | IMDB_RATING | NUMBER_OF_SEASONS |
++----------+--------------+-------------+-------------------+
+|     1398 | The Sopranos |         9.2 |                 6 |
+|     1438 | The Wire     |         9.3 |                 5 |
++----------+--------------+-------------+-------------------+
++----------+--------------------------------------+----------------+------------------+------------------+------------------+-------------+-------------+
+| ID_MOVIE | MOVIE_TITLE                          | ID_SOURCE_WORK | SOURCE_WORK_NAME | SOURCE_WORK_TYPE | SOURCE_WORK_YEAR | SW_ID_MOVIE | SW_ID_SERIE |
++----------+--------------------------------------+----------------+------------------+------------------+------------------+-------------+-------------+
+|      111 | Scarface                             |           7931 | Scarface         | literary         |             1930 |        NULL |        NULL |
+|      111 | Scarface                             |          11891 | Scarface         | screen           |             1932 |         877 |        NULL |
+|      138 | Dracula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|      391 | A Fistful of Dollars                 |           6848 | Red Harvest      | literary         |             1927 |        NULL |        NULL |
+|      391 | A Fistful of Dollars                 |           7219 | Yojimbo          | screen           |             1961 |       11878 |        NULL |
+|      653 | Nosferatu                            |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|      877 | Scarface                             |           7931 | Scarface         | literary         |             1930 |        NULL |        NULL |
+|      966 | The Magnificent Seven                |           6749 | Seven Samurai    | screen           |             1954 |         346 |        NULL |
+|     1422 | The Departed                         |          14968 | Infernal Affairs | screen           |             2002 |       10775 |        NULL |
+|     5620 | Count Dracula                        |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|     6114 | Bram Stoker's Dracula                |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|     6404 | Nosferatu the Vampyre                |           5212 | Nosferatu        | screen           |             1922 |         653 |        NULL |
+|     6404 | Nosferatu the Vampyre                |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|     7092 | Van Helsing: The London Assignment   |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|     9333 | Last Man Standing                    |           7219 | Yojimbo          | screen           |             1961 |       11878 |        NULL |
+|    10577 | Dracula 2000                         |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    10772 | Django                               |           7219 | Yojimbo          | screen           |             1961 |       11878 |        NULL |
+|    11868 | Dracula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    11878 | Yojimbo                              |           6848 | Red Harvest      | literary         |             1927 |        NULL |        NULL |
+|    12110 | Dracula: Dead and Loving It          |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    17135 | Omega Doom                           |           7219 | Yojimbo          | screen           |             1961 |       11878 |        NULL |
+|    22440 | Dracula's Daughter                   |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    25944 | Blood for Dracula                    |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    26480 | The Legend of the 7 Golden Vampires  |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    28198 | Nosferatu in Venice                  |           5212 | Nosferatu        | screen           |             1922 |         653 |        NULL |
+|    30460 | Zinda Laash                          |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    33521 | Dracula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    39259 | Drácula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    40631 | Dracula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    46500 | The Warrior and the Sorceress        |           7219 | Yojimbo          | screen           |             1961 |       11878 |        NULL |
+|    48519 | Dracula's Curse                      |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    49017 | Dracula Untold                       |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    50448 | Count Dracula                        |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    55616 | Dracula: Pages from a Virgin's Diary |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|    80895 | Roadhouse Nights                     |           6848 | Red Harvest      | literary         |             1927 |        NULL |        NULL |
+|    86889 | Dracula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   109118 | Dracula in Istanbul                  |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   135812 | Dracula 3D                           |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   194031 | Dracula: Reborn                      |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   262187 | Jonathan                             |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   364003 | Count Dracula                        |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   394151 | Nosferatu: A Symphony of Horror      |           5212 | Nosferatu        | screen           |             1922 |         653 |        NULL |
+|   394151 | Nosferatu: A Symphony of Horror      |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   402456 | The Phantom Hour                     |           5212 | Nosferatu        | screen           |             1922 |         653 |        NULL |
+|   426063 | Nosferatu                            |           5212 | Nosferatu        | screen           |             1922 |         653 |        NULL |
+|   426063 | Nosferatu                            |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   436617 | Dracula's Death                      |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|   635910 | The Last Voyage of the Demeter       |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
+|  1246049 | Dracula                              |          11237 | Dracula          | literary         |             1897 |        NULL |        NULL |
++----------+--------------------------------------+----------------+------------------+------------------+------------------+-------------+-------------+
++----------------+------------------+------------------+------------------+------------------+----------+----------+
+| ID_SOURCE_WORK | SOURCE_WORK_NAME | SOURCE_WORK_TYPE | SOURCE_WORK_FORM | SOURCE_WORK_YEAR | ID_MOVIE | ID_SERIE |
++----------------+------------------+------------------+------------------+------------------+----------+----------+
+|           5212 | Nosferatu        | screen           | NULL             |             1922 |      653 |     NULL |
+|           6848 | Red Harvest      | literary         | NULL             |             1927 |     NULL |     NULL |
+|           7219 | Yojimbo          | screen           | NULL             |             1961 |    11878 |     NULL |
+|           7931 | Scarface         | literary         | NULL             |             1930 |     NULL |     NULL |
+|          11237 | Dracula          | literary         | NULL             |             1897 |     NULL |     NULL |
++----------------+------------------+------------------+------------------+------------------+----------+----------+
