@@ -1101,3 +1101,33 @@ def fixture_path(fixtures_dir: str, input_image_path: str) -> str:
     if not input_image_path or os.path.commonpath([root, path]) != root:
         raise ValueError(f"INPUT_IMAGE_PATH outside the fixtures folder: {input_image_path!r}")
     return path
+
+import os
+
+# TEXT2SQL-EVAL-010 (2026-11-15). The API holds no OpenAI key (FASTAPI-TEXT2SQL-409): every
+# client sends its own. The evaluator sends every provider key its .env holds, so a campaign is
+# paid by the evaluator's accounts, whatever the model (the API keeps server keys for the other
+# providers, used only when a request brings none). Values are never printed.
+PROVIDER_KEY_HEADERS = (
+    ("OPENAI_API_KEY", "X-OpenAI-Key"),
+    ("ANTHROPIC_API_KEY", "X-Anthropic-Key"),
+    ("GOOGLE_API_KEY", "X-Google-Key"),
+    ("OPENROUTER_API_KEY", "X-OpenRouter-Key"),
+)
+
+
+def provider_key_headers(env=None):
+    """The X-*-Key headers for the provider keys set in the environment (or in `env`, a dict)."""
+    source = os.environ if env is None else env
+    headers = {}
+    for env_name, header_name in PROVIDER_KEY_HEADERS:
+        value = str(source.get(env_name) or "").strip()
+        if value and not value.startswith("your_"):
+            headers[header_name] = value
+    return headers
+
+
+def provider_key_summary(env=None):
+    """Which provider keys will be sent, for the start-up banner, never the values."""
+    headers = provider_key_headers(env)
+    return ", ".join(name for _, name in PROVIDER_KEY_HEADERS if name in headers) or "none"

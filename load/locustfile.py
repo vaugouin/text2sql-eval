@@ -58,6 +58,10 @@ def env(name, default=""):
 API_BASE = env("LOAD_API_BASE", f"{env('TEXT2SQL_API_URL', 'http://www.vaugouin.com').rstrip('/')}:{env('API_PORT_GREEN', '8187')}")
 # A dedicated key, added to API_KEYS for the occasion, keeps the bench's lines apart in the API logs.
 API_KEY = env("LOAD_API_KEY") or env("TEXT2SQL_API_KEY")
+# TEXT2SQL-EVAL-010: the provider keys of text2sql-eval/.env, sent with every search.
+PROVIDER_HEADERS = {header: env(name) for name, header in (
+    ("OPENAI_API_KEY", "X-OpenAI-Key"), ("ANTHROPIC_API_KEY", "X-Anthropic-Key"),
+    ("GOOGLE_API_KEY", "X-Google-Key"), ("OPENROUTER_API_KEY", "X-OpenRouter-Key")) if env(name)}
 SITE_BASE = env("LOAD_SITE_BASE", "https://www.vaugouin.com")
 LANG = env("LOAD_LANG", "en")  # en, fr, or both
 THINK = [float(x) for x in env("LOAD_THINK_SECONDS", "5,15").split(",")]
@@ -91,7 +95,8 @@ EVAL = load_questions("is_eval")
 
 
 def api_headers():
-    return {"X-API-Key": API_KEY, "Content-Type": "application/json"}
+    # TEXT2SQL-EVAL-010: the provider keys of text2sql-eval/.env, OpenAI first (the API has none).
+    return {"X-API-Key": API_KEY, "Content-Type": "application/json", **PROVIDER_HEADERS}
 
 
 def check_t2s(response):

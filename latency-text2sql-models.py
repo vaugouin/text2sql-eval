@@ -42,6 +42,22 @@ def api_key() -> str:
     sys.exit("TEXT2SQL_API_KEY missing from .env")
 
 
+def provider_headers() -> dict:
+    """TEXT2SQL-EVAL-010: the X-*-Key headers for the provider keys set in .env, never printed."""
+    names = {"OPENAI_API_KEY": "X-OpenAI-Key", "ANTHROPIC_API_KEY": "X-Anthropic-Key",
+             "GOOGLE_API_KEY": "X-Google-Key", "OPENROUTER_API_KEY": "X-OpenRouter-Key"}
+    headers = {}
+    for line in (ROOT / ".env").read_text(encoding="utf-8").splitlines():
+        name, _, value = line.partition("=")
+        value = value.strip().strip('"').strip("'")
+        if name.strip() in names and value and not value.startswith("your_"):
+            headers[names[name.strip()]] = value
+    return headers
+
+
+PROVIDER_HEADERS = provider_headers()
+
+
 def pick_questions(export: Path, n: int, seed: int) -> list[tuple[int, str]]:
     best: dict[int, dict] = {}
     for p in export.glob("20*.json"):
@@ -58,7 +74,8 @@ def pick_questions(export: Path, n: int, seed: int) -> list[tuple[int, str]]:
 def ask(url: str, key: str, question: str, model: str) -> dict:
     body = json.dumps({"question": question, "retrieve_from_cache": False, "store_to_cache": False,
                        "llm_model_text2sql": model}).encode()
-    req = urllib.request.Request(url, data=body, headers={"X-API-Key": key, "Content-Type": "application/json"})
+    # TEXT2SQL-EVAL-010: the provider keys of .env, OpenAI first (the API has none).
+    req = urllib.request.Request(url, data=body, headers={"X-API-Key": key, "Content-Type": "application/json", **PROVIDER_HEADERS})
     t0 = time.time()
     d = json.load(urllib.request.urlopen(req, timeout=300))
     u = (d.get("llm_usage") or {}).get("text2sql") or {}

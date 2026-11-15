@@ -171,9 +171,15 @@ TEXT2SQL_EVAL_API_TIMEOUT_SECONDS=120             # one API call, standard tier
 TEXT2SQL_EVAL_API_FLEX_TIMEOUT_SECONDS=3600       # one API call in Flex mode (TEXT2SQL-EVAL-002)
 TEXT2SQL_EVAL_API_FLEX_TIMEOUT_MAX_RETRIES=3      # Flex mode: resend a question that timed out
 
-# Translations (phases 4/5/6)
+# Translations (phases 4/5/6), and the key sent to the API with every question (TEXT2SQL-EVAL-010)
 OPENAI_API_KEY=sk-...
+# Optional: sent too when set, so a campaign on these providers bills your account
+#ANTHROPIC_API_KEY=sk-ant-...
+#GOOGLE_API_KEY=...
+#OPENROUTER_API_KEY=sk-or-...
 ```
+
+Since FASTAPI-TEXT2SQL-409 the API holds no OpenAI key. The evaluator sends every provider key of its `.env` in the `X-OpenAI-Key`, `X-Anthropic-Key`, `X-Google-Key` and `X-OpenRouter-Key` headers (the load bench and `latency-text2sql-models.py` too); the start-up banner names the ones it sends, never the values. A 401 `openai_key_required` from the API stops the run at once, nothing scored.
 
 The evaluator computes the API port from the patch parity of `--api-version` (even → Blue, odd → Green), matching the Blue/Green deployment convention of the API itself.
 

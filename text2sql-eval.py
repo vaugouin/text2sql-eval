@@ -320,6 +320,15 @@ def post_text2sql(url, headers, payload, lngid, strevallang, lngapitimeoutsecond
             time.sleep(wait_seconds)
             continue
 
+        # TEXT2SQL-EVAL-010: no usable OpenAI key is a configuration error, not a wrong answer:
+        # stop at the first one rather than score hundreds of failures.
+        if response is not None and response.status_code == 401 and isinstance(response_json, dict):
+            detail = response_json.get("detail")
+            if isinstance(detail, dict) and detail.get("error_code") == "openai_key_required":
+                print(f"❌ The API asks for an OpenAI key (eval id {lngid} [{strevallang}]): set OPENAI_API_KEY "
+                      "in text2sql-eval/.env, it is sent as X-OpenAI-Key. Stopping the run, nothing scored.")
+                sys.exit(1)
+
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:
@@ -700,6 +709,8 @@ try:
             except OSError:
                 strevaluatorversion = "unknown"
             print(f"text2sql-eval {strevaluatorversion}")
+            # TEXT2SQL-EVAL-010: which provider keys go to the API (names only, never the values)
+            print(f"Provider keys sent to the API: {t2s_eval.provider_key_summary()}")
             blnflexprocessing = _cli_args.flex_processing
             if blnflexprocessing is None:
                 blnflexprocessing = t2s_eval.any_flex_eligible_model(
@@ -1108,6 +1119,8 @@ try:
                             headers = {"Content-Type": "application/json"}
                             if api_key:
                                 headers["X-API-Key"] = api_key
+                            # TEXT2SQL-EVAL-010: the provider keys, OpenAI first (the API has none).
+                            headers.update(t2s_eval.provider_key_headers())
 
                             # FASTAPI-TEXT2SQL-277. Deposit the picture once per evaluation, for
                             # both languages: an image_ref lives 30 days, the bank keeps the
