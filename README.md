@@ -1104,6 +1104,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.22.9 | 2026-11-17 | GPT-6.2 campaign against the 6.1 line: `text2sql-eval.sh` lists the six runs of the three arms (complex slot on the escalated subset against `gpt-6.1-sol`, first pass on the full bank, vision against `gpt-6-astra`), each on `gpt-6.2-sol` and `gpt-6.2-astra`. The API prices both models from the same day (`llm_costs.py`). No evaluator code change. |
 | 2.22.3 | 2026-11-15 | `cache-pass-report.sql`: `served_from_cache` is read as `'true'` or `'1'` (MariaDB's `JSON_VALUE` returns 1 for JSON true), so a cached answer is no longer reported as "not served from cache". Carries `cache-pass-report-20261115.txt`, first report on 2935, 2937, 2938 (API 1.1.20). |
 | 2.22.2 | 2026-11-15 | `cache-pass-report.sql`: `SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci` first, the agent connection defaulted to `utf8mb4_general_ci` and the report stopped on ERROR 1267. |
 | 2.22.1 | 2026-11-15 | `cache-pass-report.sql`: "no fresh row to compare" is tested after the representation and chain-anchor checks, so a cache pass on questions never run normally still shows those differences from the warm-call summary. Carries `migrate-evaluation-execution-cache-pass-20261115.txt` (column `CACHE_PASS` added). |

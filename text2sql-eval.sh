@@ -189,6 +189,17 @@ SUBSET_BASELINE_COMPLEX_MODEL=${SUBSET_BASELINE_COMPLEX_MODEL:-gpt-4o}
 # API, then asked. VISION_IDENTIFICATION_MODEL joins the run signature (VISION_MODEL), so
 # gpt-6-astra and claude-fable-5-2 are two namespaces. Example:
 #   INPUT_KIND=image VISION_IDENTIFICATION_MODEL=claude-fable-5-2 ./text2sql-eval.sh
+#
+# GPT-6.2 against the 6.1 line (2026-11-17), three arms, each run with EVAL_LANGUAGE=en then fr:
+#   complex slot, escalated subset, against gpt-6.1-sol (needs that baseline on the same version):
+#     SUBSET_BASELINE_COMPLEX_MODEL=gpt-6.1-sol EVAL_SUBSET=escalated COMPLEX_MODEL=gpt-6.2-sol ./text2sql-eval.sh
+#     SUBSET_BASELINE_COMPLEX_MODEL=gpt-6.1-sol EVAL_SUBSET=escalated COMPLEX_MODEL=gpt-6.2-astra ./text2sql-eval.sh
+#   first pass, full bank (the complex model stays gpt-6.1-sol):
+#     ENTITY_EXTRACTION_MODEL=gpt-6.2-sol TEXT2SQL_MODEL=gpt-6.2-sol ./text2sql-eval.sh
+#     ENTITY_EXTRACTION_MODEL=gpt-6.2-astra TEXT2SQL_MODEL=gpt-6.2-astra ./text2sql-eval.sh
+#   vision, against gpt-6-astra and claude-fable-5-2, then check-vision-campaign.sql:
+#     INPUT_KIND=image VISION_IDENTIFICATION_MODEL=gpt-6.2-sol ./text2sql-eval.sh
+#     INPUT_KIND=image VISION_IDENTIFICATION_MODEL=gpt-6.2-astra ./text2sql-eval.sh
 INPUT_KIND=${INPUT_KIND:-text}
 VISION_IDENTIFICATION_MODEL=${VISION_IDENTIFICATION_MODEL:-gpt-6-astra}
 if [ "$INPUT_KIND" != "text" ] && [ "$INPUT_KIND" != "image" ]; then
