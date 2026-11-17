@@ -1104,6 +1104,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.22.10 | 2026-11-17 | **`retire-executions-gpt-6-2-flex-20261117.sql`** (voie 2): soft-deletes the 438 rows of the first GPT-6.2 complex-slot runs (EN 99 + 99, FR 120 + 120). OpenAI refuses Flex on the 6.2 line with a 400, the evaluator asks for Flex on any GPT-6 model, and the API did not retry a 400, so no complex call ever ran. The API now sends `gpt-6.2-*` at the standard tier. No evaluator code change. |
 | 2.22.9 | 2026-11-17 | GPT-6.2 campaign against the 6.1 line: `text2sql-eval.sh` lists the six runs of the three arms (complex slot on the escalated subset against `gpt-6.1-sol`, first pass on the full bank, vision against `gpt-6-astra`), each on `gpt-6.2-sol` and `gpt-6.2-astra`. The API prices both models from the same day (`llm_costs.py`). No evaluator code change. |
 | 2.22.3 | 2026-11-15 | `cache-pass-report.sql`: `served_from_cache` is read as `'true'` or `'1'` (MariaDB's `JSON_VALUE` returns 1 for JSON true), so a cached answer is no longer reported as "not served from cache". Carries `cache-pass-report-20261115.txt`, first report on 2935, 2937, 2938 (API 1.1.20). |
 | 2.22.2 | 2026-11-15 | `cache-pass-report.sql`: `SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci` first, the agent connection defaulted to `utf8mb4_general_ci` and the report stopped on ERROR 1267. |
