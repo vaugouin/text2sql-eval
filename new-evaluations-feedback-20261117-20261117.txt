@@ -1,0 +1,11 @@
+-- new-evaluations-feedback-20261117.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-17 19:42:36 +0100
+--
++-------------------+----------------------------+---------+-----------+--------------------------------------------------------------------------------+---------------------------------+-----------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_EVAL | IS_SAMPLE | QUESTION                                                                       | ASSERTIONS_QUERY_RESULT         | ASSERTIONS_RESULT_SHAPE     |
++-------------------+----------------------------+---------+-----------+--------------------------------------------------------------------------------+---------------------------------+-----------------------------+
+|              2942 |                          6 |       1 |         1 | What share of Hitchcock's films are in black and white? Show it as a pie chart | COUNT(*) <= 3 AND COUNT(*) >= 1 | representation == share-bar |
+|              2943 |                          6 |       1 |         1 | What share of the Palme d'Or winners are French films? Show it as a pie chart  | COUNT(*) <= 3 AND COUNT(*) >= 1 | representation == share-bar |
+|              2944 |                          6 |       1 |         1 | What share of the Palme d'Or winners are French films?                         | COUNT(*) <= 3 AND COUNT(*) >= 1 | representation == share-bar |
+|              2945 |                          6 |       1 |         1 | Graph with the proportion of male/female actors in the Barbie movie            | COUNT(*) <= 3 AND COUNT(*) >= 1 | representation == share-bar |
++-------------------+----------------------------+---------+-----------+--------------------------------------------------------------------------------+---------------------------------+-----------------------------+
