@@ -8,10 +8,10 @@
     "entity_extraction": "seteq(entity_keys($), [&quot;Technical_format1&quot;])",
     "sql_query": null,
     "query_result": "ID_MOVIE IN (947, 12445, 9552, 14002, 273248, 9764, 11202, 12444)",
-    "result_shape": "result_kind == entity_rows; representation == card-grid"
+    "result_shape": "result_kind == entity_rows; representation == card-grid; intent.task == list"
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE JOIN T_WC_T2S_MOVIE_TECHNICAL ON T_WC_T2S_MOVIE.ID_MOVIE = T_WC_T2S_MOVIE_TECHNICAL.ID_MOVIE WHERE T_WC_T2S_MOVIE_TECHNICAL.ID_TECHNICAL = 54 ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-08T05:50:41",
+  "assertion_refresh_last": "2026-11-15T03:54:03",
   "comment": "Excluding documentaries in the valid set",
   "keywords": null,
   "keywords_auto": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

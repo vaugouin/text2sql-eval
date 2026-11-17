@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2931,
+  "evaluation_category_id": 4,
+  "question_en": "What is A Fistful of Dollars based on, and what is that based on?",
+  "question_fr": "De quoi Pour une poignée de dollars est-il adapté, et de quoi cette œuvre est-elle elle-même adaptée ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "ID_SOURCE_WORK IN (7219, 6848)",
+    "result_shape": "representation == chain"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Phase 3, chain of adaptations across kinds of work: A Fistful of Dollars, Yojimbo (a film, source work 7219), Red Harvest (a novel, 6848; Fistful also cites it directly). Served card-grid of two source works, no order and no link.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-11",
+  "tim_updated": null,
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": 1,
+  "id_owner": 1,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

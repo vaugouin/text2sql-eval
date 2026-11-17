@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (278, 13, 101, 8587, 110, 11104, 14275, 58128, 522, 31439, 2292, 527, 11010, 31414, 109)",
+    "query_result": "ID_MOVIE IN (278, 13, 101, 8587, 110, 11104, 14275, 58128, 522, 31439, 2292, 527, 11010, 109, 628)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT other.ID_MOVIE FROM T_WC_T2S_MOVIE AS source JOIN T_WC_T2S_MOVIE AS other ON other.RELEASE_YEAR = source.RELEASE_YEAR AND other.ID_MOVIE &lt;&gt; source.ID_MOVIE WHERE (source.MOVIE_TITLE = &#039;Pulp Fiction&#039; OR source.MOVIE_TITLE_FR = &#039;Pulp Fiction&#039; OR source.ORIGINAL_TITLE = &#039;Pulp Fiction&#039;) ORDER BY other.IMDB_RATING_WEIGHTED DESC LIMIT 15",
-  "assertion_refresh_last": "2026-11-08T05:51:15",
+  "assertion_refresh_last": "2026-11-15T03:54:17",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

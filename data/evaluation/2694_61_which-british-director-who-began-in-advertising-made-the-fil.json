@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2694,
+  "evaluation_category_id": 61,
+  "question_en": "Which British director, who began in advertising, made the film about an American student jailed in a Turkish prison?",
+  "question_fr": "Quel réalisateur britannique, venu de la publicité, a tourné le film sur un étudiant américain emprisonné en Turquie ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) == 1 AND ID_PERSON IN (9168)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Alan Parker the director (TMDb 9168), name + birth year 1944 shared with a sound technician (1714546) who is MORE popular (2.05 against 1.41): a popularity pick fails. FASTAPI-TEXT2SQL-355, 355-EXT.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-08",
+  "tim_updated": "2026-11-14T19:45:25",
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

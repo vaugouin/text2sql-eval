@@ -8,7 +8,7 @@
     "entity_extraction": null,
     "sql_query": null,
     "query_result": "ID_MOVIE IN (11660, 77, 320, 272, 1124, 155, 27205, 49026, 157336, 374720, 577922, 872585)",
-    "result_shape": "representation == value-cards"
+    "result_shape": "representation == value-cards; intent.task == value"
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": null,
-  "resolution_mode": null
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

@@ -19,11 +19,14 @@
   "is_sample": 1,
   "display_order": null,
   "dat_creat": "2025-12-30",
-  "tim_updated": "2026-10-03T09:06:01",
-  "is_showcase": 1,
+  "tim_updated": "2026-11-14T12:15:27",
+  "is_showcase": 0,
   "deleted": 0,
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

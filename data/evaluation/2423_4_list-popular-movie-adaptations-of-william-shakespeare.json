@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (1072790, 8587, 9655, 4951, 11645, 762509, 420818, 511809)",
+    "query_result": "ID_MOVIE IN (8587, 762509, 420818, 4951, 1072790, 454, 1704090, 11645)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT m.ID_MOVIE FROM T_WC_T2S_MOVIE m JOIN T_WC_T2S_PERSON_MOVIE pm ON pm.ID_MOVIE = m.ID_MOVIE JOIN T_WC_T2S_PERSON p ON p.ID_PERSON = pm.ID_PERSON WHERE p.PERSON_NAME = &#039;William Shakespeare&#039; AND pm.CREDIT_TYPE = &#039;crew&#039; AND pm.CREW_DEPARTMENT = &#039;Writing&#039; ORDER BY m.POPULARITY DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-08T05:51:26",
+  "assertion_refresh_last": "2026-11-15T03:54:23",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

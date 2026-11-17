@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2683,
+  "evaluation_category_id": 62,
+  "question_en": "In which 2007 NBC series does Damian Lewis play a detective back on the force after twelve years in prison for a murder he did not commit?",
+  "question_fr": "Dans quelle série de NBC de 2007 Damian Lewis joue-t-il un inspecteur réintégré après douze ans de prison pour un meurtre qu'il n'a pas commis ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) == 1 AND ID_SERIE IN (3797)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Life (TMDb 3797), title + first air year shared with a Japanese Life (9670, 2007). FASTAPI-TEXT2SQL-355, 355-EXT.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-08",
+  "tim_updated": "2026-11-14T19:46:22",
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

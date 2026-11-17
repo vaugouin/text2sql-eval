@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2698,
+  "evaluation_category_id": 61,
+  "question_en": "Which American director, blacklisted in the 1950s, directed Doris Day and Rock Hudson in a comedy about a shared telephone line?",
+  "question_fr": "Quel réalisateur américain, inscrit sur la liste noire dans les années 1950, a dirigé Doris Day et Rock Hudson dans une comédie sur une ligne téléphonique partagée ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) == 1 AND ID_PERSON IN (123401)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Michael Gordon the director (TMDb 123401, Pillow Talk), name + birth year 1909 shared with a British editor (1196027) who is MORE popular (1.54 against 0.61). FASTAPI-TEXT2SQL-355, 355-EXT.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-08",
+  "tim_updated": "2026-11-14T19:44:59",
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

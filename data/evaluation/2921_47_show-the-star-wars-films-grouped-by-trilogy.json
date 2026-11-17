@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2921,
+  "evaluation_category_id": 47,
+  "question_en": "Show the Star Wars films grouped by trilogy",
+  "question_fr": "Montre les films Star Wars regroupés par trilogie",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) &gt;= 9",
+    "result_shape": "representation == hierarchy"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Phase 3, hierarchy as a grouping: the Star Wars films under their trilogy. On 1.1.20 the SQL required trilogies of exactly three works and returned one row (query_result fails, served entity-page).",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-11",
+  "tim_updated": null,
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": 1,
+  "id_owner": 1,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

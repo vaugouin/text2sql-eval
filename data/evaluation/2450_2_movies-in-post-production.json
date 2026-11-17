@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": "seteq(entity_keys($), [&quot;Status_name1&quot;])",
     "sql_query": null,
-    "query_result": "ID_MOVIE IN (1612063, 1215889, 1229939, 1563758, 1152099, 877553, 1244729, 659708)",
+    "query_result": "ID_MOVIE IN (1612063, 1229939, 1563758, 1152099, 877553, 1244729, 1363286, 659708)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT T_WC_T2S_MOVIE.ID_MOVIE FROM T_WC_T2S_MOVIE WHERE T_WC_T2S_MOVIE.STATUS = 'Post Production' ORDER BY T_WC_T2S_MOVIE.IMDB_RATING_WEIGHTED DESC LIMIT 8",
-  "assertion_refresh_last": "2026-11-08T05:51:37",
+  "assertion_refresh_last": "2026-11-15T03:54:27",
   "comment": "Post Production, a two-word canonical whose French alias is identical.",
   "keywords": null,
   "keywords_auto": null,
@@ -25,5 +25,8 @@
   "id_creator": null,
   "id_owner": null,
   "id_user_updated": null,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

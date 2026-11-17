@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2852,
+  "evaluation_category_id": 2,
+  "question_en": "When was Vertigo released?",
+  "question_fr": "Quand Sueurs froides est-il sorti ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "CELL(0, 0) == 426 AND ID_MOVIE IN (426)",
+    "result_shape": "representation == fact-card; intent.task == value"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Phase 2 lot B, fact-card on a date. In English the title brings eleven homonyms, every row named Vertigo and ordered by the default sort: the fact is the first row's (Hitchcock, 1958), the others are listed as other titles of the same name, never a timeline of homonyms (served timeline on 1.1.20).",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-11",
+  "tim_updated": null,
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": 1,
+  "id_owner": 1,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

@@ -1,0 +1,89 @@
+-- update-evaluations-intent-task.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 08:13:47 +0100
+--
++-------------------+----------------------------------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ASSERTIONS_RESULT_SHAPE                                                                            |
++-------------------+----------------------------------------------------------------------------------------------------+
+|                 3 | result_kind == entity_rows; representation == card-grid; intent.task == list                       |
+|                29 | result_kind == count; representation == number-card; intent.task == count                          |
+|                79 | result_kind == entity_rows; representation == entity-page; intent.task == list                     |
+|                80 | result_kind == entity_rows; representation == entity-page; intent.task == list                     |
+|               790 | result_kind == count; representation == number-card; intent.task == count                          |
+|               791 | result_kind == count; representation == number-card; intent.task == count                          |
+|               792 | result_kind == count; representation == number-card; intent.task == count                          |
+|              1125 | result_kind == entity_rows; representation == ranked-bars; unit(any) == usd; intent.task == rank   |
+|              2214 | result_kind == entity_rows; representation == ranked-bars; unit(any) == usd; intent.task == rank   |
+|              2513 | result_kind == entity_rows; representation == ranked-bars; unit(any) == count; intent.task == rank |
+|              2524 | result_kind == scalar; representation == number-card; unit(*) == minutes; intent.task == value     |
+|              2549 | result_kind == scalar; representation == number-card; unit(*) == minutes; intent.task == value     |
+|              2550 | result_kind == entity_rows; representation == card-grid; intent.task == value                      |
+|              2551 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2552 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2553 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2554 | result_kind == scalar; representation == number-card; unit(*) == minutes; intent.task == value     |
+|              2555 | result_kind == scalar; representation == number-card; unit(*) == usd; intent.task == value         |
+|              2556 | result_kind == scalar; representation == number-card; unit(*) == usd; intent.task == value         |
+|              2558 | result_kind == entity_rows; representation == ranked-bars; unit(*) == count; intent.task == rank   |
+|              2559 | representation == ranked-bars; unit(*) == count; intent.task == rank                               |
+|              2560 | representation == value-cards; unit(RUNTIME) == minutes; intent.task == value                      |
+|              2561 | representation == value-cards; unit(BUDGET) == usd; intent.task == value                           |
+|              2562 | representation == value-cards; unit(REVENUE) == usd; intent.task == value                          |
+|              2563 | representation == value-cards; intent.task == value                                                |
+|              2564 | representation == value-cards; unit(RUNTIME) == minutes; intent.task == value                      |
+|              2565 | representation == value-cards; unit(REVENUE) == usd; intent.task == value                          |
+|              2566 | representation == value-cards; unit(NUMBER_OF_SEASONS) == count; intent.task == value              |
+|              2567 | representation == value-cards; intent.task == value                                                |
+|              2568 | representation == value-cards; unit(BUDGET) == usd; intent.task == value                           |
+|              2569 | representation == value-cards; unit(RUNTIME) == minutes; intent.task == value                      |
+|              2570 | representation == ranked-bars; unit(REVENUE) == usd; intent.task == rank                           |
+|              2571 | representation == ranked-bars; unit(RUNTIME) == minutes; intent.task == rank                       |
+|              2572 | representation == ranked-bars; unit(REVENUE) == usd; intent.task == rank                           |
+|              2573 | representation == ranked-bars; intent.task == rank                                                 |
+|              2574 | representation == ranked-bars; unit(NUMBER_OF_EPISODES) == count; intent.task == rank              |
+|              2575 | representation == ranked-bars; intent.task == rank                                                 |
+|              2576 | representation == ranked-bars; intent.task == rank                                                 |
+|              2577 | representation == ranked-bars; intent.task == rank                                                 |
+|              2578 | representation == ranked-bars; intent.task == rank                                                 |
+|              2579 | representation == ranked-bars; unit(RUNTIME) == minutes; intent.task == rank                       |
+|              2580 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2581 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2582 | result_kind == entity_rows; representation == entity-page; intent.task == value                    |
+|              2583 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2584 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2585 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2586 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2587 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2588 | result_kind == entity_rows; representation == entity-page; intent.task == value                    |
+|              2589 | result_kind == count; representation == number-card; intent.task == count                          |
+|              2590 | representation == value-cards; unit(RUNTIME) == minutes; intent.task == compare                    |
+|              2591 | representation == value-cards; unit(BUDGET) == usd; intent.task == compare                         |
+|              2592 | representation == value-cards; unit(NUMBER_OF_SEASONS) == count; intent.task == compare            |
+|              2593 | representation == value-cards; unit(REVENUE) == usd; intent.task == compare                        |
+|              2594 | representation == value-cards; intent.task == compare                                              |
+|              2595 | representation == value-cards; intent.task == compare                                              |
+|              2596 | representation == value-cards; intent.task == compare                                              |
+|              2597 | representation == value-cards; unit(RUNTIME) == minutes; intent.task == compare                    |
+|              2598 | representation == value-cards; unit(NUMBER_OF_EPISODES) == count; intent.task == compare           |
+|              2599 | representation == value-cards; intent.task == compare                                              |
+|              2600 | representation == card-grid; intent.task == sequence                                               |
+|              2601 | representation == card-grid; intent.task == sequence                                               |
+|              2602 | representation == card-grid; intent.task == sequence                                               |
+|              2603 | representation == card-grid; intent.task == sequence                                               |
+|              2604 | representation == card-grid; intent.task == sequence                                               |
+|              2605 | representation == card-grid; intent.task == sequence                                               |
+|              2606 | representation == card-grid; intent.task == sequence                                               |
+|              2607 | representation == card-grid; intent.task == sequence                                               |
+|              2608 | representation == card-grid; intent.task == sequence                                               |
+|              2609 | representation == card-grid; intent.task == sequence                                               |
+|              2610 | representation == table; intent.task == trend                                                      |
+|              2611 | representation == table; intent.task == trend                                                      |
+|              2612 | representation == table; intent.task == trend                                                      |
+|              2613 | representation == table; intent.task == trend                                                      |
+|              2614 | representation == table; unit(any) == minutes; intent.task == trend                                |
+|              2615 | representation == table; intent.task == trend                                                      |
+|              2616 | representation == table; intent.task == trend                                                      |
+|              2617 | representation == table; intent.task == trend                                                      |
+|              2618 | representation == table; intent.task == trend                                                      |
+|              2619 | representation == table; intent.task == trend                                                      |
+|              2663 | result_kind == scalar; representation == number-card; unit(*) == minutes; intent.task == value     |
++-------------------+----------------------------------------------------------------------------------------------------+

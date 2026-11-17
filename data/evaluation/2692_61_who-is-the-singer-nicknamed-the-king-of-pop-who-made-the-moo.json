@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2692,
+  "evaluation_category_id": 61,
+  "question_en": "Who is the singer nicknamed the King of Pop, who made the moonwalk famous?",
+  "question_fr": "Qui est le chanteur surnommé le roi de la pop, qui a rendu célèbre le moonwalk ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "COUNT(*) == 1 AND ID_PERSON IN (82702)",
+    "result_shape": null
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Michael Jackson (TMDb 82702), name + birth year shared with a British television executive (1997098, 1958): the rewrite Person Michael Jackson born in 1958 returns both. Person side of FASTAPI-TEXT2SQL-355, 355-EXT.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-08",
+  "tim_updated": "2026-11-14T19:45:39",
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": null,
+  "id_owner": null,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}

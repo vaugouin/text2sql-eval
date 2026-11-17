@@ -11,7 +11,7 @@
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT DISTINCT p.ID_PERSON FROM T_WC_T2S_PERSON p JOIN T_WC_T2S_PERSON_MOVIE pm ON pm.ID_PERSON = p.ID_PERSON WHERE pm.CAST_CHARACTER = &#039;Tom Ripley&#039; AND pm.CREDIT_TYPE = &#039;cast&#039; AND pm.CAST_CHARACTER NOT IN (&#039;Self&#039;, &#039;Himself&#039;, &#039;Herself&#039;, &#039;(archive footage)&#039;, &#039;Self (archive footage)&#039;, &#039;Self (archive footage) (uncredited)&#039;, &#039;Self (uncredited)&#039;, &#039;Self (archive footage) (uncredited)&#039;) ORDER BY pm.DISPLAY_ORDER ASC LIMIT 5",
-  "assertion_refresh_last": "2026-11-08T05:51:36",
+  "assertion_refresh_last": "2026-11-15T03:54:27",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

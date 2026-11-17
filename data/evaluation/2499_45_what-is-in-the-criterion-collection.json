@@ -25,5 +25,8 @@
   "id_creator": null,
   "id_owner": null,
   "id_user_updated": null,
-  "resolution_mode": null
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

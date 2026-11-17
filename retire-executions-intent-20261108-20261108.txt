@@ -1,0 +1,14 @@
+-- retire-executions-intent-20261108.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-08 15:43:08 +0100
+--
++----------+
+| labelled |
++----------+
+|       82 |
++----------+
++------+------------+-------------+
+| LANG | executions | evaluations |
++------+------------+-------------+
+| en   |         82 |          82 |
+| fr   |         82 |          82 |
++------+------------+-------------+

@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "complex"
+  "resolution_mode": "complex",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

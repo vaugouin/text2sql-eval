@@ -8,7 +8,7 @@
     "entity_extraction": "seteq(entity_keys($), [&quot;IMDb_ID1&quot;]) AND matches($.IMDb_ID1, /^tt0033467$/i)",
     "sql_query": null,
     "query_result": "ID_MOVIE == 15",
-    "result_shape": "result_kind == entity_rows; representation == entity-page"
+    "result_shape": "result_kind == entity_rows; representation == entity-page; intent.task == list"
   },
   "assertion_refresh_sql": null,
   "assertion_refresh_last": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

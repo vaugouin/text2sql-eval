@@ -7,11 +7,11 @@
   "assertions": {
     "entity_extraction": null,
     "sql_query": null,
-    "query_result": "ID_PERSON IN (67047, 1247604, 18270, 22303, 1438183, 1081095, 1183234, 22066, 27020, 4580908, 550876, 2209233, 17146, 3115096, 2568605)",
+    "query_result": "ID_PERSON IN (67047, 18270, 22303, 1438183, 1081095, 1183234, 22066, 27020, 550876, 2209233, 4580908, 17146, 3115096, 2568605, 1744300)",
     "result_shape": null
   },
   "assertion_refresh_sql": "SELECT ID_PERSON FROM T_WC_T2S_PERSON ORDER BY POPULARITY DESC LIMIT 15",
-  "assertion_refresh_last": "2026-11-08T05:51:05",
+  "assertion_refresh_last": "2026-11-15T03:54:13",
   "comment": null,
   "keywords": null,
   "keywords_auto": null,
@@ -25,5 +25,8 @@
   "id_creator": 1,
   "id_owner": 1,
   "id_user_updated": 1,
-  "resolution_mode": "standard"
+  "resolution_mode": "standard",
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
 }

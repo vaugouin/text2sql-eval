@@ -1,0 +1,32 @@
+{
+  "evaluation_id": 2924,
+  "evaluation_category_id": 12,
+  "question_en": "Which companies does Sony Pictures own, directly or through its subsidiaries?",
+  "question_fr": "Quelles sociétés Sony Pictures possède-t-elle, directement ou par ses filiales ?",
+  "translation_note": "Each evaluation carries an English (`question_en`) and a French (`question_fr`) form. One side is the original input typed by the user; the other is automatically translated by gpt-4o (gpt-6-sol since 2026-10-01) through Phase 5 (EN→FR) or Phase 6 (FR→EN) of the evaluator. Translations are generally high-quality but may differ in wording from a natively-typed equivalent — keep this in mind when comparing API outputs across languages.",
+  "assertions": {
+    "entity_extraction": null,
+    "sql_query": null,
+    "query_result": "ID_COMPANY IN (2251, 177)",
+    "result_shape": "representation == hierarchy"
+  },
+  "assertion_refresh_sql": null,
+  "assertion_refresh_last": null,
+  "comment": "Phase 3, hierarchy of companies (T_WC_T2S_COMPANY.ID_PARENT, recursive): only 26 of 183,273 companies carry a parent, and TMDb files Metro-Goldwyn-Mayer under Sony Pictures. Served card-grid with four companies and no parent column.",
+  "keywords": null,
+  "keywords_auto": null,
+  "is_eval": 1,
+  "is_sample": 1,
+  "display_order": null,
+  "dat_creat": "2026-11-11",
+  "tim_updated": null,
+  "is_showcase": 0,
+  "deleted": 0,
+  "id_creator": 1,
+  "id_owner": 1,
+  "id_user_updated": null,
+  "resolution_mode": null,
+  "input_kind": null,
+  "input_image_path": null,
+  "assertions_vision_identification": null
+}
