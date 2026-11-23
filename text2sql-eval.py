@@ -636,9 +636,9 @@ _parser.add_argument("--subset-baseline-complex-model", default="gpt-4o",
 _parser.add_argument("--input-kind", default="text", choices=["text", "image"],
                      help="'text' (default): the text bank, as before. 'image': the image "
                           "evaluations only, each picture deposited on the API first.")
-_parser.add_argument("--vision-identification-model", default="gpt-6-astra",
+_parser.add_argument("--vision-identification-model", default="gpt-6.2-sol",
                      help="Vision model of an image run (llm_model_vision), checked against the "
-                          "API's echo; ignored on a text run (default: gpt-6-astra)")
+                          "API's echo; ignored on a text run (default: gpt-6.2-sol)")
 _parser.add_argument("--cache-pass", dest="cache_pass", action="store_true", default=False,
                      help="Off by default. Ask each question twice, cache read off then on, and "
                           "store the cached answer in its own namespace (CACHE_PASS = 1, export "

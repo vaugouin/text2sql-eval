@@ -201,7 +201,7 @@ SUBSET_BASELINE_COMPLEX_MODEL=${SUBSET_BASELINE_COMPLEX_MODEL:-gpt-4o}
 #     INPUT_KIND=image VISION_IDENTIFICATION_MODEL=gpt-6.2-sol ./text2sql-eval.sh
 #     INPUT_KIND=image VISION_IDENTIFICATION_MODEL=gpt-6.2-astra ./text2sql-eval.sh
 INPUT_KIND=${INPUT_KIND:-text}
-VISION_IDENTIFICATION_MODEL=${VISION_IDENTIFICATION_MODEL:-gpt-6-astra}
+VISION_IDENTIFICATION_MODEL=${VISION_IDENTIFICATION_MODEL:-gpt-6.2-sol}
 if [ "$INPUT_KIND" != "text" ] && [ "$INPUT_KIND" != "image" ]; then
     echo "ERROR: INPUT_KIND must be 'text' or 'image' (got '$INPUT_KIND')."; exit 1
 fi
