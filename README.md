@@ -845,6 +845,18 @@ in geography/location (Wikidata) and topic queries plus `ORDER BY RAND()` — th
 handful of correct queries that would be unusable at scale. See full comparison in
 [claude/ANALYSIS_v1_1_16.md](claude/ANALYSIS_v1_1_16.md).
 
+### Comparing two arms: `compare-arms.py` (TEXT2SQL-EVAL-013)
+
+Two campaigns that differ by one change (a model, a prompt, an API version) are compared question by question, never by their two headline rates. At a pass rate near 80 %, the 95 % margin of a paired gap is about ±1.8 points over 1,804 cases: a one- or two-point gap can be noise.
+
+```bash
+PYTHONUTF8=1 uv run --no-project python compare-arms.py \
+    --a "001.001.020_{lang}_gpt-6-sol_gpt-6-sol_gpt-6-1-sol_re-gpt-6-luna" \
+    --b "001.001.020_{lang}_gpt-6-sol_gpt-6-1-terra_gpt-6-1-sol_re-gpt-6-luna" [--lang en|fr|both]
+```
+
+Arms are folders of the local execution mirror (`--exec-dir`, default `../shared_data/text2sql-eval/evaluation_execution`), latest `execution_row_id` per id. Per language it prints the paired table (both pass, A only, B only, both fail), the net with an exact McNemar test, its 95 % interval in points and a verdict (**gain**, **loss** or **within noise**, `--alpha 0.05`), the scorable rate (evaluations with at least one assertion score), the normalised gain `(B − A) / (1 − A)`, the categories that moved, and cost and text2sql latency per arm. The verdict that counts is the **adjusted** one: flips with byte-identical SQL (a rescore checks the stored result, so they are data drift between execution dates) and time-sensitive questions (`--time-sensitive` adds ids) are set apart. With both languages it adds a pooled test **by question** (EN and FR averaged per question), since the two runs of a question are not independent. Output: `claude/compare_arms_<A>_vs_<B>.json` (local only). Any comparison of arms reported in a campaign analysis quotes the discordant counts and the verdict, not only the two rates.
+
 ### Assertion evaluation complexity
 | Operation | Complexity | Notes |
 |---|---|---|
@@ -1104,6 +1116,7 @@ Phase 11 only selects questions where at least one assertion column is non-empty
 
 | Version | Date | Changes |
 |---|---|---|
+| 2.23.0 | 2026-11-24 | **TEXT2SQL-EVAL-013, `compare-arms.py`**: paired comparison of any two campaigns, with an exact McNemar test, a 95 % interval and a verdict (gain, loss, within noise), per language and pooled by question; scorable rate, normalised gain, per-category flips, cost and latency per arm. Generalises `compare-terra-1-1-20.py`, whose discordant counts it reproduces on Terra against Sol 1.1.20 (EN raw +10, adjusted +1; FR raw +6, adjusted −1): within noise in both languages and pooled (p = 0.85 adjusted). See §9. |
 | 2.22.12 | 2026-11-23 | **Default vision model `gpt-6.2-sol`** (`--vision-identification-model`, `VISION_IDENTIFICATION_MODEL`), following the API's own default. Vision campaign on 1.1.20, 83 images per language: `gpt-6.2-sol` 53/83 EN and 53/83 FR, `gpt-6.2-astra` 53 and 51, `gpt-6-astra` 50 and 51, `claude-fable-5-2` 36 and 38; vision cost for both languages $2.28 against $9.13 and $11.82. Older image runs keep their own `VISION_MODEL` namespace. |
 | 2.22.10 | 2026-11-17 | **`retire-executions-gpt-6-2-flex-20261117.sql`** (voie 2): soft-deletes the 438 rows of the first GPT-6.2 complex-slot runs (EN 99 + 99, FR 120 + 120). OpenAI refuses Flex on the 6.2 line with a 400, the evaluator asks for Flex on any GPT-6 model, and the API did not retry a 400, so no complex call ever ran. The API now sends `gpt-6.2-*` at the standard tier. No evaluator code change. |
 | 2.22.9 | 2026-11-17 | GPT-6.2 campaign against the 6.1 line: `text2sql-eval.sh` lists the six runs of the three arms (complex slot on the escalated subset against `gpt-6.1-sol`, first pass on the full bank, vision against `gpt-6-astra`), each on `gpt-6.2-sol` and `gpt-6.2-astra`. The API prices both models from the same day (`llm_costs.py`). No evaluator code change. |
