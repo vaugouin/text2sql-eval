@@ -18,7 +18,7 @@ What the script separates, because the raw net overstates Terra:
 Several JSON files can exist for one evaluation id (retired executions stay in the additive
 local mirror): the highest `execution_row_id` wins.
 
-Run:  cd text2sql-eval && PYTHONUTF8=1 uv run --no-project python compare-terra-1-1-20.py [EXEC_DIR]
+Run:  cd text2sql-eval && PYTHONUTF8=1 uv run --no-project python archive/compare-terra-1-1-20.py [EXEC_DIR]
 EXEC_DIR defaults to ~/Code/shared_data/text2sql-eval/evaluation_execution.
 Writes claude/compare_terra_1_1_20.json (local only: `claude/` is git-ignored because the output
 carries bank questions verbatim, see AGENTS.md).
@@ -30,7 +30,7 @@ import statistics as st
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]  # archived in archive/, paths stay relative to the repo root
 EXEC_DIR = Path(sys.argv[1]) if len(sys.argv) > 1 else (
     ROOT.parent / "shared_data" / "text2sql-eval" / "evaluation_execution")
 OUT_JSON = ROOT / "claude" / "compare_terra_1_1_20.json"

@@ -1,6 +1,6 @@
 """Paired comparison of two evaluation campaigns (arms), with a noise threshold (TEXT2SQL-EVAL-013).
 
-Generalises compare-terra-1-1-20.py (GPT-6-008) to any two tuple folders of the local execution
+Generalises archive/compare-terra-1-1-20.py (GPT-6-008) to any two tuple folders of the local execution
 mirror. Pass = `scoring.assertions_total_score == 1.0`, as everywhere in the evaluator.
 
 What the script reports, per language and pooled:
@@ -17,7 +17,7 @@ What the script reports, per language and pooled:
 4. The normalised gain (SkillsBench): (rate B - rate A) / (1 - rate A), the share of A's
    remaining failures that B fixes, net of what it breaks.
 5. Results per category, since two arms can swap ranks from one category to another.
-6. The cautions of compare-terra-1-1-20.py, which the verdict rests on:
+6. The cautions of archive/compare-terra-1-1-20.py, which the verdict rests on:
    - A rescore re-checks the stored result against today's assertions, it does not rerun the SQL.
      A flip with byte-identical SQL on both sides is data drift between the two execution dates,
      never an arm effect ("same_sql_flips"). On 2026-11-09 they were 13 of the Terra-Sol flips.
