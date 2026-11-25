@@ -1,0 +1,47 @@
+-- check-vision-samples.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-25 21:55:36 +0100
+--
++-----------+---------+-------------+---------+----+
+| IS_SAMPLE | IS_EVAL | IS_SHOWCASE | DELETED | N  |
++-----------+---------+-------------+---------+----+
+|         0 |       1 |           0 |       0 | 83 |
++-----------+---------+-------------+---------+----+
++----------------------------+-----------+---------------------------------------+---------------------------------------------+---------+---------------+---------------+
+| ID_T2S_EVALUATION_CATEGORY | ID_PARENT | DESCRIPTION                           | DESCRIPTION_FR                              | DELETED | DISPLAY_ORDER | N_IMAGE_EVALS |
++----------------------------+-----------+---------------------------------------+---------------------------------------------+---------+---------------+---------------+
+|                          1 |         5 | Root English evaluations              | Racine des évaluations en français          |       0 |             2 |             0 |
+|                         60 |         1 | Movies - Descriptive Queries          | Films - Requêtes descriptives               |       0 |            19 |             0 |
+|                         61 |         1 | Persons - Descriptive Queries         | Personnes - Requêtes descriptives           |       0 |            57 |             0 |
+|                         62 |         1 | TV Series - Descriptive Queries       | Séries télévisées - Questions complexes     |       0 |            40 |             0 |
+|                         63 |         1 | Vision - Image Input                  | Vision - Questions à partir d'une image     |       0 |            70 |             0 |
+|                         64 |        63 | Vision - Posters and Printed Media    | Vision - Affiches et imprimés               |       0 |            71 |            10 |
+|                         65 |        63 | Vision - Film and Series Frames       | Vision - Images de films et de séries       |       0 |            72 |            27 |
+|                         66 |        63 | Vision - Screen Photos                | Vision - Photos d'écran                     |       0 |            73 |            10 |
+|                         67 |        63 | Vision - Physical Media               | Vision - Supports physiques                 |       0 |            74 |             6 |
+|                         68 |        63 | Vision - Source Books and Adaptations | Vision - Livres sources et adaptations      |       0 |            75 |            15 |
+|                         69 |        63 | Vision - Faces                        | Vision - Visages                            |       0 |            76 |             9 |
+|                         70 |        63 | Vision - Iconic Objects               | Vision - Objets iconiques                   |       0 |            77 |             6 |
+|                         71 |        63 | Vision - Unidentifiable               | Vision - Images non identifiables           |       0 |            78 |             0 |
++----------------------------+-----------+---------------------------------------+---------------------------------------------+---------+---------------+---------------+
++-------------+-------------------------+----------------+------------------+-----+-------------------+-----------------+
+| API_VERSION | ENTITY_EXTRACTION_MODEL | TEXT2SQL_MODEL | VISION_MODEL     | N   | N_TOTAL_SCORE_SET | N_VISION_SCORED |
++-------------+-------------------------+----------------+------------------+-----+-------------------+-----------------+
+| 001.001.020 | gpt-6-sol               | gpt-6-sol      | claude-fable-5-2 | 166 |                74 |             166 |
+| 001.001.020 | gpt-6-sol               | gpt-6-sol      | gpt-6-astra      | 166 |               101 |             166 |
+| 001.001.020 | gpt-6-sol               | gpt-6-sol      | gpt-6.2-astra    | 166 |               104 |             166 |
+| 001.001.020 | gpt-6-sol               | gpt-6-sol      | gpt-6.2-sol      | 166 |               106 |             166 |
++-------------+-------------------------+----------------+------------------+-----+-------------------+-----------------+
++-------------------+----------------------------+-----------+----------+-------------+---------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+| ID_T2S_EVALUATION | ID_T2S_EVALUATION_CATEGORY | IS_SAMPLE | QUESTION | QUESTION_FR | INPUT_IMAGE_PATH                                                          | EXPECTED                                                                                                    |
++-------------------+----------------------------+-----------+----------+-------------+---------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
+|              2732 |                         64 |         0 |          |             | vision/20260920-191233_vision_1.1.19_4ed5e16e4cda66bd1be1b130b9e34624.jpg | {"type": "movie", "id": 115, "title": "The Big Lebowski", "original_title": null, "year": 1998}             |
+|              2733 |                         64 |         0 |          |             | vision/20260920-161652_vision_1.1.19_50d22f896b5cea8d12332946e6a50f85.jpg | {"type": "movie", "id": 78, "title": "Blade Runner", "original_title": null, "year": 1982}                  |
+|              2734 |                         64 |         0 |          |             | vision/20260921-113241_vision_1.1.19_b21b152e5684ec35ccef576ead1fecba.jpg | {"type": "movie", "id": 152113, "title": "Planet Ocean", "original_title": "Planète Océan", "year": 2012}   |
+|              2735 |                         64 |         0 |          |             | vision/20260921-225201_vision_1.1.19_e5cb8b3ed7d9ed3b34c002bdd133fdd7.jpg | {"type": "person", "id": 1151445, "title": "David Moreau", "original_title": null, "year": null}            |
+|              2736 |                         64 |         0 |          |             | vision/20260923-162952_vision_1.1.19_5c2206934a28fb7f8a352bc3f4d8e382.jpg | {"type": "movie", "id": 346, "title": "Seven Samurai", "original_title": "七人の侍", "year": 1954}          |
+|              2737 |                         64 |         0 |          |             | vision/20261006-075215_vision_1.1.19_82693168a6c2a76619b678e80cc8076f.jpg | {"type": "movie", "id": 947493, "title": "Iron Boy", "original_title": "Le Corset", "year": 2026}           |
+|              2738 |                         64 |         0 |          |             | vision/20261027-173118_vision_1.1.19_9768dc3a948049eda3eb5f6625f559fc.jpg | {"type": "movie", "id": 19236, "title": "Santa Sangre", "original_title": null, "year": 1989}               |
+|              2739 |                         64 |         0 |          |             | vision/20261027-173155_vision_1.1.19_c428b32886ef6f1d9add9fb602671324.jpg | {"type": "movie", "id": 6978, "title": "Big Trouble in Little China", "original_title": null, "year": 1986} |
+|              2740 |                         64 |         0 |          |             | vision/20261028-144258_vision_1.1.19_6e369882b45bf225be82d6c0faa1f01b.jpg | {"type": "movie", "id": 35412, "title": "On the Beach", "original_title": null, "year": 1959}               |
+|              2741 |                         64 |         0 |          |             | vision/20261108-131218_vision_1.1.20_a6af9535c541f45976ed393987917f4a.jpg | {"type": "movie", "id": 1058424, "title": "Hope", "original_title": "호프", "year": 2026}                   |
++-------------------+----------------------------+-----------+----------+-------------+---------------------------------------------------------------------------+-------------------------------------------------------------------------------------------------------------+
