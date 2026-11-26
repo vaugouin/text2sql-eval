@@ -1,0 +1,5 @@
+# GPT-6.2 first-pass arm (2026-11-26): entity extraction and text-to-SQL on gpt-6.2-sol, full bank,
+# the complex model kept on gpt-6.1-sol (the evaluator's default) so only the first pass moves.
+# Run by queue-campaigns.sh once wikidata-crawler has stopped at the end of step 102.
+EVAL_LANGUAGE=en ENTITY_EXTRACTION_MODEL=gpt-6.2-sol TEXT2SQL_MODEL=gpt-6.2-sol API_VERSION=1.1.20
+EVAL_LANGUAGE=fr ENTITY_EXTRACTION_MODEL=gpt-6.2-sol TEXT2SQL_MODEL=gpt-6.2-sol API_VERSION=1.1.20
