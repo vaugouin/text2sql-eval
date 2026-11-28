@@ -1,0 +1,57 @@
+-- check-reception-evals.sql
+-- run on vaugouindb (container damp-vaugouin-com-mariadb-1) at 2026-11-28 18:29:13 +0100
+--
++--------------------+-------------------+-------------+-------------+
+| ID_RECEPTION_LABEL | LABEL_CODE        | LABEL_GROUP | MOVIE_COUNT |
++--------------------+-------------------+-------------+-------------+
+|                  1 | critics_panned    | critics     |        1029 |
+|                  2 | critics_negative  | critics     |        4052 |
+|                  3 | critics_mixed     | critics     |        7515 |
+|                  4 | critics_positive  | critics     |        9492 |
+|                  5 | critics_acclaimed | critics     |        2559 |
+|                  6 | critics_polarized | critics     |         426 |
+|                  7 | box_office_hit    | box_office  |        6883 |
+|                  8 | box_office_bomb   | box_office  |        4086 |
+|                  9 | box_office_record | box_office  |        2446 |
+|                 10 | cult              | legacy      |        1692 |
+|                 11 | notoriously_bad   | legacy      |         192 |
+|                 12 | reappraised       | legacy      |         802 |
+|                 13 | controversial     | event       |        2489 |
+|                 14 | banned            | event       |         722 |
+|                 15 | censored          | event       |         737 |
++--------------------+-------------------+-------------+-------------+
++-----------+---------+-------------+---------+-----------------+----------------+---------------------+---------------------+
+| OMDB_ROWS | OMDB_OK | OMDB_MOVIES | WITH_RT | WITH_METACRITIC | WITH_METASCORE | FIRST_FETCH         | LAST_FETCH          |
++-----------+---------+-------------+---------+-----------------+----------------+---------------------+---------------------+
+|     33300 |   33299 |       26830 |   17823 |           13955 |          13943 | 2026-10-22 15:33:57 | 2026-11-28 05:39:07 |
++-----------+---------+-------------+---------+-----------------+----------------+---------------------+---------------------+
++------------+----------------+--------------+---------+---------+---------+-----------------+---------+-----------------+--------------+----------------------+--------------------+------------------+
+| FILMS_READ | WITH_T2S_MOVIE | WITH_IMDB_ID | IN_OMDB | OMDB_OK | OMDB_RT | OMDB_METACRITIC | WIKI_RT | WIKI_METACRITIC | WIKI_RT_ONLY | WIKI_METACRITIC_ONLY | RT_MEAN_GAP_POINTS | WITH_CINEMASCORE |
++------------+----------------+--------------+---------+---------+---------+-----------------+---------+-----------------+--------------+----------------------+--------------------+------------------+
+|      75529 |          75141 |        75141 |   22958 |   22957 |   17113 |           13631 |   24957 |           14495 |         9270 |                 2944 |                0.6 |             4240 |
++------------+----------------+--------------+---------+---------+---------+-----------------+---------+-----------------+--------------+----------------------+--------------------+------------------+
++------------------------------------------------------------------------------------------+-------------+
+| QUESTION                                                                                 | ANSWER_ROWS |
++------------------------------------------------------------------------------------------+-------------+
+| Q01 cult films of the 1980s                                                              |         420 |
+| Q02 Ridley Scott box office bombs                                                        |          12 |
+| Q03 banned, DETAIL like United Kingdom                                                   |          76 |
+| Q03b banned, DETAIL like UK or Britain but not United Kingdom                            |          24 |
+| Q04 critically acclaimed science fiction                                                 |          91 |
+| Q05 notoriously bad horror films                                                         |          42 |
+| Q06 Stanley Kubrick controversial                                                        |           5 |
+| Q07 number of cult films                                                                 |        1692 |
+| Q08 Alfred Hitchcock censored                                                            |           3 |
+| Q09 box office records in the 1990s                                                      |         268 |
+| Q10 divided the critics, 2010s                                                           |          89 |
+| Q11 reappraised over time                                                                |         802 |
+| Q12 Oppenheimer (2023) labels: critics_acclaimed,box_office_record,controversial         |           3 |
+| Q13 Christopher Nolan hits with positive or acclaimed reviews                            |           5 |
+| Q14 Martin Scorsese films, OMDb Rotten Tomatoes >= 90                                    |          12 |
+| Q15 The Godfather (1972), OMDb Metacritic: 100, Rotten Tomatoes: 97                      |           1 |
+| Q16 films of 2023 with an OMDb Metacritic score                                          |         390 |
+| Q17 critically acclaimed films with an IMDb rating below 6                               |          80 |
+| Q18 OMDb Rotten Tomatoes >= 90 and IMDb rating below 6 (critics loved, audience did not) |          91 |
+| Q19 films with an A+ CinemaScore                                                         |         125 |
+| Q20 box office bombs that became cult films                                              |         368 |
++------------------------------------------------------------------------------------------+-------------+
